@@ -15,13 +15,21 @@
   </header>
   <div class="line"></div>
   <nav class="menu">
-    <a class="menu__main menu__active"><img src="assets/nav-menu/main.svg" alt="main">Main</a>
-    <a class="menu__order"><img src="assets/nav-menu/btc.svg" alt="btc">Order</a>
-    <a class="menu__statistics"><img src="assets/nav-menu/graph-up.svg" alt="graph up">Statistics</a>
-    <a class="menu__api"><img src="assets/nav-menu/api.svg" alt="api">API</a>
-    <a class="menu__settings"><img src="assets/nav-menu/settings.svg" alt="gear">Settings</a>
+    <a class="menu__main menu__active" [routerLink]="'/'"><img src="assets/nav-menu/main.svg" alt="main">Main</a>
+    <a class="menu__order" [routerLink]="'/order'"><img src="assets/nav-menu/btc.svg" alt="btc">Order</a>
+    <a class="menu__statistics" [routerLink]="'/stat'"><img src="assets/nav-menu/graph-up.svg" alt="graph up">Statistics</a>
+    <a class="menu__api" (click)="isOpenDialogBox=true"><img src="assets/nav-menu/api.svg" alt="api">API</a>
+    <a class="menu__settings" [routerLink]="'/settings'"><img src="assets/nav-menu/settings.svg" alt="gear">Settings</a>
   </nav>
-<!--  <app-main class="main"></app-main>-->
-<!--  <app-order class="main"></app-order>-->
-      <app-statistics class="main"></app-statistics>
+  <main class="main">
+    <router-outlet></router-outlet>
+  </main>
+  <div class="info-save-storage" *ngIf="isInfoSaveStorageBox===true">
+    <img src="assets/cookie.svg" alt="cookie">
+    <p>This is an example of a message that is commonly used for important information to visitors or users.
+      Please click the button beside to close this message.</p>
+    <button (click)="isInfoSaveStorageBox=false">Accept</button>
+  </div>
 </div>
+<app-api-box (isOpenDialogBox)="updateOpenDialogBox($event)" *ngIf="isOpenDialogBox===true"></app-api-box>
+

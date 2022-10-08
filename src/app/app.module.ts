@@ -1,26 +1,30 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
 
-import { AppComponent } from './app.component';
-import { MainComponent } from './pages/main/main.component';
-import { OrderComponent } from './pages/order/order.component';
-import { StatisticsComponent } from './pages/statistics/statistics.component';
-import { BlockPriceComponent } from './components/block-price/block-price.component';
-import { OrderRowComponent } from './components/order-row/order-row.component';
+import {AppComponent} from './app.component';
+import {MainComponent} from './pages/main/main.component';
+import {BlockPriceComponent} from './components/block-price/block-price.component';
+import {NotFoundComponent} from './pages/not-found/not-found.component';
+import {AppRoutingModule} from "./app-routing.module";
+import {RouterLinkWithHref, RouterOutlet} from "@angular/router";
+import { ApiBoxComponent } from './components/api-box/api-box.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MainComponent,
-    OrderComponent,
-    StatisticsComponent,
     BlockPriceComponent,
-    OrderRowComponent,
+    NotFoundComponent,
+    ApiBoxComponent,
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    AppRoutingModule,
+    RouterOutlet,
+    RouterLinkWithHref
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}
