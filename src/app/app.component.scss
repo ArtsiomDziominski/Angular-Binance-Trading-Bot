@@ -1,0 +1,151 @@
+:host {
+  width: 1440px;
+}
+
+img {
+  width: 250px;
+  height: 250px;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+.wrapper {
+  width: 100%;
+  height: 100vh;
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "div line"
+    "nav  main";
+  grid-template-rows: 60px 1px 1fr;
+  grid-template-columns: 200px 1fr;
+
+
+  header {
+    grid-area: header;
+    background-color: #22282F;
+    display: flex;
+    flex-basis: 200px;
+    position: relative;
+
+    .logo {
+      width: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      p {
+        font-size: 14px;
+        text-align: center;
+      }
+
+      &__name_yellow {
+        color: #FFE600;
+        margin-bottom: 10px;
+      }
+
+      &__name_white {
+        color: #ffffff;
+      }
+    }
+
+    .price {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      p {
+        color: white;
+        margin-left: 25px;
+      }
+    }
+
+    .update {
+      color: #FFE600;
+      position: absolute;
+      top: 20px;
+      right: 10px;
+    }
+  }
+
+  .line {
+    grid-area: line;
+    width: 100%;
+    background-color: #000000;
+  }
+
+  .menu {
+    grid-area: nav;
+    background-color: #22282F;
+    display: flex;
+    flex-direction: column;
+
+    a {
+      color: white;
+      margin: 30px 0 0 30px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    img {
+      width: 20px;
+      height: 20px;
+      margin-right: 20px;
+    }
+
+    &__active {
+      width: 100px;
+      height: 45px;
+      border-radius: 50px;
+      background-color: rgba(255, 230, 0, 0.4);
+    }
+  }
+
+  .main {
+    grid-area: main;
+    background-color: #161A1E;
+  }
+}
+.info-save-storage {
+  max-width: 1440px;
+  height: 95px;
+  background-color: #596168;
+  color: white;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    margin-left: 15px;
+  }
+
+  p {
+    margin: 0 15px 0 15px;
+  }
+
+  button {
+    width: 135px;
+    height: 40px;
+    border-radius: 5px;
+    border: 0;
+    background-color: #D9D9D9;
+    margin-right: 15px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #a8a8a8;
+    }
+
+    &:active {
+      background-color: #676767;
+      box-shadow: 0 0 3px 5px #888888 inset;
+    }
+  }
+}
