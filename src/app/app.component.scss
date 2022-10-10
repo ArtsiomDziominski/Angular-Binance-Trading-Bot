@@ -52,14 +52,22 @@ p {
       }
     }
 
-    .price {
+    .block {
       display: flex;
       flex-direction: row;
       align-items: center;
 
       p {
+        width: 250px;
+        height: 100%;
         color: white;
-        margin-left: 25px;
+        display: flex;
+        align-items: center;
+
+        span {
+          color: #FFE600;
+          margin-left: 5px;
+        }
       }
     }
 

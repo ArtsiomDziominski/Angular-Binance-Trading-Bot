@@ -4,14 +4,13 @@
       <p class="logo__name_yellow">Bot Binance</p>
       <p class="logo__name_white">Слей последние деньги</p>
     </a>
-    <div class="price">
-      <p class="price__btc">BTC/USDT:</p>
-      <p class="price__eth">ETH/USDT:</p>
-      <p class="price__bnb">BNB/USDT:</p>
-      <p class="price__doge">DOGE/USDT:</p>
-      <p class="price__atom">ATOM/USDT:</p>
+    <div class="block">
+      <p class="price__btc">BTC/USDT: <span>{{allPriceTokensHeader[1]?.lastPrice}}</span></p>
+      <p class="price__eth">ETH/USDT: <span>{{allPriceTokensHeader[3]?.lastPrice}}</span></p>
+      <p class="price__bnb">BNB/USDT: <span>{{allPriceTokensHeader[0]?.lastPrice}}</span></p>
+      <p class="price__doge">DOGE/USDT: <span>{{allPriceTokensHeader[2]?.lastPrice}}</span></p>
     </div>
-    <span class="update">Update: 5s</span>
+    <span class="update">Update: {{updateCounter}}s</span>
   </header>
   <div class="line"></div>
   <nav class="menu">

@@ -8,6 +8,9 @@ import {NotFoundComponent} from './pages/not-found/not-found.component';
 import {AppRoutingModule} from "./app-routing.module";
 import {RouterLinkWithHref, RouterOutlet} from "@angular/router";
 import { ApiBoxComponent } from './components/api-box/api-box.component';
+import {HttpClientModule} from "@angular/common/http";
+import {FormsModule} from "@angular/forms";
+import { BlockPriceAddComponent } from './components/block-price/block-price-add/block-price-add.component';
 
 @NgModule({
   declarations: [
@@ -16,12 +19,15 @@ import { ApiBoxComponent } from './components/api-box/api-box.component';
     BlockPriceComponent,
     NotFoundComponent,
     ApiBoxComponent,
+    BlockPriceAddComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     RouterOutlet,
-    RouterLinkWithHref
+    RouterLinkWithHref,
+    HttpClientModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
