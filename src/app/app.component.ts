@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {MainBlockPrice} from "./services/main-block-token-price/main-block-price";
+import {MainBlockPriceService} from "./services/main-block-token-price/main-block-price.service";
 
 @Component({
   selector: 'app-root',
@@ -12,9 +12,9 @@ export class AppComponent implements OnInit {
   public allPriceTokensHeader!: any;
   public updateCounter: number = 0;
 
-  constructor(private mainBlockPrice: MainBlockPrice) {}
+  constructor(private mainBlockPrice: MainBlockPriceService) {}
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.updatePriceTokens();
     setInterval(() => this.updatePriceTokens(), 20000);
     setInterval(() => this.updateCounter++, 1000);

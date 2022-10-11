@@ -1,0 +1,11 @@
+<section class="box">
+  <div *ngIf="isBlockPrice; else loader">
+    <img class="box__close" src="assets/close_X.svg" (click)="deleteBlockToken(nameToken)" alt="x">
+    <p class="box__name">{{nameToken}} <img src="assets/block-price/{{imgToken}}" alt="img token"></p>
+    <p class="box__price">${{priceToken}}</p>
+    <p class="box__24h" [class.box__24h_low]="editStringToNumber(h24Token) < 0">{{h24Token}} %</p>
+  </div>
+  <ng-template #loader>
+    <div class="box__loader"><div></div></div>
+  </ng-template>
+</section>

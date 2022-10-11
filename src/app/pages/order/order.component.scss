@@ -1,0 +1,140 @@
+.wrapper {
+  display: grid;
+  align-items: stretch;
+  grid-template-areas:
+    "header aside"
+    "main aside";
+  grid-template-rows: 60px 1fr;
+  grid-template-columns: 80% 20%;
+  background: url(../../../assets/background-order.png);
+  position: relative;
+
+  .header {
+    margin: 0 0 0 25px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    grid-area: header;
+
+    p {
+      font-size: 14px;
+      color: white;
+    }
+
+    &__name {
+    }
+
+    &__amount {
+      margin-left: 105px;
+    }
+
+    &__pnl {
+      margin-left: 230px;
+    }
+
+    &__button-close {
+      width: 80px;
+      height: 35px;
+      border-radius: 5px;
+      border: 0;
+      color: black;
+      background-color: #F90404;
+      font-weight: 600;
+      position: absolute;
+      right: 30px;
+      cursor: pointer;
+    }
+
+    &__button-close:hover {
+      background-color: rgba(249, 4, 4, 0.8);
+    }
+
+    &__button-close:active {
+      background-color: rgba(249, 4, 4, 0.6);
+    }
+  }
+
+  .main {
+    grid-area: main;
+  }
+
+  .aside {
+    grid-area: aside;
+    background-color: #22282F;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 100px 0;
+
+    input {
+      width: 160px;
+      height: 40px;
+      color: black;
+      font-size: 14px;
+      font-weight: 600;
+      background-color: #636363;
+      border-radius: 3px;
+      margin-bottom: 20px;
+    }
+
+    &__button {
+      width: 160px;
+      display: flex;
+      justify-content: space-between;
+
+      button {
+        width: 70px;
+        height: 30px;
+        font-weight: 600;
+        border: 0;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 40px;
+      }
+
+      .buy {
+        background-color: #28E824;
+
+        &:hover {
+          background-color: rgba(40, 232, 36, 0.8);
+        }
+
+        &:active {
+          background-color: rgba(40, 232, 36, 0.6);
+        }
+      }
+
+      .sell {
+        background-color: #F90404;
+
+        &:hover {
+          background-color: rgba(249, 4, 4, 0.8);
+        }
+
+        &:active {
+          background-color: rgba(249, 4, 4, 0.6);
+        }
+      }
+    }
+  }
+
+  .info-order {
+    width: 180px;
+    height: 30px;
+    background-color: #636363;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+
+    img {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+  }
+}
