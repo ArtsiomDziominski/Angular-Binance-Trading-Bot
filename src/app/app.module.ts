@@ -8,6 +8,8 @@ import {NotFoundComponent} from './pages/not-found/not-found.component';
 import {AppRoutingModule} from "./app-routing.module";
 import {RouterLinkWithHref, RouterOutlet} from "@angular/router";
 import { ApiBoxComponent } from './components/api-box/api-box.component';
+import {HttpClientModule} from "@angular/common/http";
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -21,7 +23,9 @@ import { ApiBoxComponent } from './components/api-box/api-box.component';
     BrowserModule,
     AppRoutingModule,
     RouterOutlet,
-    RouterLinkWithHref
+    RouterLinkWithHref,
+    HttpClientModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

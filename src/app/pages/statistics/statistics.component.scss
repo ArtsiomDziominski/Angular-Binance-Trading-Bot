@@ -1,0 +1,94 @@
+p {
+  color: white;
+  font-size: 16px;
+}
+
+header {
+  height: 150px;
+  background-color: #000000;
+  display: grid;
+  grid-template-areas:
+    "userimg username"
+    "userimg userid";
+  grid-template-rows: 50% 50%;
+  grid-template-columns: 10% 80%;
+
+  .user-img {
+    grid-area: userimg;
+    margin: 35px 10px 10px 10px;
+  }
+
+  .user-name {
+    grid-area: username;
+    display: grid;
+    align-content: end;
+  }
+
+  .user-id {
+    grid-area: userid;
+  }
+}
+
+.main {
+  background: url("../../../assets/statistics.png") no-repeat right top;
+  position: relative;
+
+  &__deposit {
+    font-size: 32px;
+    margin: 15px 0 0 40px;
+  }
+
+  .stat-futures {
+    margin: 10px 0 0 100px;
+    width: 600px;
+    display: inline-block;
+
+    &__yellow {
+      color: #FFE600;
+    }
+
+    &__green {
+      color: greenyellow;
+    }
+
+    &__red {
+      color: red;
+    }
+
+    p {
+      font-size: 14px;
+      margin: 5px;
+    }
+
+    .stat-futures__title {
+      color: white;
+      font-size: 18px;
+
+      &:before {
+        content: '•   ';
+        color: red;
+      }
+    }
+
+    &__box {
+      width: 250px;
+      display: inline-block;
+      margin: 10px 20px;
+    }
+
+    &__symbol {
+      color: #FFE600;
+    }
+  }
+
+  &__analysis {
+    font-size: 32px;
+    margin: 60px 0 0 40px;
+  }
+
+  &__img {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+}

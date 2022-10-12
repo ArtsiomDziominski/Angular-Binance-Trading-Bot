@@ -1,0 +1,24 @@
+<main>
+  <article class="content">
+    <app-block-price *ngFor="let priceToken of allPriceTokens;"
+      [nameToken]="priceToken.symbol"
+      [priceToken]="priceToken.lastPrice"
+      [h24Token]="editText.editToFixed2(priceToken.priceChangePercent)"
+      [imgToken]="priceToken.symbol + '.png'"
+    ></app-block-price>
+    <section class="slang">
+      <p>Bot Binance</p>
+      <p>
+        created to facilitate
+        trading and increase
+        your income.
+      </p>
+    </section>
+    <section class="img-rotation-btc">
+      <div></div>
+      <div></div>
+      <div></div>
+    </section>
+  </article>
+</main>
+

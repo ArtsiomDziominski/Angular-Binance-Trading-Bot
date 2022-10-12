@@ -1,0 +1,59 @@
+section {
+  background: rgba(135, 135, 135, 0.2);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  margin: 10px 10px 5px 10px;
+  position: relative;
+
+  div {
+    width: 15px;
+    height: 50px;
+    background-color: #28E824;
+    border-radius: 50px 0 0 50px;
+  }
+
+  .symbol {
+    width: 150px;
+    font-size: 16px;
+    color: #FFE600;
+    margin-left: 5px;
+  }
+
+  .amount {
+    width: 80px;
+    font-size: 14px;
+    color: #FFE600;
+    display: flex;
+    justify-content: center;
+  }
+
+  .pnl {
+    font-size: 14px;
+    color: #28E824;
+    margin-left: 200px;
+  }
+
+  button {
+    width: 80px;
+    height: 35px;
+    border-radius: 5px;
+    border: 0;
+    background-color: #FFE600;
+    color: black;
+    margin-right: 10px;
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba(255, 230, 0, 0.8);
+    }
+
+    &:active {
+      background-color: rgba(255, 230, 0, 0.6);
+
+    }
+  }
+}

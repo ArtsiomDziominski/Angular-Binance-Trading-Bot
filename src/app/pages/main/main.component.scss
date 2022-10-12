@@ -1,0 +1,82 @@
+:host {
+  overflow: hidden;
+}
+.content {
+  overflow: hidden;
+  width: 100%;
+  height: 100vh;
+
+  .slang {
+    font-family: 'Luckiest Guy', cursive;
+    width: 560px;
+
+    p {
+      margin: 0 0 0 45px;
+    }
+
+    p:nth-child(1) {
+      font-size: 48px;
+      color: #FFE600;
+      margin: 45px 0 0 130px;
+    }
+
+    p:nth-child(2) {
+      font-size: 48px;
+      color: #ffffff;
+    }
+  }
+
+  .img-rotation-btc {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    top: 100px;
+    left: 250px;
+
+    div {
+      position: absolute;
+    }
+
+    div:nth-child(1) {
+      animation: moving-btc 10s;
+      width: 470px;
+      height: 470px;
+      background: url("../../../assets/btc-circle.png") no-repeat center;
+    }
+
+    div:nth-child(2) {
+      animation: moving 15s infinite linear;
+      width: 690px;
+      height: 690px;
+      border-radius: 50%;
+      border: 1px #FFE600;
+      background: url("../../../assets/btc-circle1.png") no-repeat center;
+    }
+
+    div:nth-child(3) {
+      animation: moving 10s infinite linear;
+      width: 560px;
+      height: 560px;
+      background: url("../../../assets/btc-circle2.png") no-repeat center;
+    }
+
+    @keyframes moving {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+    @keyframes moving-btc {
+      0% {
+        transform: rotate(-30deg);
+      }
+      50% {
+        transform: rotate(50deg);
+      }
+      100% {
+        transform: rotate(0deg);
+      }
+    }
+  }
+}
+

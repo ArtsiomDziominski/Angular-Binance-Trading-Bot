@@ -1,0 +1,80 @@
+p {
+  margin: 0;
+  padding: 0;
+  color: white;
+}
+
+.box {
+  width: 265px;
+  height: 150px;
+  background-color: #22282F;
+  border-radius: 10px;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  display: inline-block;
+  margin: 25px 0 0 40px;
+  position: relative;
+
+  &__loader {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__loader div {
+    border: 16px solid #161a1e;
+    border-top: 16px solid #FFE600;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 2s linear infinite;
+  }
+
+  &__close {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+  }
+
+  &__name {
+    font-size: 16px;
+    padding: 15px 0 0 30px;
+  }
+
+  &__price {
+    font-size: 30px;
+    padding: 15px 0 15px 30px;
+  }
+
+  &__24h {
+    width: 60px;
+    height: 25px;
+    font-size: 14px;
+    color: #28E824;
+    background: rgba(40, 232, 36, 0.15);
+    border-radius: 5px;
+    margin-left: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &_low {
+      color: #FF1A1A;
+      background: rgba(255, 26, 26, 0.15);
+      font-size: 13px;
+    }
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

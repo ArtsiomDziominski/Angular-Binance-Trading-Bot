@@ -1,0 +1,42 @@
+<article class="wrapper">
+  <section class="header">
+    <p class="header__name">Symbol</p>
+    <p class="header__amount">Amount</p>
+    <p class="header__pnl">PNL</p>
+    <button class="header__button-close">Close all</button>
+  </section>
+  <section class="main">
+    <app-order-row
+      [symbol]="'BTC/USDT'"
+      [amount]="'2.5'"
+      [pnl]="'+1.55'">
+    </app-order-row>
+    <app-order-row
+      [symbol]="'ETH/USDT'"
+      [amount]="'2.5'"
+      [pnl]="'+1.55'">
+    </app-order-row>
+    <app-order-row
+      [symbol]="'XRP/USDT'"
+      [amount]="'2.5'"
+      [pnl]="'+1.55'">
+    </app-order-row>
+    <app-order-row
+      [symbol]="'DOGE/USDT'"
+      [amount]="'2.5'"
+      [pnl]="'+1.55'">
+    </app-order-row>
+  </section>
+  <aside class="aside">
+    <input>
+    <input>
+    <div class="aside__button">
+      <button class="buy">BUY</button>
+      <button class="sell">SELL</button>
+    </div>
+  </aside>
+  <section class="info-order">
+    <p>BNB</p>
+    <img src="assets/close.svg" alt="X">
+  </section>
+</article>
