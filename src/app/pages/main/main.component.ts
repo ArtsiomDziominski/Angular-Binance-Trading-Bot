@@ -9,8 +9,6 @@ import {IPrice} from "../../interface/price-token";
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent implements OnInit {
-  public isOpenDialogBox: boolean = false;
-  public isInfoSaveStorageBox: boolean = true;
   public allPriceTokens: IPrice[] | undefined;
 
   constructor(

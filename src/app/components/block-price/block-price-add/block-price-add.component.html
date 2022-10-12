@@ -1,9 +1,0 @@
-<section class="box">
-  <div>
-    <img *ngIf="isAddToken; else input" src="assets/block-price/add.svg" (click)="isAddToken=!isAddToken" alt="+">
-    <ng-template #input>
-      <input [(ngModel)]="inputNameToken" (keydown.enter)="addTokenMain(inputNameToken)" maxlength="10"
-             placeholder="BNBUSDT">
-    </ng-template>
-  </div>
-</section>

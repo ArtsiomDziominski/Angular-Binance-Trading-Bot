@@ -5,7 +5,8 @@ import {Injectable} from '@angular/core';
 })
 export class TextChangeService {
 
-  public editToFixed2(param: string): string {
-    return Number(param).toFixed(2);
+  public editToFixed2(param: string | number): string {
+    param = Number(param)
+    return param !== 0? param.toFixed(2) : '0';
   }
 }
