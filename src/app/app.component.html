@@ -43,7 +43,7 @@
       class="menu__settings"
       [class.menu__active]="menuActive[3].is"
       (click)="editActiveMenu()"
-      [routerLink]="'/settings'"
+      [routerLink]="'/set'"
     >
       <img src="assets/nav-menu/settings.svg" alt="gear">Settings</a>
   </nav>
@@ -51,11 +51,11 @@
     <router-outlet></router-outlet>
   </main>
 </div>
-<div class="info-save-storage" *ngIf="isInfoSaveStorageBox===true">
+<div class="info-save-storage" *ngIf="!isInfoSaveStorageBox">
   <img src="assets/cookie.svg" alt="cookie">
   <p>This is an example of a message that is commonly used for important information to visitors or users.
     Please click the button beside to close this message.</p>
-  <button (click)="isInfoSaveStorageBox=false">Accept</button>
+  <button (click)="closeInfoBox()">Accept</button>
 </div>
 <app-api-box (isOpenDialogBox)="updateOpenDialogBox($event)" *ngIf="isOpenDialogBox===true"></app-api-box>
 

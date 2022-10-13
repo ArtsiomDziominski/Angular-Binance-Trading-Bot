@@ -1,0 +1,35 @@
+<article>
+  <header class="header">Pages</header>
+  <div class="line"></div>
+  <section>
+    <div class="main">Main</div>
+    <form class="main__box-price" [formGroup]="tokenSaveFormGroup" (ngSubmit)="saveTokenMainBoxPrice(tokenSaveBoxPrice)">
+      <p>Add token</p>
+      <input type="text" name="symbol"
+             [class.main__input-error]="this.infoTextMainAddToken.length > 5"
+             [(ngModel)]="tokenSaveBoxPrice"
+             (ngModelChange)="tokenSaveBoxPrice = $event.toUpperCase()"
+             maxlength="10" placeholder="BNBUSDT"
+             formControlName="nameToken"
+      >
+      <button
+        type="submit"
+        [disabled]="tokenSaveFormGroup.invalid"
+      >Add
+      </button>
+      <span [class.main__error]="this.infoTextMainAddToken.length > 5"
+            [class.main__completed]="this.infoTextMainAddToken.length < 5"
+      >{{infoTextMainAddToken}}</span>
+    </form>
+    <p></p>
+  </section>
+  <div class="line"></div>
+  <section>
+    <div class="main">Order</div>
+    <div class="main__box-price">
+      <p>Add token</p>
+      <input maxlength="10">
+    </div>
+    <p></p>
+  </section>
+</article>
