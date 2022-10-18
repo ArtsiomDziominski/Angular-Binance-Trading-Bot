@@ -12,13 +12,15 @@
       <p class="stat-futures__balance">Balance: <span
         [class.stat-futures__yellow]="stringToNumber(token.balance) > 5">{{editText.editToFixed2(token.balance)}}</span>
       </p>
-      <p class="stat-futures__maxWithdrawAmount">maxWithdrawAmount: <span
+      <p class="stat-futures__maxWithdrawAmount">max Withdraw Amount: <span
         [class.stat-futures__yellow]="stringToNumber(token.balance) > 4">{{editText.editToFixed2(token.maxWithdrawAmount)}}</span>
       </p>
-      <p class="stat-futures__crossUnPnl">crossUnPnl: <span
-        [class.stat-futures__green]="stringToNumber(token.balance) < -1"
-        [class.stat-futures__red]="stringToNumber(token.balance) > 1"
-      >{{editText.editToFixed2(token.crossUnPnl)}}</span>
+      <p class="stat-futures__crossUnPnl">crossUnPnl:
+        <span
+          [class.stat-futures__green]="stringToNumber(token.balance) < -1"
+          [class.stat-futures__red]="stringToNumber(token.balance) > 1"
+        >{{editText.editToFixed2(token.crossUnPnl)}}
+        </span>
       </p>
     </div>
   </div>

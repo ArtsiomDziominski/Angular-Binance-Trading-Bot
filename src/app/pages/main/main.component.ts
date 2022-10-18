@@ -9,11 +9,11 @@ import {IPrice} from "../../interface/price-token";
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent implements OnInit {
-  public allPriceTokens: IPrice[] | undefined;
+  public allPriceTokens: IPrice[] = [];
 
   constructor(
     private mainBlockPrice: MainBlockPriceService,
-    public editText: TextChangeService
+    public editText: TextChangeService,
   ) {
   }
 
@@ -21,14 +21,13 @@ export class MainComponent implements OnInit {
     this.mainBlockPrice.mainSaveTokensBeh.subscribe(() => {
       this.updatePriceTokens();
     });
-
     this.updatePriceTokens();
     setInterval(() => this.updatePriceTokens(), 31000);
   }
 
   public updatePriceTokens(): void {
     this.mainBlockPrice.getPriceTokenMain().subscribe((data: any) => {
-      this.allPriceTokens = data;
+      this.allPriceTokens = data.sort((x: any, y: any) => x.symbol.localeCompare(y.symbol));
     });
   }
 }

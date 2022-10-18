@@ -14,6 +14,10 @@ const routes: Routes = [
     path: 'stat',
     loadChildren: () => import('./pages/statistics/statistics.module').then(m => m.StatisticsModule)
   },
+  {
+    path: 'set',
+    loadChildren: () => import('./pages/settings/settings.module').then(m => m.SettingsModule)
+  },
   {path: '**', component: NotFoundComponent}
 ]
 

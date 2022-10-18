@@ -24,7 +24,7 @@ export class ApiBoxComponent {
     const api: string = 'api'
     key.push(apiKey)
     key.push(secretKey)
-    this.localStorageService.saveLocalStorage(api, JSON.stringify(key));
+    this.localStorageService.setLocalStorage(api, JSON.stringify(key));
     this.isOpenDialogBox.emit(false);
   }
 }

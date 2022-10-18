@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {MainBlockPriceService} from "./services/main-block-token-price/main-block-price.service";
 import {Router} from "@angular/router";
+import {INFO_TEXT} from "./const/const";
+import {LocalStorageService} from "./services/local-storage/local-storage.service";
 
 @Component({
   selector: 'app-root',
@@ -12,16 +14,16 @@ export class AppComponent implements OnInit {
   public isInfoSaveStorageBox: boolean = true;
   public allPriceTokensHeader!: any;
   public updateCounter: number = 0;
-  public menuActive: {name: string, is: boolean}[] =
+  public menuActive: { name: string, is: boolean }[] =
     [
       {name: '', is: false},
       {name: 'order', is: false},
       {name: 'stat', is: false},
-      {name: 'settings', is: false}
+      {name: 'set', is: false}
     ];
   public currentURLRouting: string = '';
 
-  constructor(private mainBlockPrice: MainBlockPriceService, private router: Router) {
+  constructor(private mainBlockPrice: MainBlockPriceService, private router: Router, private localStorageService: LocalStorageService) {
   }
 
   public ngOnInit(): void {
@@ -33,6 +35,7 @@ export class AppComponent implements OnInit {
       this.currentURLRouting = this.router.url; // Update the value when a different route is accessed
       this.editActiveMenu();
     });
+    this.checkInfoText();
   }
 
   public updatePriceTokens(): void {
@@ -53,7 +56,14 @@ export class AppComponent implements OnInit {
         value.is = value.name == this.currentURLRouting;
       })
     }, 100)
+  }
 
+  public checkInfoText(): void {
+    this.isInfoSaveStorageBox = Boolean(this.localStorageService.getLocalStorage(INFO_TEXT));
+  }
 
+  public closeInfoBox(): void {
+    this.isInfoSaveStorageBox = true
+    this.localStorageService.setLocalStorage(INFO_TEXT, String(this.isInfoSaveStorageBox));
   }
 }
