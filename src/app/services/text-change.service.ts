@@ -9,4 +9,8 @@ export class TextChangeService {
     param = Number(param)
     return param !== 0? param.toFixed(2) : '0';
   }
+
+  public stringToNumber(value: string | number): number {
+    return Number(value);
+  }
 }
