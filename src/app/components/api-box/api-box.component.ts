@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {LocalStorageService} from "../../services/local-storage/local-storage.service";
+import {API_KEY} from "../../const/const";
 
 @Component({
   selector: 'app-api-box',
@@ -20,11 +21,8 @@ export class ApiBoxComponent {
   }
 
   public saveApi(apiKey: string = '', secretKey: string = ''): void {
-    const key: string[] | undefined = [];
-    const api: string = 'api'
-    key.push(apiKey)
-    key.push(secretKey)
-    this.localStorageService.setLocalStorage(api, JSON.stringify(key));
+    const key: { akey: string, skey: string } = {akey: apiKey, skey: secretKey};
+    this.localStorageService.setLocalStorage(API_KEY, JSON.stringify(key));
     this.isOpenDialogBox.emit(false);
   }
 }

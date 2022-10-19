@@ -1,7 +1,11 @@
 <section>
   <div></div>
   <p class="symbol">{{symbol}}</p>
+  <p class="current-Price" [class.green]="markPrice>0" [class.red]="markPrice<0">{{markPrice}}</p>
+  <p class="entry-Price">{{entryPrice}}</p>
+  <p class="liquidation-Price">{{liquidationPrice <= 1 ? '- -' : liquidationPrice}}</p>
   <p class="amount">{{amount}}</p>
-  <p class="pnl">{{pnl}}</p>
-  <button>Market</button>
+  <p class="pnl" [class.green]="pnl>0" [class.red]="pnl<0">{{pnl}}</p>
+  <button>Take profit</button>
+  <button (click)="orderService.marketOrder(symbol, 'SELL', amount, 'MARKET')">Market</button>
 </section>

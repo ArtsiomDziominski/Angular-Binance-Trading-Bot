@@ -1,3 +1,9 @@
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 .wrapper {
   display: grid;
   align-items: stretch;
@@ -17,32 +23,32 @@
     grid-area: header;
 
     p {
+      width: 14%;
       font-size: 14px;
       color: white;
+      display: flex;
+      justify-content: center;
     }
 
     &__name {
     }
 
     &__amount {
-      margin-left: 105px;
     }
 
     &__pnl {
-      margin-left: 230px;
     }
 
     &__button-close {
-      width: 80px;
+      width: 26%;
       height: 35px;
       border-radius: 5px;
       border: 0;
       color: black;
       background-color: #F90404;
       font-weight: 600;
-      position: absolute;
-      right: 30px;
       cursor: pointer;
+
     }
 
     &__button-close:hover {
@@ -58,7 +64,7 @@
     grid-area: main;
   }
 
-  .aside {
+  .form {
     grid-area: aside;
     background-color: #22282F;
     display: flex;
@@ -119,12 +125,12 @@
   }
 
   .info-order {
-    width: 180px;
     height: 30px;
-    background-color: #636363;
+    color: #b1b1b1;
+    font-family: sans-serif;
+    background-color: #01010e;
     border-radius: 5px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
     padding: 0 10px;
     position: absolute;
@@ -135,6 +141,16 @@
       width: 20px;
       height: 20px;
       cursor: pointer;
+      margin-left: 20px;
+    }
+    &_red-box-shadow {
+      background-color: rgba(255, 0, 0, 0.15);
+      box-shadow: 0 0 6px red;
+    }
+
+    &_green-box-shadow {
+      background-color: rgba(40, 232, 36, 0.15);
+      box-shadow: 0 0 5px #28E824;
     }
   }
 }

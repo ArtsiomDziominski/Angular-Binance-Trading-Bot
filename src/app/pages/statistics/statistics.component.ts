@@ -13,7 +13,7 @@ export class StatisticsComponent implements OnInit {
 
   constructor(
     public editText: TextChangeService,
-    public statisticsInfoService: StatisticsInfoServerService
+    public statisticsInfoService: StatisticsInfoServerService,
   ) {
   }
 
@@ -25,7 +25,6 @@ export class StatisticsComponent implements OnInit {
     this.statisticsInfoService.getStatAcc()
       .subscribe((response: any) => {
         this.statisticsAccount = response
-        console.log(this.statisticsAccount)
       })
   }
 

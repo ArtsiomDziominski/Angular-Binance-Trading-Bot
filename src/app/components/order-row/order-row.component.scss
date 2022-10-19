@@ -7,6 +7,16 @@ section {
   margin: 10px 10px 5px 10px;
   position: relative;
 
+  p {
+    width: 14%;
+    margin: 0 5px;
+    display: flex;
+    justify-content: center;
+    font-size: 14px;
+    color: #FFE600;
+
+  }
+
   div {
     width: 15px;
     height: 50px;
@@ -15,36 +25,31 @@ section {
   }
 
   .symbol {
-    width: 150px;
     font-size: 16px;
-    color: #FFE600;
     margin-left: 5px;
   }
 
+  .current-Price {
+  }
+
+  .entry-Price {
+    color: white;
+  }
+
   .amount {
-    width: 80px;
-    font-size: 14px;
-    color: #FFE600;
-    display: flex;
-    justify-content: center;
   }
 
   .pnl {
-    font-size: 14px;
-    color: #28E824;
-    margin-left: 200px;
   }
 
   button {
-    width: 80px;
+    width: 12%;
     height: 35px;
     border-radius: 5px;
     border: 0;
     background-color: #FFE600;
     color: black;
     margin-right: 10px;
-    position: absolute;
-    right: 10px;
     cursor: pointer;
 
     &:hover {
@@ -55,5 +60,12 @@ section {
       background-color: rgba(255, 230, 0, 0.6);
 
     }
+  }
+  .green {
+    color: #28E824;
+  }
+
+  .red {
+    color: #F90404;
   }
 }

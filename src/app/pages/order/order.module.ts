@@ -4,6 +4,7 @@ import {CommonModule} from '@angular/common';
 import {OrderRoutingModule} from './order-routing.module';
 import {OrderRowComponent} from "../../components/order-row/order-row.component";
 import {OrderComponent} from "./order.component";
+import {FormsModule} from "@angular/forms";
 
 
 @NgModule({
@@ -13,7 +14,8 @@ import {OrderComponent} from "./order.component";
   ],
   imports: [
     CommonModule,
-    OrderRoutingModule
+    OrderRoutingModule,
+    FormsModule,
   ]
 })
 export class OrderModule {
