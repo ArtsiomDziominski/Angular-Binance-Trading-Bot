@@ -21,7 +21,7 @@ export class OrderService {
     return sha256.hmac.create(apiKey!.skey).update(dataQueryString).hex();
   }
 
-  public buyNewOrder(symbol: string, side: string, quantity: string, type: string, price: string | number): Observable<Object> {
+  public newOrder(symbol: string, side: string, quantity: string, type: string, price: string | number): Observable<Object> {
     symbol = symbol.trim();
     const apiKey: { akey: string, skey: string } | undefined = this.setAPIkey()
     const dataQueryString = `symbol=${symbol}&side=${side}&quantity=${quantity}&type=${type}&price=${price}&timeInForce=GTC&timestamp=` + Date.now();
@@ -32,12 +32,26 @@ export class OrderService {
       "dataQueryString": dataQueryString,
       "akey": apiKey!.akey
     }
-
     const URL: string = BURL + '/new-order/' + JSON.stringify(params)
     console.log(URL)
-
     return this.http.get(URL, {responseType: 'text' as 'json'}) // {"signature": signature,"dataQueryString":dataQueryString, "akey":apiKey!.akey}
+  }
 
+  public marketOrder(symbol: string, side: string, quantity: string, type: string): void {
+    const apiKey: { akey: string, skey: string } | undefined = this.setAPIkey()
+    const dataQueryString = `symbol=${symbol}&side=${side}&quantity=${quantity}&type=${type}&timestamp=` + Date.now();
+    const signature: string = this.hashFunctions(dataQueryString, apiKey);
+
+    const params: { signature: string, dataQueryString: string, akey: string } = {
+      "signature": signature,
+      "dataQueryString": dataQueryString,
+      "akey": apiKey!.akey
+    }
+    const URL: string = BURL + '/market-order/' + JSON.stringify(params)
+    console.log(URL)
+    // return this.http.get(URL, {responseType: 'text' as 'json'}) // {"signature": signature,"dataQueryString":dataQueryString, "akey":apiKey!.akey}
+    this.http.get(URL, {responseType: 'text' as 'json'})
+      .subscribe(value => console.log(value))
   }
 
   public getCurrentOpenOrder(): Observable<Object> {

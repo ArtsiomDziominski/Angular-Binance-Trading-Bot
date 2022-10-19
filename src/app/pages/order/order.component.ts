@@ -32,12 +32,10 @@ export class OrderComponent {
   ngOnInit() {
     this.setAPIkey();
     this.getCurrentOpenOrder();
-
   }
 
   public setAPIkey(): void {
     this.apiKey = JSON.parse(<string>this.localStorageService.getLocalStorage(API_KEY)) || '[]';
-    console.log()
   }
 
   public getCurrentOpenOrder(): void {
@@ -48,7 +46,7 @@ export class OrderComponent {
       this.orderService.getCurrentOpenOrder().subscribe((value: any) => {
         this.allCurrentToken = value.filter((v: any) => v.positionAmt > 0);
       });
-    }, 5000)
+    }, 3000)
   }
 
   // public closeAllCurrentsOrders(symbol: string = 'BNBUSDT'): void {
@@ -62,7 +60,7 @@ export class OrderComponent {
   // }
 
   public newOrder(symbolToken: string, side: string, quantityToken: string, type: string, priceToken: string) {
-    this.orderService.buyNewOrder(symbolToken, side, quantityToken, type, priceToken)
+    this.orderService.newOrder(symbolToken, side, quantityToken, type, priceToken)
       .subscribe(
         (value: any) => {
           let v = JSON.parse(value)

@@ -12,11 +12,11 @@ import {FormsModule} from "@angular/forms";
     OrderComponent,
     OrderRowComponent,
   ],
-    imports: [
-        CommonModule,
-        OrderRoutingModule,
-        FormsModule
-    ]
+  imports: [
+    CommonModule,
+    OrderRoutingModule,
+    FormsModule,
+  ]
 })
 export class OrderModule {
 }

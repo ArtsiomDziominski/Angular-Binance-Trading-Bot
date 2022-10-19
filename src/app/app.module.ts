@@ -25,7 +25,7 @@ import {FormsModule} from "@angular/forms";
     RouterOutlet,
     RouterLinkWithHref,
     HttpClientModule,
-    FormsModule
+    FormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
