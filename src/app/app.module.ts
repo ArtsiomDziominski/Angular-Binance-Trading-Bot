@@ -10,6 +10,7 @@ import {RouterLinkWithHref, RouterOutlet} from "@angular/router";
 import {ApiBoxComponent} from './components/api-box/api-box.component';
 import {HttpClientModule} from "@angular/common/http";
 import {FormsModule} from "@angular/forms";
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import {FormsModule} from "@angular/forms";
     RouterLinkWithHref,
     HttpClientModule,
     FormsModule,
+    BrowserAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

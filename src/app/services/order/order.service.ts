@@ -1,16 +1,19 @@
 import {Injectable} from '@angular/core';
 import {sha256} from "js-sha256";
-import {API_KEY} from "../../const/const";
+import {ALL_CREATED_CURRENT_ORDERS, API_KEY} from "../../const/const";
 import {BURL} from "../../const/http-request";
 import {HttpClient} from "@angular/common/http";
 import {LocalStorageService} from "../local-storage/local-storage.service";
 import {Observable} from "rxjs";
+import {FunctionsOrderService} from "./functions-order.service";
+import {IParamsOrder} from "../../interface/params-order";
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
-  constructor(private http: HttpClient, private localStorageService: LocalStorageService) {
+  constructor(private http: HttpClient, private localStorageService: LocalStorageService,
+              public functionsOrderService: FunctionsOrderService) {
   }
 
   public setAPIkey(): { akey: string, skey: string } | undefined {
@@ -21,10 +24,15 @@ export class OrderService {
     return sha256.hmac.create(apiKey!.skey).update(dataQueryString).hex();
   }
 
-  public newOrder(symbol: string, side: string, quantity: string, type: string, price: string | number): Observable<Object> {
+  public newOrder(symbol: string, side: string, quantity: number | undefined, price: number = 0): Observable<Object> {
+    let dataQueryString: string;
     symbol = symbol.trim();
+    if (price === 0) {
+      dataQueryString = `symbol=${symbol}&side=${side}&quantity=${quantity}&type=MARKET&timestamp=` + Date.now();
+    } else {
+      dataQueryString = `symbol=${symbol}&side=${side}&quantity=${quantity}&type=LIMIT&price=${price}&timeInForce=GTC&timestamp=` + Date.now();
+    }
     const apiKey: { akey: string, skey: string } | undefined = this.setAPIkey()
-    const dataQueryString = `symbol=${symbol}&side=${side}&quantity=${quantity}&type=${type}&price=${price}&timeInForce=GTC&timestamp=` + Date.now();
     const signature: string = this.hashFunctions(dataQueryString, apiKey);
 
     const params: { signature: string, dataQueryString: string, akey: string } = {
@@ -49,7 +57,29 @@ export class OrderService {
     }
     const URL: string = BURL + '/market-order/' + JSON.stringify(params)
     console.log(URL)
-    // return this.http.get(URL, {responseType: 'text' as 'json'}) // {"signature": signature,"dataQueryString":dataQueryString, "akey":apiKey!.akey}
+    this.http.get(URL, {responseType: 'text' as 'json'})
+      .subscribe(value => console.log(value))
+    this.cancelOpenOrders(symbol);
+    setTimeout(() => {
+      if (this.functionsOrderService.toggleRepeatOrder) {
+        const paramOrder: IParamsOrder = JSON.parse(this.localStorageService.getLocalStorage(ALL_CREATED_CURRENT_ORDERS) || '[]')
+        this.newOrder(paramOrder.symbol, 'BUY', paramOrder.quantity, paramOrder.price, paramOrder.price, paramOrder.price);
+      }
+    }, 2000)
+  }
+
+  public cancelOpenOrders(symbol: string) {
+    const apiKey: { akey: string, skey: string } | undefined = this.setAPIkey()
+    const dataQueryString = `symbol=${symbol}&timestamp=` + Date.now();
+    const signature: string = this.hashFunctions(dataQueryString, apiKey);
+
+    const params: { signature: string, dataQueryString: string, akey: string } = {
+      "signature": signature,
+      "dataQueryString": dataQueryString,
+      "akey": apiKey!.akey
+    }
+    const URL: string = BURL + '/cancel-open-orders/' + JSON.stringify(params)
+    console.log(URL)
     this.http.get(URL, {responseType: 'text' as 'json'})
       .subscribe(value => console.log(value))
   }
