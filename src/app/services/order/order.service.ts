@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
 import {sha256} from "js-sha256";
-import {ALL_CREATED_CURRENT_ORDERS, API_KEY} from "../../const/const";
+import {API_KEY} from "../../const/const";
 import {BURL} from "../../const/http-request";
 import {HttpClient} from "@angular/common/http";
 import {LocalStorageService} from "../local-storage/local-storage.service";
 import {Observable} from "rxjs";
 import {FunctionsOrderService} from "./functions-order.service";
-import {IParamsOrder} from "../../interface/params-order";
+import {IMsgServer} from "../../interface/msg-server";
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +24,7 @@ export class OrderService {
     return sha256.hmac.create(apiKey!.skey).update(dataQueryString).hex();
   }
 
-  public newOrder(symbol: string, side: string, quantity: number | undefined, price: number = 0): Observable<Object> {
+  public newOrder(symbol: string, side: string, quantity: number, price: number = 0): Observable<Object> {
     let dataQueryString: string;
     symbol = symbol.trim();
     if (price === 0) {
@@ -60,12 +60,6 @@ export class OrderService {
     this.http.get(URL, {responseType: 'text' as 'json'})
       .subscribe(value => console.log(value))
     this.cancelOpenOrders(symbol);
-    setTimeout(() => {
-      if (this.functionsOrderService.toggleRepeatOrder) {
-        const paramOrder: IParamsOrder = JSON.parse(this.localStorageService.getLocalStorage(ALL_CREATED_CURRENT_ORDERS) || '[]')
-        this.newOrder(paramOrder.symbol, 'BUY', paramOrder.quantity, paramOrder.price, paramOrder.price, paramOrder.price);
-      }
-    }, 2000)
   }
 
   public cancelOpenOrders(symbol: string) {
@@ -78,10 +72,13 @@ export class OrderService {
       "dataQueryString": dataQueryString,
       "akey": apiKey!.akey
     }
-    const URL: string = BURL + '/cancel-open-orders/' + JSON.stringify(params)
+    const URL: string = BURL + '/cancel-open-orders/' + JSON.stringify(params);
     console.log(URL)
     this.http.get(URL, {responseType: 'text' as 'json'})
-      .subscribe(value => console.log(value))
+      .subscribe((value: any) => {
+        const msgServer: IMsgServer = JSON.parse(value);
+        this.functionsOrderService.popUpInfo(msgServer.msg);
+      })
   }
 
   public getCurrentOpenOrder(): Observable<Object> {

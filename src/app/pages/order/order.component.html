@@ -24,7 +24,7 @@
   <form class="example-form" [formGroup]="newOrderFormGroup"
         (ngSubmit)="newOrder(symbolToken, 'BUY', quantityToken, priceToken, quantityOrders, distanceToken)">
 
-    <mat-slide-toggle [color]="colorSlideToggle" [checked]="isToggleRepeatOrder"
+    <mat-slide-toggle [color]="colorSlideToggle" checked="isToggleRepeatOrder"
                       (click)="toggleRepeatOrder()">Repeat orders</mat-slide-toggle>
 
     <mat-button-toggle-group>
@@ -33,7 +33,7 @@
     </mat-button-toggle-group>
 
     <mat-form-field class="example-full-width" appearance="outline">
-      <mat-label>Number</mat-label>
+      <mat-label>Symbol</mat-label>
       <input matInput maxlength="10"
              type="text" name="symbol"
              placeholder="BNBUSDT" [(ngModel)]="symbolToken"
@@ -72,9 +72,4 @@
       <button mat-raised-button type="submit" color="accent" [disabled]="newOrderFormGroup.invalid">BUY</button>
     </div>
   </form>
-  <section class="info-order" *ngIf="isInfoOrderBox" [class.info-order_red-box-shadow]="infoText.length > 10"
-           [class.info-order_green-box-shadow]="infoText.length < 10">
-    <p>{{infoText}}</p>
-    <img src="assets/close.svg" alt="X" (click)="isInfoOrderBox=false">
-  </section>
 </article>

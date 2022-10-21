@@ -68,47 +68,32 @@ input::-webkit-inner-spin-button {
     display: flex;
     align-items: center;
     flex-direction: column;
-    padding: 100px 0;
+    padding: 20px 0;
 
-    mat-form-field{
+    mat-slide-toggle {
+      margin-bottom: 20px;
+      color: white;
+    }
+
+    mat-button-toggle-group {
+      width: 80%;
+      margin-bottom: 20px;
+
+      mat-button-toggle {
+        width: 100%;
+      }
+    }
+
+    mat-form-field {
       width: 80%;
 
       input {
         color: #eaeaea;
       }
     }
+
     .primary {
 
-    }
-  }
-
-  .info-order {
-    height: 30px;
-    color: #b1b1b1;
-    font-family: sans-serif;
-    background-color: #01010e;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    padding: 0 10px;
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-
-    img {
-      width: 20px;
-      height: 20px;
-      cursor: pointer;
-      margin-left: 20px;
-    }
-    &_red-box-shadow {
-      background-color: rgba(255, 0, 0, 0.15);
-      box-shadow: 0 0 6px red;
-    }
-
-    &_green-box-shadow {
-      background-color: rgba(40, 232, 36, 0.15);
-      box-shadow: 0 0 5px #28E824;
     }
   }
 }

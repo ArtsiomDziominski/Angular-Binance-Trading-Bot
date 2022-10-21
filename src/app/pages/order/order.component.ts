@@ -8,6 +8,7 @@ import {map, Observable, startWith} from "rxjs";
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {FunctionsOrderService} from "../../services/order/functions-order.service";
 import {ThemePalette} from "@angular/material/core";
+import {IParamsOrder} from "../../interface/params-order";
 
 @Component({
   selector: 'app-order',
@@ -17,11 +18,10 @@ import {ThemePalette} from "@angular/material/core";
 export class OrderComponent implements OnInit {
   public allCurrentToken: ICurrenTokens[] = [];
   public apiKey: { akey: string, skey: string } | undefined;
-  public isInfoOrderBox: boolean = false;
-  public infoText: string = '';
   public isInputPriceLimit: boolean = false;
   public colorSlideToggle: ThemePalette = 'primary';
-  public isToggleRepeatOrder: boolean = true
+  public isToggleRepeatOrder: boolean = true;
+  public oldActiveCurrentToken: string[] = [];
 
   public symbolToken: string = '';
   public quantityToken: number | undefined;
@@ -38,7 +38,7 @@ export class OrderComponent implements OnInit {
     private http: HttpClient,
     private localStorageService: LocalStorageService,
     public orderService: OrderService,
-    private functionsOrderService: FunctionsOrderService,
+    public functionsOrderService: FunctionsOrderService,
   ) {
   }
 
@@ -53,7 +53,7 @@ export class OrderComponent implements OnInit {
         quantityOrders: new FormControl('', [Validators.required, Validators.minLength(1)]),
         distanceToken: new FormControl('', [Validators.required, Validators.minLength(1)]),
       })
-
+    this.functionsOrderService.setToggleRepeatOrder(this.isToggleRepeatOrder);
   }
 
   public setAPIkey(): void {
@@ -66,44 +66,50 @@ export class OrderComponent implements OnInit {
       value.forEach((v: any) => this.symbolAutocomplete.push(v.symbol))
     });
     setInterval(() => {
-      this.orderService.getCurrentOpenOrder().subscribe((value: any) => {
-        this.allCurrentToken = value.filter((v: any) => v.positionAmt > 0);
-      });
+      let activeCurrentToken: string[] = [];
+      this.orderService.getCurrentOpenOrder()
+        .subscribe((value: any) => {
+          this.allCurrentToken = value.filter((v: any) => v.positionAmt > 0);
+
+          if (this.functionsOrderService.toggleRepeatOrder) {
+            this.allCurrentToken.forEach((v) => activeCurrentToken.push(v.symbol))
+            if (this.oldActiveCurrentToken.length > activeCurrentToken.length) {
+              const symbolsPendingOrder = this.oldActiveCurrentToken.filter(value => value !== this.functionsOrderService.searchSymbolNotActive(value, activeCurrentToken));
+              this.oldActiveCurrentToken.forEach(symbol => this.orderService.cancelOpenOrders(symbol));
+              setTimeout(() => {
+                symbolsPendingOrder.forEach((symbolToken: string) => {
+                  const paramOrder: IParamsOrder = JSON.parse(this.localStorageService.getLocalStorage(symbolToken) || '[]');
+                  this.newOrder(symbolToken, paramOrder.side, paramOrder.quantity, paramOrder.price, paramOrder.quantityOrders, paramOrder.distanceToken);
+                })
+              }, 3000)
+            }
+          }
+          this.oldActiveCurrentToken = []
+          this.allCurrentToken.forEach((v) => this.oldActiveCurrentToken.push(v.symbol))
+        });
     }, 3000)
   }
-
-  // public closeAllCurrentsOrders(symbol: string = 'BNBUSDT'): void {
-  //   const dataQueryString = `symbol=${symbol}&timestamp=` + Date.now();
-  //   const signature: string = this.hashFunctions(dataQueryString);
-  //   const URL: string = BURL + `/order/closeOpenOrder/${signature}-${dataQueryString}-${this.apiKey!.akey}`
-  //   console.log(URL)
-  //   this.http.get(URL).subscribe((value: any) => {
-  //     console.log(value)
-  //   })
-  // }
 
   public newOrder(symbolToken: string, side: string, quantityToken: number = 0, priceToken: number = 0, quantityOrders: number = 0, distanceToken: number = 0) {
     let setIntervalAmount: number = 0;
     let quantityTokenStart: number = quantityToken;
+    if (priceToken === null || undefined) {
+      priceToken = 0;
+    }
     this.functionsOrderService.saveParamOrder(symbolToken, side, quantityToken, priceToken, quantityOrders, distanceToken);
 
     let setIntervalNewOrder = setInterval(() => {
       this.orderService.newOrder(symbolToken, side, quantityToken, priceToken)
-        .subscribe(
-          (value: any) => {
-            this.infoText = this.functionsOrderService.getInfoText(value, this.infoText);
-            this.isInfoOrderBox = true;
-          });
+        .subscribe();
       priceToken = this.functionsOrderService.getCurrentPriceToken(symbolToken, priceToken);
       quantityToken += quantityTokenStart
       priceToken = priceToken - distanceToken;
       setIntervalAmount++;
       if (setIntervalAmount === quantityOrders) {
-        setTimeout(() => this.isInfoOrderBox = false, 5000);
+        this.functionsOrderService.popUpInfo(`${side} ${symbolToken}`);
         clearInterval(setIntervalNewOrder);
       }
     }, 1000)
-
     this.symbolToken = '';
   }
 
