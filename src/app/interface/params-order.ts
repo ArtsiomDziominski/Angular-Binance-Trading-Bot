@@ -1,7 +1,7 @@
 export interface IParamsOrder {
   symbol: string;
-  side: number | string;
-  quantity: number | undefined;
+  side: string;
+  quantity: number;
   price: number;
   quantityOrders: number;
   distanceToken: number;

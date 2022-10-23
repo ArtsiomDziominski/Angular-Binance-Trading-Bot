@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {MainBlockPriceService} from "../main-block-token-price/main-block-price.service";
 import {LocalStorageService} from "../local-storage/local-storage.service";
 import {IParamsOrder} from "../../interface/params-order";
+import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,8 @@ import {IParamsOrder} from "../../interface/params-order";
 export class FunctionsOrderService {
   private isToggleRepeatOrder: boolean = false;
 
-  constructor(private mainBlockPriceService: MainBlockPriceService, public localStorageService: LocalStorageService) {
+  constructor(private mainBlockPriceService: MainBlockPriceService, public localStorageService: LocalStorageService,
+              private _snackBar: MatSnackBar) {
   }
 
   public getCurrentPriceToken(symbolToken: string, priceToken: number): number {
@@ -22,17 +24,7 @@ export class FunctionsOrderService {
     return priceToken;
   }
 
-  public getInfoText(value: string, infoText: string) {
-    let v = JSON.parse(value)
-    if (v.code !== undefined) {
-      infoText = v.msg;
-    } else {
-      infoText = v.symbol;
-    }
-    return infoText;
-  }
-
-  public saveParamOrder(symbol: string, side: string, quantity: number | undefined, price: number, quantityOrders: number, distanceToken: number) {
+  public saveParamOrder(symbol: string, side: string, quantity: number, price: number, quantityOrders: number, distanceToken: number) {
     const paramOrder: IParamsOrder = {
       symbol: symbol,
       side: side,
@@ -46,10 +38,29 @@ export class FunctionsOrderService {
 
   public setToggleRepeatOrder(isToggleRepeatOrder: boolean) {
     this.isToggleRepeatOrder = isToggleRepeatOrder;
-    console.log(this.isToggleRepeatOrder);
   }
 
   public get toggleRepeatOrder(): boolean {
     return this.isToggleRepeatOrder;
+  }
+
+  public popUpInfo(msg: string) {
+    const horizontalPosition: MatSnackBarHorizontalPosition = 'right';
+    const verticalPosition: MatSnackBarVerticalPosition = 'bottom';
+    this._snackBar.open(msg, 'X', {
+      horizontalPosition: horizontalPosition,
+      verticalPosition: verticalPosition,
+      duration: 5000,
+    });
+  }
+
+  public searchSymbolNotActive(symbol: string, activeCurrentToken: string[]): string {
+    let symbolNotActive: string = '';
+    for (let i = 0; i < activeCurrentToken.length; i++) {
+      if (symbol === activeCurrentToken[i]) {
+        symbolNotActive = symbol
+      }
+    }
+    return symbolNotActive;
   }
 }

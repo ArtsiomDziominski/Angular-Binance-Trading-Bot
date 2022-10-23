@@ -13,7 +13,6 @@ export class AppComponent implements OnInit {
   public isOpenDialogBox: boolean = false;
   public isInfoSaveStorageBox: boolean = true;
   public allPriceTokensHeader!: any;
-  public updateCounter: number = 0;
   public menuActive: { name: string, is: boolean }[] =
     [
       {name: '', is: false},
@@ -29,7 +28,6 @@ export class AppComponent implements OnInit {
   public ngOnInit(): void {
     this.updatePriceTokens();
     setInterval(() => this.updatePriceTokens(), 20000);
-    setInterval(() => this.updateCounter++, 1000);
 
     this.router.events.subscribe(() => {
       this.currentURLRouting = this.router.url; // Update the value when a different route is accessed
@@ -42,7 +40,6 @@ export class AppComponent implements OnInit {
     this.mainBlockPrice.getPriceTokenHeader().subscribe((data: string[]) => {
       this.allPriceTokensHeader = data;
     });
-    this.updateCounter = -1;
   }
 
   public updateOpenDialogBox($event: boolean): void {
