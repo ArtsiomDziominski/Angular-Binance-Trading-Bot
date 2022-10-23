@@ -1,7 +1,7 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {IDialogDataTakeProfit} from "../../interface/dialog-data-take-profit";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormControl, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-dialog-box-take-profit',
@@ -9,14 +9,12 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
   styleUrls: ['./dialog-box-take-profit.component.css']
 })
 export class DialogBoxTakeProfitComponent {
-  public newOrderFormGroup!: FormGroup;
+  public takeProfit = new FormControl('', [Validators.required, Validators.minLength(1)])
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: IDialogDataTakeProfit) {}
+  constructor(@Inject(MAT_DIALOG_DATA) public data: IDialogDataTakeProfit) {
+  }
 
-  ngOnInit(){
-    this.newOrderFormGroup = new FormGroup(
-      {
-        takeProfit: new FormControl('', [Validators.required, Validators.minLength(1)]),
-      })
+  ngOnInit() {
+    this.takeProfit.valueChanges.subscribe((value: string | null) => this.data.profit = Number(value) || 0)
   }
 }

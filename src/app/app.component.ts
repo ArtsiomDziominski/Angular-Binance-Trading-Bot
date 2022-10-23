@@ -13,12 +13,12 @@ export class AppComponent implements OnInit {
   public isOpenDialogBox: boolean = false;
   public isInfoSaveStorageBox: boolean = true;
   public allPriceTokensHeader!: any;
-  public menuActive: { name: string, is: boolean }[] =
+  public menuActive: { name: string, isActive: boolean }[] =
     [
-      {name: '', is: false},
-      {name: 'order', is: false},
-      {name: 'stat', is: false},
-      {name: 'set', is: false}
+      {name: '', isActive: false},
+      {name: 'order', isActive: false},
+      {name: 'stat', isActive: false},
+      {name: 'set', isActive: false}
     ];
   public currentURLRouting: string = '';
 
@@ -30,15 +30,15 @@ export class AppComponent implements OnInit {
     setInterval(() => this.updatePriceTokens(), 20000);
 
     this.router.events.subscribe(() => {
-      this.currentURLRouting = this.router.url; // Update the value when a different route is accessed
+      this.currentURLRouting = this.router.url;
       this.editActiveMenu();
     });
     this.checkInfoText();
   }
 
   public updatePriceTokens(): void {
-    this.mainBlockPrice.getPriceTokenHeader().subscribe((data: string[]) => {
-      this.allPriceTokensHeader = data;
+    this.mainBlockPrice.getPriceTokenHeader().subscribe((res: string[]) => {
+      this.allPriceTokensHeader = res;
     });
   }
 
@@ -49,8 +49,8 @@ export class AppComponent implements OnInit {
   public editActiveMenu(): void {
     setTimeout(() => {
       this.currentURLRouting = this.currentURLRouting.replace('/', '')
-      this.menuActive.forEach((value: { name: string; is: boolean; }) => {
-        value.is = value.name == this.currentURLRouting;
+      this.menuActive.forEach((value: { name: string; isActive: boolean; }) => {
+        value.isActive = value.name == this.currentURLRouting;
       })
     }, 100)
   }

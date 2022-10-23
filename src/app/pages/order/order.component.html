@@ -6,7 +6,7 @@
     <p>Liquidation</p>
     <p class="header__amount">Amount</p>
     <p class="header__pnl">PNL</p>
-    <button class="header__button-close" (click)="orderService.closeAllCurrentsOrders()">Close all</button>
+    <button class="header__button-close" (click)="orderService.closeAllCurrentsOrders(allCurrentToken)">Close all</button>
   </section>
   <section class="main">
     <div *ngFor="let currentToken of allCurrentToken;">
@@ -16,7 +16,7 @@
         [entryPrice]="currentToken.entryPrice"
         [liquidationPrice]="currentToken.liquidationPrice"
         [amount]="currentToken.positionAmt"
-        [pnl]="currentToken.unRealizedProfit">
+        [pnlToken]="currentToken.unRealizedProfit">
       </app-order-row>
     </div>
   </section>
@@ -36,11 +36,10 @@
       <mat-label>Symbol</mat-label>
       <input matInput maxlength="10"
              type="text" name="symbol"
-             placeholder="BNBUSDT" [(ngModel)]="symbolToken"
-             (ngModelChange)="symbolToken = $event.toUpperCase()"
+             placeholder="BNBUSDT"
              [formControl]="symbolControl"
              [matAutocomplete]="auto"
-             formControlName="symbolToken" required>
+              required>
       <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
         <mat-option *ngFor="let option of symbolAutocompleteFiltered | async" [value]="option">
           {{option}}
@@ -50,26 +49,31 @@
 
     <mat-form-field class="example-full-width" appearance="outline" *ngIf="isInputPriceLimit">
       <mat-label>Price</mat-label>
-      <input matInput type="number" name="price" placeholder="270" [(ngModel)]="priceToken" [ngModelOptions]="{standalone: true}">
+      <input matInput type="number" name="price" placeholder="270">
     </mat-form-field>
 
     <mat-form-field class="example-full-width" appearance="outline">
       <mat-label>Distance Tokens</mat-label>
-      <input matInput type="number" name="distance" placeholder="7.5" [(ngModel)]="distanceToken"  formControlName="distanceToken" required>
+      <input matInput type="number" name="distance" placeholder="7.5" formControlName="distanceTokenControl" required>
     </mat-form-field>
 
     <mat-form-field class="example-full-width" appearance="outline">
       <mat-label>Amount Tokens</mat-label>
-      <input matInput type="number" name="amount" placeholder="0.5" [(ngModel)]="quantityToken" formControlName="quantityToken" required>
+      <input matInput type="number" name="amount" placeholder="0.5" formControlName="quantityTokenControl" required>
     </mat-form-field>
 
     <mat-form-field class="example-full-width" appearance="outline">
       <mat-label>Amount Orders</mat-label>
-      <input matInput type="number" name="amount_orders" placeholder="15" [(ngModel)]="quantityOrders"  formControlName="quantityOrders" required>
+      <input matInput type="number" name="amount_orders" placeholder="15" formControlName="quantityOrdersControl" required>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width" appearance="outline">
+      <mat-label>после запятой</mat-label>
+      <input matInput type="number" [ngModel]="decimalPoint">
     </mat-form-field>
 
     <div class="form__button">
-      <button mat-raised-button type="submit" color="accent" [disabled]="newOrderFormGroup.invalid">BUY</button>
+      <button mat-raised-button type="submit" color="accent" [disabled]="newOrderFormGroup.invalid || symbolControl.invalid">BUY</button>
     </div>
   </form>
 </article>

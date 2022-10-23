@@ -9,6 +9,8 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {FunctionsOrderService} from "../../services/order/functions-order.service";
 import {ThemePalette} from "@angular/material/core";
 import {IParamsOrder} from "../../interface/params-order";
+import {IApiKey} from "../../interface/api-key";
+import {NEW_ORDER} from "../../const/message-pop-up-info";
 
 @Component({
   selector: 'app-order',
@@ -17,22 +19,28 @@ import {IParamsOrder} from "../../interface/params-order";
 })
 export class OrderComponent implements OnInit {
   public allCurrentToken: ICurrenTokens[] = [];
-  public apiKey: { akey: string, skey: string } | undefined;
+  public apiKey: IApiKey | undefined;
   public isInputPriceLimit: boolean = false;
   public colorSlideToggle: ThemePalette = 'primary';
   public isToggleRepeatOrder: boolean = true;
   public oldActiveCurrentToken: string[] = [];
 
   public symbolToken: string = '';
-  public quantityToken: number | undefined;
-  public priceToken: number | undefined;
-  public quantityOrders: number | undefined;
-  public distanceToken: number | undefined;
+  public quantityToken: number = 0;
+  public priceToken: number = 0;
+  public quantityOrders: number = 0;
+  public distanceToken: number = 0;
 
-  public newOrderFormGroup!: FormGroup;
-  public symbolControl = new FormControl('');
+  public newOrderFormGroup = new FormGroup(
+    {
+      quantityTokenControl: new FormControl('', [Validators.required, Validators.minLength(1)]),
+      quantityOrdersControl: new FormControl('', [Validators.required, Validators.minLength(1)]),
+      distanceTokenControl: new FormControl('', [Validators.required, Validators.minLength(1)]),
+    })
+  public symbolControl = new FormControl(this.symbolToken, [Validators.required, Validators.minLength(7)]);
   public symbolAutocomplete: string[] = [];
   public symbolAutocompleteFiltered?: Observable<string[]>;
+  public decimalPoint: number = 0;
 
   constructor(
     private http: HttpClient,
@@ -45,14 +53,8 @@ export class OrderComponent implements OnInit {
   ngOnInit() {
     this.setAPIkey();
     this.getCurrentOpenOrder();
-    this.autocompleteFiltered()
-    this.newOrderFormGroup = new FormGroup(
-      {
-        symbolToken: new FormControl('', [Validators.required, Validators.minLength(7)]),
-        quantityToken: new FormControl('', [Validators.required, Validators.minLength(1)]),
-        quantityOrders: new FormControl('', [Validators.required, Validators.minLength(1)]),
-        distanceToken: new FormControl('', [Validators.required, Validators.minLength(1)]),
-      })
+    this.autocompleteFiltered();
+    this.getValueNewOrderFormGroup();
     this.functionsOrderService.setToggleRepeatOrder(this.isToggleRepeatOrder);
   }
 
@@ -97,7 +99,7 @@ export class OrderComponent implements OnInit {
       priceToken = 0;
     }
     this.functionsOrderService.saveParamOrder(symbolToken, side, quantityToken, priceToken, quantityOrders, distanceToken);
-
+    this.functionsOrderService.popUpInfo(NEW_ORDER);
     let setIntervalNewOrder = setInterval(() => {
       this.orderService.newOrder(symbolToken, side, quantityToken, priceToken)
         .subscribe();
@@ -116,14 +118,12 @@ export class OrderComponent implements OnInit {
   private autocompleteFiltered() {
     this.symbolAutocompleteFiltered = this.symbolControl.valueChanges.pipe(
       startWith(''),
-      map(value => this._filter(value || '')),
+      map(value => {
+        const filterValue = value || ''.toLowerCase();
+
+        return this.symbolAutocomplete.filter(option => option.toLowerCase().includes(filterValue));
+      }),
     );
-  }
-
-  private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
-
-    return this.symbolAutocomplete.filter(option => option.toLowerCase().includes(filterValue));
   }
 
   public toggleRepeatOrder() {
@@ -131,4 +131,14 @@ export class OrderComponent implements OnInit {
     this.functionsOrderService.setToggleRepeatOrder(this.isToggleRepeatOrder);
   }
 
+  public getValueNewOrderFormGroup() {
+    this.newOrderFormGroup.valueChanges.subscribe(paramsNewOrder => {
+      this.quantityToken = Number(paramsNewOrder.quantityTokenControl || 0);
+      this.quantityOrders = Number(paramsNewOrder.quantityOrdersControl || 0);
+      this.distanceToken = Number(paramsNewOrder.distanceTokenControl || 0);
+    })
+    this.symbolControl.valueChanges.subscribe((symbolControlValue: string | null) => {
+      this.symbolToken = symbolControlValue || '';
+    })
+  }
 }
