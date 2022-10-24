@@ -1,8 +1,11 @@
+@import url("../../../loaders.scss");
+
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
 }
 
 .wrapper {
+  height: 100%;
   display: grid;
   align-items: stretch;
   grid-template-areas:

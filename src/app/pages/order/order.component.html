@@ -8,7 +8,7 @@
     <p class="header__pnl">PNL</p>
     <button class="header__button-close" (click)="orderService.closeAllCurrentsOrders(allCurrentToken)">Close all</button>
   </section>
-  <section class="main">
+  <section class="main" *ngIf="isLoader; else loader">
     <div *ngFor="let currentToken of allCurrentToken;">
       <app-order-row
         [symbol]="currentToken.symbol"
@@ -20,6 +20,10 @@
       </app-order-row>
     </div>
   </section>
+
+  <ng-template #loader>
+    <div class="loader"><div></div></div>
+  </ng-template>
 
   <form class="example-form" [formGroup]="newOrderFormGroup"
         (ngSubmit)="newOrder(symbolToken, 'BUY', quantityToken, priceToken, quantityOrders, distanceToken)">
@@ -49,7 +53,7 @@
 
     <mat-form-field class="example-full-width" appearance="outline" *ngIf="isInputPriceLimit">
       <mat-label>Price</mat-label>
-      <input matInput type="number" name="price" placeholder="270">
+      <input matInput type="number" name="price" placeholder="270" formControlName="priceControl">
     </mat-form-field>
 
     <mat-form-field class="example-full-width" appearance="outline">
@@ -67,9 +71,9 @@
       <input matInput type="number" name="amount_orders" placeholder="15" formControlName="quantityOrdersControl" required>
     </mat-form-field>
 
-    <mat-form-field class="example-full-width" appearance="outline">
-      <mat-label>после запятой</mat-label>
-      <input matInput type="number" [ngModel]="decimalPoint">
+    <mat-form-field class="example-full-width" appearance="outline" *ngIf="isInputNumbersComma">
+      <mat-label>Price.Numbers after the comma</mat-label>
+      <input matInput type="number" placeholder="2" formControlName="priceCommaNumbersControl">
     </mat-form-field>
 
     <div class="form__button">

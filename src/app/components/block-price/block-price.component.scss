@@ -1,3 +1,5 @@
+@import url("../../../loaders.scss");
+
 p {
   margin: 0;
   padding: 0;
@@ -13,23 +15,6 @@ p {
   display: inline-block;
   margin: 25px 0 0 40px;
   position: relative;
-
-  &__loader {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  &__loader div {
-    border: 16px solid #161a1e;
-    border-top: 16px solid #FFE600;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    animation: spin 2s linear infinite;
-  }
 
   &__close {
     width: 20px;
@@ -67,14 +52,5 @@ p {
       background: rgba(255, 26, 26, 0.15);
       font-size: 13px;
     }
-  }
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
   }
 }
