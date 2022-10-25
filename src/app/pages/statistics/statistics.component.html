@@ -3,7 +3,7 @@
   <p class="user-name">NickName</p>
   <p class="user-id">ID: 123456789</p>
 </header>
-<main class="main">
+<main class="main" *ngIf="isLoader; else loader">
   <p class="main__deposit">Deposit</p>
   <div class="stat-futures">
     <p class="stat-futures__title">Futures USDⓈ-M Futures</p>
@@ -26,4 +26,11 @@
   </div>
 
   <p class="main__analysis">Analysis PNL</p>
+  <app-graph-statistics [incomeHistory]="incomeHistory"></app-graph-statistics>
 </main>
+
+<ng-template #loader>
+  <div class="loader">
+    <div></div>
+  </div>
+</ng-template>

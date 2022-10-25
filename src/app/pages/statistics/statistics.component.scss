@@ -1,3 +1,5 @@
+@import url("../../../loaders.scss");
+
 p {
   color: white;
   font-size: 16px;
@@ -30,7 +32,6 @@ header {
 }
 
 .main {
-  height: 100%;
   background: url("../../../assets/statistics.png") no-repeat right top;
   position: relative;
 

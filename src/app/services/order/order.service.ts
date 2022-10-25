@@ -74,7 +74,6 @@ export class OrderService {
       "akey": apiKey!.akey
     }
     const URL: string = BURL + '/cancel-open-orders/' + JSON.stringify(params);
-    console.log(URL)
     this.http.get(URL, {responseType: 'text' as 'json'})
       .subscribe((value: any) => {
         const msgServer: IMsgServer = JSON.parse(value);
