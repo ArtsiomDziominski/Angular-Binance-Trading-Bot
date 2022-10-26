@@ -3,7 +3,7 @@ import {StatisticsInfoServerService} from "../../services/statistics-info/statis
 import {IStatAcc} from "../../interface/stat-acc";
 import {TextChangeService} from "../../services/text-change.service";
 import {BALANCE, INCOME_HISTORY, LIMIT_INCOME_HISTORY} from "../../const/http-request";
-import {IIncomeHistory} from "../../interface/statistics/income-history";
+import {IIncomeHistoryFull} from "../../interface/statistics/income-history-full";
 
 @Component({
   selector: 'app-statistics',
@@ -13,7 +13,7 @@ import {IIncomeHistory} from "../../interface/statistics/income-history";
 export class StatisticsComponent implements OnInit {
   public statisticsAccount: IStatAcc[] | undefined;
   public isLoader: boolean = false;
-  public incomeHistory: IIncomeHistory[] = [];
+  public incomeHistory: IIncomeHistoryFull[] = [];
 
   constructor(
     public editText: TextChangeService,
@@ -23,7 +23,7 @@ export class StatisticsComponent implements OnInit {
 
   public ngOnInit(): void {
     this.getStatAcc();
-    setInterval(()=>this.getStatAcc(),10000);
+    setInterval(() => this.getStatAcc(), 10000);
     this.getIncomeHistory();
   }
 
@@ -38,11 +38,7 @@ export class StatisticsComponent implements OnInit {
   public getIncomeHistory(): void {
     this.statisticsInfoService.requestToServer(INCOME_HISTORY, LIMIT_INCOME_HISTORY)
       .subscribe((response: any) => {
-        response.forEach((res:any) => {
-          if (res.incomeType === 'COMMISSION'){
-            this.incomeHistory.push({incomeType: res.incomeType, income: Number(res.income), time: res.time})
-          }
-        })
+        this.incomeHistory = response;
         this.isLoader = true;
       })
   }
