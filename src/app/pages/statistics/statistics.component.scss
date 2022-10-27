@@ -1,36 +1,11 @@
+@import url("../../../loaders.scss");
+
 p {
   color: white;
   font-size: 16px;
 }
 
-header {
-  height: 150px;
-  background-color: #000000;
-  display: grid;
-  grid-template-areas:
-    "userimg username"
-    "userimg userid";
-  grid-template-rows: 50% 50%;
-  grid-template-columns: 10% 80%;
-
-  .user-img {
-    grid-area: userimg;
-    margin: 35px 10px 10px 10px;
-  }
-
-  .user-name {
-    grid-area: username;
-    display: grid;
-    align-content: end;
-  }
-
-  .user-id {
-    grid-area: userid;
-  }
-}
-
 .main {
-  height: 100%;
   background: url("../../../assets/statistics.png") no-repeat right top;
   position: relative;
 

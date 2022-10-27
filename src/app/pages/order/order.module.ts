@@ -18,18 +18,18 @@ import {MatSlideToggleModule} from "@angular/material/slide-toggle";
     OrderComponent,
     OrderRowComponent,
   ],
-    imports: [
-        CommonModule,
-        OrderRoutingModule,
-        FormsModule,
-        MatInputModule,
-        MatAutocompleteModule,
-        ReactiveFormsModule,
-        MatTabsModule,
-        MatButtonToggleModule,
-        MatButtonModule,
-        MatSlideToggleModule,
-    ]
+  imports: [
+    CommonModule,
+    OrderRoutingModule,
+    FormsModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    ReactiveFormsModule,
+    MatTabsModule,
+    MatButtonToggleModule,
+    MatButtonModule,
+    MatSlideToggleModule,
+  ]
 })
 export class OrderModule {
 }

@@ -1,24 +1,19 @@
-<header>
-  <img class="user-img" src="../../../assets/ellipse.png" alt="user img">
-  <p class="user-name">NickName</p>
-  <p class="user-id">ID: 123456789</p>
-</header>
-<main class="main">
+<main class="main" *ngIf="isLoader; else loader">
   <p class="main__deposit">Deposit</p>
   <div class="stat-futures">
     <p class="stat-futures__title">Futures USDⓈ-M Futures</p>
     <div class="stat-futures__box" *ngFor="let token of statisticsAccount">
       <p class="stat-futures__symbol">{{token.asset}}</p>
       <p class="stat-futures__balance">Balance: <span
-        [class.stat-futures__yellow]="stringToNumber(token.balance) > 5">{{editText.editToFixed2(token.balance)}}</span>
+        [class.stat-futures__yellow]="stringToNumber(token.balance) > 0.1">{{editText.editToFixed2(token.balance)}}</span>
       </p>
       <p class="stat-futures__maxWithdrawAmount">max Withdraw Amount: <span
-        [class.stat-futures__yellow]="stringToNumber(token.balance) > 4">{{editText.editToFixed2(token.maxWithdrawAmount)}}</span>
+        [class.stat-futures__yellow]="stringToNumber(token.balance) > 0.1">{{editText.editToFixed2(token.maxWithdrawAmount)}}</span>
       </p>
       <p class="stat-futures__crossUnPnl">crossUnPnl:
         <span
-          [class.stat-futures__green]="stringToNumber(token.balance) < -1"
-          [class.stat-futures__red]="stringToNumber(token.balance) > 1"
+          [class.stat-futures__green]="stringToNumber(token.crossUnPnl) > 0.01"
+          [class.stat-futures__red]="stringToNumber(token.crossUnPnl) < 0"
         >{{editText.editToFixed2(token.crossUnPnl)}}
         </span>
       </p>
@@ -26,4 +21,11 @@
   </div>
 
   <p class="main__analysis">Analysis PNL</p>
+  <app-graph-statistics [allIncomeHistories]="incomeHistory"></app-graph-statistics>
 </main>
+
+<ng-template #loader>
+  <div class="loader">
+    <div></div>
+  </div>
+</ng-template>
