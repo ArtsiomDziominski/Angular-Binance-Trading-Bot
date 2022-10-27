@@ -5,6 +5,3 @@ export const DIALOG_BOX_PROFIT_WIDTH_260_PX: string = '260px';
 export const SELL: string = 'SELL';
 export const LIMIT: string = 'LIMIT'
 export const MARKET: string = 'MARKET'
-export const GRAPH_LABEL_COMMISSION: string = 'Commission';
-export const GRAPH_REALIZED_PNL: string = 'PNL';
-export const GRAPH_PROFIT: string = 'Profit';

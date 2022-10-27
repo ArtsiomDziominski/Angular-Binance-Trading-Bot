@@ -13,7 +13,7 @@ import {IIncomeHistoryFull} from "../../interface/statistics/income-history-full
 export class StatisticsComponent implements OnInit {
   public statisticsAccount: IStatAcc[] | undefined;
   public isLoader: boolean = false;
-  public incomeHistory: IIncomeHistoryFull[] = [];
+  public incomeHistory!: IIncomeHistoryFull[];
 
   constructor(
     public editText: TextChangeService,
@@ -29,16 +29,16 @@ export class StatisticsComponent implements OnInit {
 
   public getStatAcc(): void {
     this.statisticsInfoService.requestToServer(BALANCE)
-      .subscribe((response: any) => {
-        this.statisticsAccount = response;
+      .subscribe((response) => {
+        this.statisticsAccount = <IStatAcc[]>response;
         this.isLoader = true;
       })
   }
 
   public getIncomeHistory(): void {
     this.statisticsInfoService.requestToServer(INCOME_HISTORY, LIMIT_INCOME_HISTORY)
-      .subscribe((response: any) => {
-        this.incomeHistory = response;
+      .subscribe((response) => {
+        this.incomeHistory = <IIncomeHistoryFull[]>response;
         this.isLoader = true;
       })
   }

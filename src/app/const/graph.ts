@@ -1,0 +1,9 @@
+export const GRAPH_LABEL_COMMISSION: string = 'Commission';
+export const GRAPH_REALIZED_PNL: string = 'PNL';
+export const GRAPH_PROFIT: string = 'Profit';
+export const GRAPH_LABEL_COMMISSION_BORDER_COLOR :string[] = ['rgba(255,0,0,0.4)']
+export const GRAPH_REALIZED_PN_BORDER_COLOR :string[] = ['rgba(76,238,113,0.9)']
+export const GRAPH_PROFIT_BORDER_COLOR :string[] = ['rgb(255,242,0)']
+export const GRAPH_LABEL_COMMISSION_BACKGROUND_COLOR :string[] = ['rgba(255,0,0,0.4)'];
+export const GRAPH_REALIZED_PN_BACKGROUND_COLOR :string[] = ['rgba(76,238,113,0.9)'];
+export const GRAPH_PROFIT_BACKGROUND_COLOR :string[] = ['rgb(255,242,0)'];

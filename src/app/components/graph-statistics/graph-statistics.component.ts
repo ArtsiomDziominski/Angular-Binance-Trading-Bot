@@ -1,17 +1,23 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit, OnChanges} from '@angular/core';
 import {Chart, registerables} from "chart.js";
 import {IIncomeHistory} from "../../interface/statistics/income-history";
 import {StatisticsGraphService} from "../../services/statistics-info/statistics-graph.service";
-import {GRAPH_PROFIT, GRAPH_LABEL_COMMISSION, GRAPH_REALIZED_PNL} from "../../const/const";
+import {GRAPH_PROFIT, GRAPH_LABEL_COMMISSION, GRAPH_REALIZED_PNL} from "../../const/graph";
 import {IIncomeHistoryFilter} from "../../interface/statistics/income-history-filter";
 import {IIncomeHistoryFull} from "../../interface/statistics/income-history-full";
+import {
+  GRAPH_LABEL_COMMISSION_BACKGROUND_COLOR, GRAPH_LABEL_COMMISSION_BORDER_COLOR,
+  GRAPH_PROFIT_BACKGROUND_COLOR, GRAPH_PROFIT_BORDER_COLOR,
+  GRAPH_REALIZED_PN_BACKGROUND_COLOR, GRAPH_REALIZED_PN_BORDER_COLOR
+} from "../../const/graph";
 
 @Component({
   selector: 'app-graph-statistics',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './graph-statistics.component.html',
   styleUrls: ['./graph-statistics.component.css']
 })
-export class GraphStatisticsComponent implements OnInit {
+export class GraphStatisticsComponent implements OnInit, OnChanges {
   @Input() public allIncomeHistories!: IIncomeHistoryFull[];
   @Input() public windowWidth!: number;
 
@@ -25,15 +31,21 @@ export class GraphStatisticsComponent implements OnInit {
 
   public profitPNL: number[] = [];
 
+  public chart!: Chart
+
   constructor(
     public statisticsGraphService: StatisticsGraphService,
   ) {
     Chart.register(...registerables);
   }
 
-  public ngOnInit(): void {
-    setTimeout(() => this.getIncomeTimeHistory(), 3000);
-    setTimeout(() => this.renderingGraph(), 3000);
+  ngOnInit() {
+    this.renderingGraph()
+  }
+
+  ngOnChanges() {
+    this.getIncomeTimeHistory()
+    this.chart.update()
   }
 
   public renderingGraph() {
@@ -44,29 +56,29 @@ export class GraphStatisticsComponent implements OnInit {
           label: GRAPH_PROFIT,
           data: this.profitPNL,
           fill: false,
-          borderColor: ['rgb(255,242,0)'],
-          backgroundColor: ['rgb(255,242,0)'],
+          borderColor: GRAPH_PROFIT_BORDER_COLOR,
+          backgroundColor: GRAPH_PROFIT_BACKGROUND_COLOR,
         },
         {
           label: GRAPH_REALIZED_PNL,
           data: this.incomeRealizedPNL,
           fill: false,
-          borderColor: ['rgba(76,238,113,0.9)'],
-          backgroundColor: ['rgba(76,238,113,0.9)'],
+          borderColor: GRAPH_REALIZED_PN_BORDER_COLOR,
+          backgroundColor: GRAPH_REALIZED_PN_BACKGROUND_COLOR,
         },
         {
           label: GRAPH_LABEL_COMMISSION,
           data: this.incomeCommission,
           fill: false,
-          borderColor: ['rgba(255,0,0,0.4)'],
-          backgroundColor: ['rgba(255,0,0,0.4)'],
+          borderColor: GRAPH_LABEL_COMMISSION_BORDER_COLOR,
+          backgroundColor: GRAPH_LABEL_COMMISSION_BACKGROUND_COLOR,
         },
       ]
     };
 
-    const chart = new Chart("chart", {
+    this.chart = new Chart("chart", {
       type: 'line',
-      data: data,
+      data,
     });
   }
 
@@ -80,7 +92,7 @@ export class GraphStatisticsComponent implements OnInit {
   }
 
   public sortForGraphIncomeHistoryСommission(incomeHistoryCommission: IIncomeHistoryFilter[]) {
-    incomeHistoryCommission.forEach((v:IIncomeHistoryFilter) => {
+    incomeHistoryCommission.forEach((v: IIncomeHistoryFilter) => {
       this.incomeCommission.push(v.income);
       this.incomeTypeCommission = v.incomeType;
       this.incomeTimeCommission.push(v.date);
