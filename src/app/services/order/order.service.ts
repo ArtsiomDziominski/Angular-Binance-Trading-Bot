@@ -1,12 +1,13 @@
 import {Injectable} from '@angular/core';
 import {sha256} from "js-sha256";
-import {ALL_CREATED_CURRENT_ORDERS, API_KEY} from "../../const/const";
+import {API_KEY, MARKET, SELL} from "../../const/const";
 import {BURL} from "../../const/http-request";
 import {HttpClient} from "@angular/common/http";
 import {LocalStorageService} from "../local-storage/local-storage.service";
 import {Observable} from "rxjs";
 import {FunctionsOrderService} from "./functions-order.service";
 import {IMsgServer} from "../../interface/msg-server";
+import {ICurrenTokens} from "../../interface/currentToken";
 
 @Injectable({
   providedIn: 'root'
@@ -94,14 +95,11 @@ export class OrderService {
     return this.http.get(URL)
   }
 
-  public closeAllCurrentsOrders(symbol: string = 'BNBUSDT'): void {
-    const apiKey: { akey: string, skey: string } | undefined = this.setAPIkey()
-    const dataQueryString = `symbol=${symbol}&timestamp=` + Date.now();
-    const signature: string = this.hashFunctions(dataQueryString, apiKey);
-    const URL: string = BURL + `/order/closeOpenOrder/${signature}-${dataQueryString}-${apiKey!.akey}`
-    console.log(URL)
-    this.http.get(URL).subscribe((value: any) => {
-      console.log(value)
+  public closeAllCurrentsOrders(allCurrenTokens: ICurrenTokens[]): void {
+    console.log(allCurrenTokens)
+    this.functionsOrderService.popUpInfo('Close all')
+    allCurrenTokens.forEach((currentToken: ICurrenTokens) => {
+      this.marketOrder(currentToken.symbol, SELL, currentToken.positionAmt, MARKET);
     })
   }
 }

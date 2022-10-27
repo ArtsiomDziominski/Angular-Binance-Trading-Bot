@@ -4,6 +4,7 @@ import {OrderService} from "../../services/order/order.service";
 import {MatDialog} from "@angular/material/dialog";
 import {DialogBoxTakeProfitComponent} from "../dialog-box-take-profit/dialog-box-take-profit.component";
 import {FunctionsOrderService} from "../../services/order/functions-order.service";
+import {DIALOG_BOX_PROFIT_WIDTH_260_PX} from "../../const/const";
 
 @Component({
   selector: 'app-order-row',
@@ -22,7 +23,7 @@ export class OrderRowComponent {
   @Input()
   public amount!: string;
   @Input()
-  public pnl!: string | number;
+  public pnlToken!: string | number;
 
   public profit!: number;
 
@@ -34,13 +35,13 @@ export class OrderRowComponent {
     this.markPrice = this.textChangeService.editToFixed2(this.markPrice);
     this.entryPrice = this.textChangeService.editToFixed2(this.entryPrice);
     this.liquidationPrice = this.textChangeService.editToFixed2(this.liquidationPrice);
-    this.pnl = this.textChangeService.editToFixed2(this.pnl);
+    this.pnlToken = this.textChangeService.editToFixed2(this.pnlToken);
     this.markPrice = this.textChangeService.editToFixed2(this.markPrice);
   }
 
   public openDialogTakeProfit(): void {
     const dialogRef = this.dialog.open(DialogBoxTakeProfitComponent, {
-      width: '260px',
+      width: DIALOG_BOX_PROFIT_WIDTH_260_PX,
       data: {symbol: this.symbol, profit: this.profit},
     });
 

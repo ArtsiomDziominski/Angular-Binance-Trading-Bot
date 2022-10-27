@@ -15,21 +15,21 @@
   <nav class="menu">
     <a
       class="menu__main"
-      [class.menu__active]="menuActive[0].is"
+      [class.menu__active]="menuActive[0].isActive"
       (click)="editActiveMenu()"
       [routerLink]="'/'"
     >
       <img src="assets/nav-menu/main.svg" alt="main">Main</a>
     <a
       class="menu__order"
-      [class.menu__active]="menuActive[1].is"
+      [class.menu__active]="menuActive[1].isActive"
       (click)="editActiveMenu()"
       [routerLink]="'/order'"
     >
       <img src="assets/nav-menu/btc.svg" alt="btc">Order</a>
     <a
       class="menu__statistics"
-      [class.menu__active]="menuActive[2].is"
+      [class.menu__active]="menuActive[2].isActive"
       (click)="editActiveMenu()"
       [routerLink]="'/stat'"
     >
@@ -40,7 +40,7 @@
       <img src="assets/nav-menu/api.svg" alt="api">API</a>
     <a
       class="menu__settings"
-      [class.menu__active]="menuActive[3].is"
+      [class.menu__active]="menuActive[3].isActive"
       (click)="editActiveMenu()"
       [routerLink]="'/set'"
     >
