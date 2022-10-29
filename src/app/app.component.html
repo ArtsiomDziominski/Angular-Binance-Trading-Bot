@@ -36,7 +36,7 @@
       <img src="assets/nav-menu/graph-up.svg" alt="graph up">Statistics</a>
     <a
       class="menu__api"
-      (click)="isOpenDialogBox=true">
+      (click)="openDialog()">
       <img src="assets/nav-menu/api.svg" alt="api">API</a>
     <a
       class="menu__settings"
@@ -56,5 +56,4 @@
     Please click the button beside to close this message.</p>
   <button (click)="closeInfoBox()">Accept</button>
 </div>
-<app-api-box (isOpenDialogBox)="updateOpenDialogBox($event)" *ngIf="isOpenDialogBox===true"></app-api-box>
 

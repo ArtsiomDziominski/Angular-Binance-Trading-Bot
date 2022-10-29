@@ -3,6 +3,8 @@ import {MainBlockPriceService} from "./services/main-block-token-price/main-bloc
 import {Router} from "@angular/router";
 import {INFO_TEXT} from "./const/const";
 import {LocalStorageService} from "./services/local-storage/local-storage.service";
+import {MatDialog} from "@angular/material/dialog";
+import {ApiBoxComponent} from "./components/api-box/api-box.component";
 
 @Component({
   selector: 'app-root',
@@ -10,7 +12,6 @@ import {LocalStorageService} from "./services/local-storage/local-storage.servic
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  public isOpenDialogBox: boolean = false;
   public isInfoSaveStorageBox: boolean = true;
   public allPriceTokensHeader!: any;
   public menuActive: { name: string, isActive: boolean }[] =
@@ -22,7 +23,12 @@ export class AppComponent implements OnInit {
     ];
   public currentURLRouting: string = '';
 
-  constructor(private mainBlockPrice: MainBlockPriceService, private router: Router, private localStorageService: LocalStorageService) {
+  constructor(
+    private mainBlockPrice: MainBlockPriceService,
+    private router: Router,
+    private localStorageService: LocalStorageService,
+    public dialog: MatDialog
+  ) {
   }
 
   public ngOnInit(): void {
@@ -42,10 +48,6 @@ export class AppComponent implements OnInit {
     });
   }
 
-  public updateOpenDialogBox($event: boolean): void {
-    this.isOpenDialogBox = $event;
-  }
-
   public editActiveMenu(): void {
     setTimeout(() => {
       this.currentURLRouting = this.currentURLRouting.replace('/', '')
@@ -62,5 +64,11 @@ export class AppComponent implements OnInit {
   public closeInfoBox(): void {
     this.isInfoSaveStorageBox = true
     this.localStorageService.setLocalStorage(INFO_TEXT, String(this.isInfoSaveStorageBox));
+  }
+
+  public openDialog() {
+    this.dialog.open(ApiBoxComponent, {
+      width: '800px',
+    });
   }
 }
