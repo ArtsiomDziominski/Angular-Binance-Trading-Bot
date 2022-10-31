@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {MainBlockPriceService} from "../../services/main-block-token-price/main-block-price.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {FunctionsOrderService} from "../../services/order/functions-order.service";
 
 @Component({
   selector: 'app-settings',
@@ -9,11 +10,13 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 })
 export class SettingsComponent {
   public tokenSaveBoxPrice: string = '';
-  public infoTextMainAddToken: string = ''
 
   public tokenSaveFormGroup!: FormGroup;
 
-  constructor(public mainBlockPriceService: MainBlockPriceService) {
+  constructor(
+    public mainBlockPriceService: MainBlockPriceService,
+    public functionsOrderService: FunctionsOrderService
+  ) {
   }
 
   ngOnInit(): void {
@@ -21,10 +24,6 @@ export class SettingsComponent {
   }
 
   public saveTokenMainBoxPrice(token: string) {
-    this.infoTextMainAddToken = this.mainBlockPriceService.addTokenMainList(token)
-    if (this.infoTextMainAddToken.length < 10) {
-      this.tokenSaveBoxPrice = '';
-    }
-    setTimeout(() => this.infoTextMainAddToken = '', 5000)
+    this.functionsOrderService.popUpInfo(this.mainBlockPriceService.addTokenMainList(token));
   }
-}
+  }
