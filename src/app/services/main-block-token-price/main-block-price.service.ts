@@ -4,6 +4,7 @@ import {BehaviorSubject, map, Observable} from "rxjs";
 import {HTTP_GET_24hr} from "../../const/http-request";
 import {LocalStorageService} from "../local-storage/local-storage.service";
 import {MAIN_SAVE_TOKEN_SAVE} from "../../const/const";
+import {IPrice} from "../../interface/price-token";
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ import {MAIN_SAVE_TOKEN_SAVE} from "../../const/const";
 export class MainBlockPriceService {
   public allMainSaveTokens: string[] = JSON.parse(<string>this.localStorageService.getLocalStorage(MAIN_SAVE_TOKEN_SAVE)) || [];
   public mainSaveTokensBeh: BehaviorSubject<string[]> = new BehaviorSubject(this.allMainSaveTokens);
-  public allGetTokens!: string[];
+  public allPriceTokens: IPrice[] = [];
 
   constructor(private http: HttpClient, private localStorageService: LocalStorageService) {
   }
@@ -41,29 +42,11 @@ export class MainBlockPriceService {
     return this.mainSaveTokensBeh.getValue();
   }
 
-  public getPriceTokenHeader(): Observable<string[]> {
-    const allTokens: string[] = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'DOGEUSDT'];
-
-    return this.http.get(HTTP_GET_24hr).pipe(
-      map((response: any) => {
-        const allPriceTokens: string[] = [];
-        this.allGetTokens = response;
-        response
-          .find((item: any) => {
-            for (let i = 0; i < allTokens.length; i++) {
-              if (item.symbol === allTokens[i]) {
-                allPriceTokens.push(item)
-              }
-            }
-          });
-        return allPriceTokens.sort((x: any, y: any) => x.symbol.localeCompare(y.symbol));
-      }))
-  }
-
   public getPriceTokenMain(): Observable<string[]> {
     return this.http.get(HTTP_GET_24hr).pipe(
       map((response: any) => {
         const allPriceTokens: string[] = [];
+        this.allPriceTokens = response;
         response
           .find((item: any) => {
             for (let i = 0; i < this.allMainSaveTokens.length; i++) {
@@ -83,7 +66,7 @@ export class MainBlockPriceService {
     this.localStorageService.setLocalStorage(MAIN_SAVE_TOKEN_SAVE, JSON.stringify(this.allMainSaveTokens));
   }
 
-  public getAllTokens(): string[] {
-    return this.allGetTokens;
+  public getAllTokens(): IPrice[] {
+    return this.allPriceTokens;
   }
 }

@@ -13,15 +13,6 @@ import {ApiBoxComponent} from "./components/api-box/api-box.component";
 })
 export class AppComponent implements OnInit {
   public isInfoSaveStorageBox: boolean = true;
-  public allPriceTokensHeader!: any;
-  public menuActive: { name: string, isActive: boolean }[] =
-    [
-      {name: '', isActive: false},
-      {name: 'order', isActive: false},
-      {name: 'stat', isActive: false},
-      {name: 'set', isActive: false}
-    ];
-  public currentURLRouting: string = '';
 
   constructor(
     private mainBlockPrice: MainBlockPriceService,
@@ -32,29 +23,7 @@ export class AppComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.updatePriceTokens();
-    setInterval(() => this.updatePriceTokens(), 20000);
-
-    this.router.events.subscribe(() => {
-      this.currentURLRouting = this.router.url;
-      this.editActiveMenu();
-    });
     this.checkInfoText();
-  }
-
-  public updatePriceTokens(): void {
-    this.mainBlockPrice.getPriceTokenHeader().subscribe((res: string[]) => {
-      this.allPriceTokensHeader = res;
-    });
-  }
-
-  public editActiveMenu(): void {
-    setTimeout(() => {
-      this.currentURLRouting = this.currentURLRouting.replace('/', '')
-      this.menuActive.forEach((value: { name: string; isActive: boolean; }) => {
-        value.isActive = value.name == this.currentURLRouting;
-      })
-    }, 100)
   }
 
   public checkInfoText(): void {
