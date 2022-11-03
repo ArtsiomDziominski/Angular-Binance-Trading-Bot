@@ -1,3 +1,5 @@
+@import "theme-dark.scss";
+
 * {
   margin: 0;
   padding: 0;
@@ -7,5 +9,5 @@ body {
   font-family: 'Days One', sans-serif;
   display: flex;
   justify-content: center;
-  background-color: #22282F;
+  background-color: var(--background-color);
 }
