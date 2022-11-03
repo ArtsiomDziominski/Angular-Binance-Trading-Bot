@@ -19,3 +19,9 @@
 .chart {
   margin: 50px;
 }
+
+@media screen and (max-width: 770px) {
+  .chart {
+    margin: 0;
+  }
+}

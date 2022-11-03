@@ -8,3 +8,11 @@
     color: white;
   }
 }
+
+@media screen and (max-width: 1000px) {
+  .api {
+    mat-form-field {
+      width: 100%;
+    }
+  }
+}

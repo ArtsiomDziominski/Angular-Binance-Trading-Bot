@@ -4,8 +4,12 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
 }
 
+:host {
+  max-width: 1440px;
+  width: 100%;
+}
+
 .wrapper {
-  width: 1440px;
   height: 100%;
   display: grid;
   align-items: stretch;
@@ -103,3 +107,38 @@ input::-webkit-inner-spin-button {
   }
 }
 
+@media screen and (max-width: 970px) {
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+
+    .header {
+      margin: 0;
+      padding: 5px 15px;
+    }
+
+    .main {
+      margin: 0;
+      padding: 20px 10px;
+    }
+
+    .example-form {
+      display: flex;
+      padding: 20px;
+      background-color: rgba(22, 26, 30, 0.07);
+    }
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .wrapper {
+    .header {
+      p {
+        display: none;
+      }
+    }
+
+    .main {
+    }
+  }
+}
