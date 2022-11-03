@@ -1,7 +1,8 @@
 <section>
   <div></div>
   <p class="symbol">{{symbol}}</p>
-  <p class="current-Price" [class.color-green]="markPrice>entryPrice" [class.color-red]="markPrice<entryPrice">{{markPrice}}</p>
+  <p class="current-Price" [class.color-green]="markPrice>entryPrice"
+     [class.color-red]="markPrice<entryPrice">{{markPrice}}</p>
   <p class="entry-Price">{{entryPrice}}</p>
   <p class="liquidation-Price">{{liquidationPrice <= 1 ? '- -' : liquidationPrice}}</p>
   <p class="amount">{{amount}}</p>
