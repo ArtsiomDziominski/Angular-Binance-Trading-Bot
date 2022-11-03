@@ -1,0 +1,13 @@
+:host {
+  display: flex;
+  justify-content: space-between;
+
+  span {
+    display: flex;
+    width: 150px;
+  }
+
+  .priceChangePercent {
+    color: #28E824;
+  }
+}

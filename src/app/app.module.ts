@@ -16,6 +16,7 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
+import { ListTopTokenComponent } from './components/list-top-token/list-top-token.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
     NotFoundComponent,
     ApiBoxComponent,
     DialogBoxTakeProfitComponent,
+    ListTopTokenComponent,
   ],
   imports: [
     BrowserModule,

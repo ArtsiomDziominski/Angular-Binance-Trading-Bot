@@ -9,7 +9,8 @@ import {IPrice} from "../../interface/price-token";
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent implements OnInit {
-  public allPriceTokens: IPrice[] = [];
+  public priceTokensSave: IPrice[] = [];
+  public pricePercentSort: IPrice[] = [];
 
   constructor(
     private mainBlockPrice: MainBlockPriceService,
@@ -23,11 +24,17 @@ export class MainComponent implements OnInit {
     });
     this.updatePriceTokens();
     setInterval(() => this.updatePriceTokens(), 31000);
+    setTimeout(() => this.filterTokensPercent(), 3000);
   }
 
   public updatePriceTokens(): void {
     this.mainBlockPrice.getPriceTokenMain().subscribe((data: any) => {
-      this.allPriceTokens = data.sort((x: any, y: any) => x.symbol.localeCompare(y.symbol));
+      this.priceTokensSave = data.sort((x: any, y: any) => x.symbol.localeCompare(y.symbol));
     });
+  }
+
+  public filterTokensPercent() {
+    const allTokensPrice: IPrice[] = this.mainBlockPrice.getAllTokens();
+    this.pricePercentSort = allTokensPrice.sort((x: any, y: any) => Number(y.priceChangePercent.localeCompare(Number(x.priceChangePercent))));
   }
 }
