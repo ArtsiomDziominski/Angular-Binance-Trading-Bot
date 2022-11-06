@@ -25,15 +25,15 @@ p {
     display: inline-block;
 
     &__yellow {
-      color: #FFE600;
+      color: var(--color-text);
     }
 
     &__green {
-      color: greenyellow;
+      color: var(--color-price-up);
     }
 
     &__red {
-      color: red;
+      color: var(--color-price-down);
     }
 
     p {
@@ -42,12 +42,12 @@ p {
     }
 
     .stat-futures__title {
-      color: white;
+      color: var(--color-white);
       font-size: 18px;
 
       &:before {
         content: '•   ';
-        color: red;
+        color: var(--color-price-down);
       }
     }
 
@@ -58,7 +58,7 @@ p {
     }
 
     &__symbol {
-      color: #FFE600;
+      color: var(--color-text);
     }
   }
 

@@ -51,19 +51,19 @@ input::-webkit-inner-spin-button {
       height: 35px;
       border-radius: 5px;
       border: 0;
-      color: black;
-      background-color: #F90404;
+      color: var(--color-black);
+      background-color: var(--color-price-down);
       font-weight: 600;
       cursor: pointer;
 
     }
 
     &__button-close:hover {
-      background-color: rgba(249, 4, 4, 0.8);
+      background-color: var(--color-price-close-hover);
     }
 
     &__button-close:active {
-      background-color: rgba(249, 4, 4, 0.6);
+      background-color: var(--color-price-close-active);
     }
   }
 
@@ -73,7 +73,7 @@ input::-webkit-inner-spin-button {
 
   .example-form {
     grid-area: aside;
-    background-color: #22282F;
+    background-color: var(--background-color);
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -97,7 +97,7 @@ input::-webkit-inner-spin-button {
       width: 80%;
 
       input {
-        color: #eaeaea;
+        color: var(--color-white);
       }
     }
 

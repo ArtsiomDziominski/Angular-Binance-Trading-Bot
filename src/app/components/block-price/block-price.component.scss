@@ -9,9 +9,9 @@ p {
 .box {
   width: 265px;
   height: 150px;
-  background-color: #22282F;
+  background-color: var(--background-color);
   border-radius: 10px;
-  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 1px 10px var(--box-shadow);
   display: inline-block;
   margin: 25px 0 0 40px;
   position: relative;
@@ -39,8 +39,8 @@ p {
     width: 60px;
     height: 25px;
     font-size: 14px;
-    color: #28E824;
-    background: rgba(40, 232, 36, 0.15);
+    color: var(--color-price-up);
+    background: var(--color-price-up-shadow);
     border-radius: 5px;
     margin-left: 30px;
     display: flex;
@@ -48,8 +48,8 @@ p {
     justify-content: center;
 
     &_low {
-      color: #FF1A1A;
-      background: rgba(255, 26, 26, 0.15);
+      color: var(--color-price-down);
+      background: var(--color-price-down-shadow);
       font-size: 13px;
     }
   }
