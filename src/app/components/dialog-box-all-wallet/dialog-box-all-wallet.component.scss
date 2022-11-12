@@ -1,0 +1,20 @@
+button {
+  cursor: pointer;
+  border: 0;
+  width: 100%;
+  background-color: var(--background-color-wallet-box);
+  display: flex;
+  align-items: center;
+}
+
+.wallet-metamask {
+  img {
+    width: 130px;
+    height: 130px;
+    border-radius: 20px;
+  }
+  p {
+    color: var(--color-white);
+    padding: 20px;
+  }
+}
