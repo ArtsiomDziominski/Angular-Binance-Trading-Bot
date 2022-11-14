@@ -46,7 +46,6 @@ export class OrderComponent implements OnInit {
   public symbolControl = new FormControl(this.symbolToken, [Validators.required, Validators.minLength(7)]);
   public symbolAutocomplete: string[] = [];
   public symbolAutocompleteFiltered?: Observable<string[]>;
-  public decimalPoint: number = 0;
 
   constructor(
     private http: HttpClient,

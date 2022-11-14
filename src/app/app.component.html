@@ -1,30 +1,39 @@
 <div class="wrapper">
+  <div class="parallelogram"></div>
+  <div class="retro"></div>
+  <div class="leaf"></div>
   <header class="header">
-    <a class="logo" href="/">
-      <p class="logo__name_yellow">Bot Binance</p>
-      <p class="logo__name_white">Слей последние деньги</p>
-    </a>
-    <nav class="nav">
-      <a
-        class="menu__main"
-        [routerLink]="'/'"
-      >Main</a>
-      <a
-        class="menu__order"
-        [routerLink]="'/order'"
-      >Order</a>
-      <a
-        class="menu__statistics"
-        [routerLink]="'/stat'"
-      >Statistics</a>
-      <a
-        class="menu__api"
-        (click)="openDialog()">API</a>
-      <a
-        class="menu__settings"
-        [routerLink]="'/set'"
-      >Settings</a>
-    </nav>
+    <div class="header__content">
+      <a class="logo" href="/">
+        <p class="logo__name_yellow">Bot Binance</p>
+        <p class="logo__name_white">Слей последние деньги</p>
+      </a>
+      <nav class="nav">
+        <a
+          class="menu__main"
+          [routerLink]="'/'"
+        >Main</a>
+        <a
+          class="menu__order"
+          [routerLink]="'/order'"
+        >Order</a>
+        <a
+          class="menu__statistics"
+          [routerLink]="'/stat'"
+        >Statistics</a>
+        <a
+          class="menu__api"
+          (click)="openDialog()">API</a>
+        <a
+          class="menu__settings"
+          [routerLink]="'/set'"
+        >Settings</a>
+      </nav>
+      <section class="connect-wallet">
+        <p class="connect-wallet__current-balance">{{currentBalance}}</p>
+        <button mat-button (click)="openDialogAllWallet()">{{isConnectWallet? addressWallet.slice(0, 4) + '...' + addressWallet.slice(38)  : 'Connect'}}</button>
+      </section>
+    </div>
   </header>
   <main class="main">
     <router-outlet></router-outlet>
