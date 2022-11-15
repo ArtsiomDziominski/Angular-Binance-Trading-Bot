@@ -79,9 +79,17 @@ input::-webkit-inner-spin-button {
     flex-direction: column;
     padding: 20px 0;
 
-    mat-slide-toggle {
-      margin-bottom: 20px;
-      color: white;
+    .example-section {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+
+      p {
+        color: white;
+        cursor: pointer;
+        padding-left: 10px;
+        font-size: 14px;
+      }
     }
 
     mat-button-toggle-group {

@@ -6,7 +6,8 @@
     <p>Liquidation</p>
     <p class="header__amount">Amount</p>
     <p class="header__pnl">PNL</p>
-    <button class="header__button-close" (click)="orderService.closeAllCurrentsOrders(allCurrentToken)">Close all</button>
+    <button class="header__button-close" (click)="orderService.closeAllCurrentsOrders(allCurrentToken!)">Close all
+    </button>
   </section>
   <section class="main" *ngIf="isLoader; else loader">
     <div *ngFor="let currentToken of allCurrentToken;">
@@ -22,14 +23,22 @@
   </section>
 
   <ng-template #loader>
-    <div class="loader"><div></div></div>
+    <div class="loader">
+      <div></div>
+    </div>
   </ng-template>
 
   <form class="example-form" [formGroup]="newOrderFormGroup"
         (ngSubmit)="newOrder(symbolToken, 'BUY', quantityToken, priceToken, quantityOrders, distanceToken)">
 
-    <mat-slide-toggle [color]="colorSlideToggle" checked="isToggleRepeatOrder"
-                      (click)="toggleRepeatOrder()">Repeat orders</mat-slide-toggle>
+    <section class="example-section" (click)="toggleRepeatOrder()">
+      <mat-slide-toggle class="example-margin"
+                        [color]="colorSlideToggle"
+                        [checked]="isToggleRepeatOrder"
+                        [disabled]="true"
+      ></mat-slide-toggle>
+      <p>Repeat orders</p>
+    </section>
 
     <mat-button-toggle-group>
       <mat-button-toggle checked (click)="isInputPriceLimit=false">MARKET</mat-button-toggle>
@@ -43,7 +52,7 @@
              placeholder="BNBUSDT"
              [formControl]="symbolControl"
              [matAutocomplete]="auto"
-              required>
+             required>
       <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
         <mat-option *ngFor="let option of symbolAutocompleteFiltered | async" [value]="option">
           {{option}}
@@ -68,7 +77,8 @@
 
     <mat-form-field class="example-full-width" appearance="outline">
       <mat-label>Amount Orders</mat-label>
-      <input matInput type="number" name="amount_orders" placeholder="15" formControlName="quantityOrdersControl" required>
+      <input matInput type="number" name="amount_orders" placeholder="15" formControlName="quantityOrdersControl"
+             required>
     </mat-form-field>
 
     <mat-form-field class="example-full-width" appearance="outline" *ngIf="isInputNumbersComma">
@@ -77,7 +87,9 @@
     </mat-form-field>
 
     <div class="form__button">
-      <button mat-raised-button type="submit" color="accent" [disabled]="newOrderFormGroup.invalid || symbolControl.invalid">BUY</button>
+      <button mat-raised-button type="submit" color="accent"
+              [disabled]="newOrderFormGroup.invalid || symbolControl.invalid">BUY
+      </button>
     </div>
   </form>
 </article>

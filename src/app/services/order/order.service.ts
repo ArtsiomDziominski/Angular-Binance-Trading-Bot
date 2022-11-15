@@ -59,11 +59,15 @@ export class OrderService {
     const URL: string = BURL + '/market-order/' + JSON.stringify(params)
     console.log(URL)
     this.http.get(URL, {responseType: 'text' as 'json'})
-      .subscribe(value => console.log(value))
-    this.cancelOpenOrders(symbol);
+      .subscribe(value => {
+        console.log(value)
+        this.cancelOpenOrders(symbol);
+      })
+
   }
 
   public cancelOpenOrders(symbol: string) {
+    console.log('cancelOpenOrders' + symbol);
     const apiKey: { akey: string, skey: string } | undefined = this.setAPIkey()
     const dataQueryString = `symbol=${symbol}&timestamp=` + Date.now();
     const signature: string = this.hashFunctions(dataQueryString, apiKey);

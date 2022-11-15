@@ -1,10 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {ICurrenTokens} from "../../interface/currentToken";
 import {LocalStorageService} from "../../services/local-storage/local-storage.service";
-import {API_KEY} from "../../const/const";
+import {API_KEY, REPEAT_ORDER} from "../../const/const";
 import {OrderService} from "../../services/order/order.service";
-import {map, Observable, startWith} from "rxjs";
+import {map, Observable, startWith, Subscription} from "rxjs";
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {FunctionsOrderService} from "../../services/order/functions-order.service";
 import {ThemePalette} from "@angular/material/core";
@@ -18,8 +18,8 @@ import {ISymbolNumberAfterComma} from "../../interface/symbol-price-number-after
   templateUrl: './order.component.html',
   styleUrls: ['./order.component.scss']
 })
-export class OrderComponent implements OnInit {
-  public allCurrentToken: ICurrenTokens[] = [];
+export class OrderComponent implements OnInit, OnDestroy {
+  public allCurrentToken: ICurrenTokens[] | undefined = [];
   public apiKey: IApiKey | undefined;
   public isInputPriceLimit: boolean = false;
   public isInputNumbersComma: boolean = false;
@@ -47,6 +47,12 @@ export class OrderComponent implements OnInit {
   public symbolAutocomplete: string[] = [];
   public symbolAutocompleteFiltered?: Observable<string[]>;
 
+  public getCurrentOpenOrder$!: Subscription;
+  public newOrderFormGroup$!: Subscription;
+  public currentOpenOrder$!: Subscription;
+  public newOrder$!: Subscription;
+  public symbolControl$!: Subscription;
+
   constructor(
     private http: HttpClient,
     private localStorageService: LocalStorageService,
@@ -62,52 +68,73 @@ export class OrderComponent implements OnInit {
     this.getValueNewOrderFormGroup();
     this.functionsOrderService.setToggleRepeatOrder(this.isToggleRepeatOrder);
     this.functionsOrderService.filterPriceTokenNumberAfterComma();
+    this.isToggleRepeatOrder = JSON.parse(<string>this.localStorageService.getLocalStorage(REPEAT_ORDER));
+  }
+
+  ngOnDestroy() {
+    this.getCurrentOpenOrder$.unsubscribe()
+    this.newOrderFormGroup$.unsubscribe()
+    this.currentOpenOrder$.unsubscribe()
+    this.newOrder$.unsubscribe()
+    this.symbolControl$.unsubscribe()
   }
 
   public setAPIkey(): void {
     this.apiKey = JSON.parse(<string>this.localStorageService.getLocalStorage(API_KEY)) || '[]';
   }
 
-  public getCurrentOpenOrder(): void {
-    this.orderService.getCurrentOpenOrder().subscribe((value: any) => {
-      this.allCurrentToken = value.filter((v: any) => v.positionAmt > 0);
-      value.forEach((v: any) => this.symbolAutocomplete.push(v.symbol))
-      this.isLoader = true;
-    });
+  public repeatGetCurrentOpenOrder() {
     setInterval(() => {
       let activeCurrentToken: string[] = [];
-      this.orderService.getCurrentOpenOrder()
-        .subscribe((value: any) => {
-          this.allCurrentToken = value.filter((v: any) => v.positionAmt > 0);
+      try {
+        this.getCurrentOpenOrder$ = this.orderService.getCurrentOpenOrder()
+          .subscribe((value: any) => {
+            this.allCurrentToken = value.filter((v: any) => v.positionAmt > 0);
 
-          if (this.functionsOrderService.toggleRepeatOrder) {
-            this.allCurrentToken.forEach((v) => activeCurrentToken.push(v.symbol))
-            if (this.oldActiveCurrentToken.length > activeCurrentToken.length) {
-              const symbolsPendingOrder = this.oldActiveCurrentToken.filter(value => value !== this.functionsOrderService.searchSymbolNotActive(value, activeCurrentToken));
-              this.oldActiveCurrentToken.forEach(symbol => this.orderService.cancelOpenOrders(symbol));
-              setTimeout(() => {
-                symbolsPendingOrder.forEach((symbolToken: string) => {
-                  const paramOrder: IParamsOrder = JSON.parse(this.localStorageService.getLocalStorage(symbolToken) || '[]');
-                  this.newOrder(symbolToken, paramOrder.side, paramOrder.quantity, paramOrder.price, paramOrder.quantityOrders, paramOrder.distanceToken);
-                })
-              }, 3000)
+            if (this.isToggleRepeatOrder) {
+              this.allCurrentToken!.forEach((v) => activeCurrentToken.push(v.symbol))
+              if (this.oldActiveCurrentToken.length > activeCurrentToken.length) {
+                const symbolsPendingOrder = this.oldActiveCurrentToken.filter(value => value !== this.functionsOrderService.searchSymbolNotActive(value, activeCurrentToken));
+                this.orderService.cancelOpenOrders(symbolsPendingOrder[0])
+
+                setTimeout(() => {
+                  symbolsPendingOrder.forEach((symbolToken: string) => {
+                    const paramOrder: IParamsOrder = JSON.parse(this.localStorageService.getLocalStorage(symbolToken) || '[]');
+                    this.newOrder(symbolToken, paramOrder.side, paramOrder.quantity, paramOrder.price, paramOrder.quantityOrders, paramOrder.distanceToken);
+                  })
+                }, 3000)
+              }
             }
-          }
-          this.oldActiveCurrentToken = []
-          this.allCurrentToken.forEach((v) => this.oldActiveCurrentToken.push(v.symbol))
-        });
+            this.oldActiveCurrentToken = []
+            this.allCurrentToken!.forEach((v) => this.oldActiveCurrentToken.push(v.symbol))
+          });
+      } catch (e) {
+        console.log('Error getCurrentOpenOrder')
+      }
+
     }, 3000)
   }
 
-  public newOrder(symbolToken: string, side: string, quantityToken: number = 0, priceToken: number = 0, quantityOrders: number = 0, distanceToken: number = 0) {
+  public getCurrentOpenOrder(): void {
+    this.currentOpenOrder$ = this.orderService.getCurrentOpenOrder().subscribe((value: any) => {
+      this.allCurrentToken = value.filter((v: any) => v.positionAmt > 0) || undefined;
+      value.forEach((v: any) => this.symbolAutocomplete.push(v.symbol))
+      this.isLoader = true;
+    });
+    this.repeatGetCurrentOpenOrder();
+  }
+
+  public async newOrder(symbolToken: string, side: string, quantityToken: number = 0, priceToken: number = 0, quantityOrders: number = 0, distanceToken: number = 0) {
     let setIntervalAmount: number = 0;
+    let quantityTokenSumm: number = 0;
+    let quantityTokenStart: number = quantityToken;
     if (priceToken === null || undefined) {
       priceToken = 0;
     }
     this.functionsOrderService.saveParamOrder(symbolToken, side, quantityToken, priceToken, quantityOrders, distanceToken);
     this.functionsOrderService.popUpInfo(NEW_ORDER);
-    let setIntervalNewOrder = setInterval(() => {
-      this.orderService.newOrder(symbolToken, side, quantityToken, priceToken)
+    let setIntervalNewOrder = setInterval(async () => {
+      this.newOrder$ = this.orderService.newOrder(symbolToken, side, quantityToken, priceToken)
         .subscribe((value: any) => {
           value = JSON.parse(value)
           if (value.code !== undefined) {
@@ -115,15 +142,17 @@ export class OrderComponent implements OnInit {
             clearInterval(setIntervalNewOrder);
           }
         });
-      priceToken = this.functionsOrderService.calculationPrice(symbolToken, priceToken, distanceToken, this.priceCommaNumbers);
-      quantityToken = this.functionsOrderService.calculationQuantityToken(quantityToken);
+      quantityTokenSumm += quantityToken
+      console.log(quantityTokenSumm)
+      priceToken = await this.functionsOrderService.calculationPrice(symbolToken, priceToken, distanceToken, this.priceCommaNumbers);
+      quantityToken = this.functionsOrderService.calculationQuantityToken(quantityToken, quantityTokenStart);
+
       setIntervalAmount++;
-      if (setIntervalAmount <= quantityOrders) {
+      if (setIntervalAmount >= quantityOrders) {
         this.functionsOrderService.popUpInfo(`${side} ${symbolToken}`);
         clearInterval(setIntervalNewOrder);
       }
     }, 1500)
-    this.symbolToken = '';
   }
 
   private autocompleteFiltered() {
@@ -139,20 +168,21 @@ export class OrderComponent implements OnInit {
   public toggleRepeatOrder() {
     this.isToggleRepeatOrder = !this.isToggleRepeatOrder;
     this.functionsOrderService.setToggleRepeatOrder(this.isToggleRepeatOrder);
+    this.localStorageService.setLocalStorage(REPEAT_ORDER, this.isToggleRepeatOrder);
   }
 
   public getValueNewOrderFormGroup() {
-    this.newOrderFormGroup.valueChanges.subscribe(paramsNewOrder => {
+    this.newOrderFormGroup$ = this.newOrderFormGroup.valueChanges.subscribe(paramsNewOrder => {
       this.priceToken = Number(paramsNewOrder.priceControl || 0);
       this.quantityToken = Number(paramsNewOrder.quantityTokenControl || 0);
       this.quantityOrders = Number(paramsNewOrder.quantityOrdersControl || 0);
       this.distanceToken = Number(paramsNewOrder.distanceTokenControl || 0);
       this.priceCommaNumbers = Number(paramsNewOrder.priceCommaNumbersControl || 0);
     })
-    this.symbolControl.valueChanges.subscribe((symbolControlValue: string | null) => {
+    this.symbolControl$ = this.symbolControl.valueChanges.subscribe((symbolControlValue: string | null) => {
       this.symbolToken = symbolControlValue || ''
       this.isInputNumbersComma = true;
-      this.functionsOrderService.getListSymbolNumberComma().forEach((value:ISymbolNumberAfterComma) => {
+      this.functionsOrderService.getListSymbolNumberComma().forEach((value: ISymbolNumberAfterComma) => {
         if (value.symbol == this.symbolToken) {
           this.isInputNumbersComma = false;
         }

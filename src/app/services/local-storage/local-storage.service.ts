@@ -5,8 +5,8 @@ import {API_KEY} from "../../const/const";
   providedIn: 'root'
 })
 export class LocalStorageService {
-  public setLocalStorage(key: string, value: string): void {
-    localStorage.setItem(key, value)
+  public setLocalStorage(key: string, value: string| boolean): void {
+    localStorage.setItem(key, <string>value)
   }
 
   public getLocalStorage(key: string): string | null | undefined {
