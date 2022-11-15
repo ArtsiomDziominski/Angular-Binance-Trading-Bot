@@ -4,6 +4,7 @@ import {LocalStorageService} from "../local-storage/local-storage.service";
 import {IParamsOrder} from "../../interface/params-order";
 import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 import {ISymbolNumberAfterComma} from "../../interface/symbol-price-number-after-comma";
+import {HTTP_GET_24hr} from "../../const/http-request";
 
 @Injectable({
   providedIn: 'root'
@@ -16,12 +17,19 @@ export class FunctionsOrderService {
               private _snackBar: MatSnackBar) {
   }
 
-  public getCurrentPriceToken(symbolToken: string, priceToken: number): number {
-    if (priceToken === 0) {
-      do {
-        let currentToken: any = this.mainBlockPriceService.getAllTokens().find((v: any) => v.symbol === symbolToken);
-        priceToken = Number(currentToken.lastPrice) || 0;
-      } while (priceToken == 0)
+  public getAllTokens(): Promise<Response> {
+    return fetch(HTTP_GET_24hr)
+  }
+
+  public async getCurrentPriceToken(symbolToken: string, priceToken: number): Promise<number> {
+    let currentToken: any;
+    if (priceToken <= 0) {
+      await this.getAllTokens()
+        .then(res => res.json())
+        .then(result => {
+          currentToken = result.find((v: any) => v.symbol === symbolToken)
+          priceToken = Number(currentToken.lastPrice);
+        })
     }
     return priceToken;
   }
@@ -66,7 +74,7 @@ export class FunctionsOrderService {
     return symbolNotActive;
   }
 
-  public calculationPrice(symbolToken: string, priceToken: number, distanceToken: number, priceCommaNumbers: number): number {
+  public async calculationPrice(symbolToken: string, priceToken: number, distanceToken: number, priceCommaNumbers: number): Promise<number> {
     if (priceCommaNumbers === 0) {
       this.listSymbolNumberComma.forEach((v: ISymbolNumberAfterComma) => {
         if (v.symbol === symbolToken) {
@@ -74,15 +82,14 @@ export class FunctionsOrderService {
         }
       })
     }
-    priceToken = this.getCurrentPriceToken(symbolToken, priceToken);
+    priceToken = await this.getCurrentPriceToken(symbolToken, priceToken);
     priceToken = Number.parseFloat(String(priceToken))
     priceToken = Number(priceToken.toFixed(priceCommaNumbers))
     priceToken = priceToken - distanceToken;
     return priceToken
   }
 
-  public calculationQuantityToken(quantityToken: number): number {
-    let quantityTokenStart: number = quantityToken;
+  public calculationQuantityToken(quantityToken: number, quantityTokenStart: number): number {
     quantityToken += quantityTokenStart;
     quantityToken = Number.parseFloat(String(quantityToken))
     quantityToken = Number(quantityToken.toFixed(3))
