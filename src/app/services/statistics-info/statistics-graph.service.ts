@@ -14,7 +14,7 @@ export class StatisticsGraphService {
   constructor() {
   }
 
-  public filterIncomeHistory(incomeHistory: IIncomeHistoryFull[] = []) {
+  public filterIncomeHistory(incomeHistory: IIncomeHistoryFull[] = []): void {
     incomeHistory.forEach((res: IIncomeHistoryFull) => {
       switch (res.incomeType) {
         case "COMMISSION":

@@ -46,7 +46,7 @@ export class FunctionsOrderService {
     this.localStorageService.setLocalStorage(symbol, JSON.stringify(paramOrder))
   }
 
-  public setToggleRepeatOrder(isToggleRepeatOrder: boolean) {
+  public setToggleRepeatOrder(isToggleRepeatOrder: boolean): void {
     this.isToggleRepeatOrder = isToggleRepeatOrder;
   }
 

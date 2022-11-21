@@ -1,19 +1,23 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {StatisticsInfoServerService} from "../../services/statistics-info/statistics-info-server.service";
 import {IStatAcc} from "../../interface/stat-acc";
 import {TextChangeService} from "../../services/text-change.service";
 import {BALANCE, INCOME_HISTORY, LIMIT_INCOME_HISTORY} from "../../const/http-request";
 import {IIncomeHistoryFull} from "../../interface/statistics/income-history-full";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-statistics',
   templateUrl: './statistics.component.html',
   styleUrls: ['./statistics.component.scss']
 })
-export class StatisticsComponent implements OnInit {
+export class StatisticsComponent implements OnInit, OnDestroy {
   public statisticsAccount: IStatAcc[] | undefined;
   public isLoader: boolean = false;
   public incomeHistory!: IIncomeHistoryFull[];
+
+  public balance$!:Subscription;
+  public incomeHistory$!:Subscription;
 
   constructor(
     public editText: TextChangeService,
@@ -27,8 +31,13 @@ export class StatisticsComponent implements OnInit {
     this.getIncomeHistory();
   }
 
+  public ngOnDestroy(): void {
+    this.balance$.unsubscribe();
+    this.incomeHistory$.unsubscribe();
+  }
+
   public getStatAcc(): void {
-    this.statisticsInfoService.requestToServer(BALANCE)
+    this.balance$ = this.statisticsInfoService.requestToServer(BALANCE)
       .subscribe((response) => {
         this.statisticsAccount = <IStatAcc[]>response;
         this.isLoader = true;
@@ -36,7 +45,7 @@ export class StatisticsComponent implements OnInit {
   }
 
   public getIncomeHistory(): void {
-    this.statisticsInfoService.requestToServer(INCOME_HISTORY, LIMIT_INCOME_HISTORY)
+    this.incomeHistory$ = this.statisticsInfoService.requestToServer(INCOME_HISTORY, LIMIT_INCOME_HISTORY)
       .subscribe((response) => {
         this.incomeHistory = <IIncomeHistoryFull[]>response;
         this.isLoader = true;

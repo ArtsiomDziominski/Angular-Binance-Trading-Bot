@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {MainBlockPriceService} from "../../services/main-block-token-price/main-block-price.service";
 import {TextChangeService} from "../../services/text-change.service";
 import {IPrice} from "../../interface/price-token";
+import {Subscription} from "rxjs";
+import {ICurrenTokens} from "../../interface/currentToken";
 
 @Component({
   selector: 'app-main',
@@ -11,6 +13,7 @@ import {IPrice} from "../../interface/price-token";
 export class MainComponent implements OnInit {
   public priceTokensSave: IPrice[] = [];
   public pricePercentSort: IPrice[] = [];
+  private priceTokenMain$!: Subscription;
 
   constructor(
     private mainBlockPrice: MainBlockPriceService,
@@ -19,22 +22,25 @@ export class MainComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.mainBlockPrice.mainSaveTokensBeh.subscribe(() => {
-      this.updatePriceTokens();
-    });
+    this.priceTokenMain$ = this.mainBlockPrice.mainSaveTokensBeh
+      .subscribe(() => {
+        this.updatePriceTokens();
+      });
     this.updatePriceTokens();
     setInterval(() => this.updatePriceTokens(), 31000);
     setTimeout(() => this.filterTokensPercent(), 3000);
   }
 
   public updatePriceTokens(): void {
-    this.mainBlockPrice.getPriceTokenMain().subscribe((data: any) => {
-      this.priceTokensSave = data.sort((x: any, y: any) => x.symbol.localeCompare(y.symbol));
-    });
+    this.priceTokenMain$ = this.mainBlockPrice.getPriceTokenMain()
+      .subscribe((res: ICurrenTokens[] | any) => {
+        this.priceTokensSave = res.sort((x: ICurrenTokens, y: ICurrenTokens) => x.symbol.localeCompare(y.symbol));
+        this.priceTokenMain$.unsubscribe();
+      });
   }
 
-  public filterTokensPercent() {
+  public filterTokensPercent(): void {
     const allTokensPrice: IPrice[] = this.mainBlockPrice.getAllTokens();
-    this.pricePercentSort = allTokensPrice.sort((x: any, y: any) => Number(y.priceChangePercent.localeCompare(Number(x.priceChangePercent))));
+    this.pricePercentSort = allTokensPrice.sort((x: IPrice, y: any) => Number(y.priceChangePercent.localeCompare(Number(x.priceChangePercent))));
   }
 }
