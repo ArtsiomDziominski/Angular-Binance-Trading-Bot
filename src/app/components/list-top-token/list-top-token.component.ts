@@ -9,7 +9,7 @@ import {TextChangeService} from "../../services/text-change.service";
 export class ListTopTokenComponent {
   @Input() symbol: string = '';
   @Input() lastPrice: string = '';
-  @Input() priceChangePercent: string = '';
+  @Input() priceChangePercent: string | number = '';
   @Input() volume: string | number | undefined = '';
 
   constructor(public textChangeService: TextChangeService) {

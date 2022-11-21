@@ -19,11 +19,11 @@ export class SettingsComponent {
   ) {
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.tokenSaveFormGroup = new FormGroup({nameToken: new FormControl('', [Validators.required, Validators.minLength(4)])})
   }
 
-  public saveTokenMainBoxPrice(token: string) {
+  public saveTokenMainBoxPrice(token: string): void {
     this.functionsOrderService.popUpInfo(this.mainBlockPriceService.addTokenMainList(token));
   }
-  }
+}

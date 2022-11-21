@@ -1,7 +1,7 @@
 export interface IPrice {
   symbol: string;
   lastPrice: string;
-  priceChangePercent: string;
+  priceChangePercent: string| number;
   closeTime?: number | string;
   count?: number | string;
   firstId?: number | string;

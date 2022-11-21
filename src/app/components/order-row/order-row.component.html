@@ -8,5 +8,5 @@
   <p class="amount">{{amount}}</p>
   <p class="pnl" [class.color-green]="pnlToken>0" [class.color-red]="pnlToken<0">{{pnlToken}}</p>
   <button (click)="openDialogTakeProfit()">Take profit</button>
-  <button (click)="orderService.marketOrder(symbol, 'SELL', amount, 'MARKET')">Market</button>
+  <button (click)="orderService.marketOrder(symbol,'SELL',amount,'MARKET')">Market</button>
 </section>

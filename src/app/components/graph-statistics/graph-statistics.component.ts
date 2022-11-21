@@ -2,13 +2,13 @@ import {ChangeDetectionStrategy, Component, Input, OnInit, OnChanges} from '@ang
 import {Chart, registerables} from "chart.js";
 import {IIncomeHistory} from "../../interface/statistics/income-history";
 import {StatisticsGraphService} from "../../services/statistics-info/statistics-graph.service";
-import {GRAPH_PROFIT, GRAPH_LABEL_COMMISSION, GRAPH_REALIZED_PNL} from "../../const/graph";
 import {IIncomeHistoryFilter} from "../../interface/statistics/income-history-filter";
 import {IIncomeHistoryFull} from "../../interface/statistics/income-history-full";
 import {
   GRAPH_LABEL_COMMISSION_BACKGROUND_COLOR, GRAPH_LABEL_COMMISSION_BORDER_COLOR,
   GRAPH_PROFIT_BACKGROUND_COLOR, GRAPH_PROFIT_BORDER_COLOR,
-  GRAPH_REALIZED_PN_BACKGROUND_COLOR, GRAPH_REALIZED_PN_BORDER_COLOR
+  GRAPH_REALIZED_PN_BACKGROUND_COLOR, GRAPH_REALIZED_PN_BORDER_COLOR,
+  GRAPH_PROFIT, GRAPH_LABEL_COMMISSION, GRAPH_REALIZED_PNL
 } from "../../const/graph";
 
 @Component({
@@ -40,12 +40,14 @@ export class GraphStatisticsComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    this.renderingGraph()
+    this.renderingGraph();
   }
 
   ngOnChanges() {
-    this.getIncomeTimeHistory()
-    this.chart.update()
+    this.getIncomeTimeHistory();
+    try {
+      this.chart.update();
+    } catch {console.log('error update')}
   }
 
   public renderingGraph() {
