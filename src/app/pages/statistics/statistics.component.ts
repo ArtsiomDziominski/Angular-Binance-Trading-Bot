@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {StatisticsInfoServerService} from "../../services/statistics-info/statistics-info-server.service";
 import {IStatAcc} from "../../interface/stat-acc";
 import {TextChangeService} from "../../services/text-change.service";
@@ -11,7 +11,7 @@ import {Subscription} from "rxjs";
   templateUrl: './statistics.component.html',
   styleUrls: ['./statistics.component.scss']
 })
-export class StatisticsComponent implements OnInit, OnDestroy {
+export class StatisticsComponent implements OnInit {
   public statisticsAccount: IStatAcc[] | undefined;
   public isLoader: boolean = false;
   public incomeHistory!: IIncomeHistoryFull[];
@@ -31,16 +31,11 @@ export class StatisticsComponent implements OnInit, OnDestroy {
     this.getIncomeHistory();
   }
 
-  public ngOnDestroy(): void {
-    this.balance$.unsubscribe();
-    this.incomeHistory$.unsubscribe();
-  }
-
   public getStatAcc(): void {
     this.balance$ = this.statisticsInfoService.requestToServer(BALANCE)
       .subscribe((response) => {
         this.statisticsAccount = <IStatAcc[]>response;
-        this.isLoader = true;
+        this.balance$.unsubscribe();
       })
   }
 
@@ -49,6 +44,7 @@ export class StatisticsComponent implements OnInit, OnDestroy {
       .subscribe((response) => {
         this.incomeHistory = <IIncomeHistoryFull[]>response;
         this.isLoader = true;
+        this.incomeHistory$.unsubscribe();
       })
   }
 

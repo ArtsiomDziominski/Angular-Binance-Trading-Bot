@@ -1,7 +1,6 @@
 import {Component} from '@angular/core';
 import {WalletAptosService} from "../../services/wallet/wallet-aptos.service";
 import {MatDialogRef} from "@angular/material/dialog";
-import {IAddressKey} from "../../interface/address-key";
 import {WalletBscService} from "../../services/wallet/wallet-bsc.service";
 
 
@@ -16,11 +15,6 @@ export class DialogBoxAllWalletComponent {
     public walletBsc: WalletBscService,
     public dialogRef: MatDialogRef<DialogBoxAllWalletComponent>,
   ) {
-  }
-
-  public connectWalletPetra(): void | Promise<void> {
-    this.wallet.connectWallet()
-      .then((res: IAddressKey) => this.dialogRef.close(res.address))
   }
 
   public connectWalletMetamask(): void | Promise<void> {
