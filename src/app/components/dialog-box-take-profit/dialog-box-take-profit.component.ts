@@ -15,6 +15,6 @@ export class DialogBoxTakeProfitComponent {
   }
 
   ngOnInit() {
-    this.takeProfit.valueChanges.subscribe((value: string | null) => this.data.profit = Number(value) || 0)
+    this.takeProfit.valueChanges.subscribe((value: string | null) => this.data.profit = Number(value) || 0);
   }
 }

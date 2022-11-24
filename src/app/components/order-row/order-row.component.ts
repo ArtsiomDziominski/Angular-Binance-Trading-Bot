@@ -44,7 +44,7 @@ export class OrderRowComponent {
 
   ngDoCheck(){
     if(this.newOrder$) {
-      this.newOrder$.unsubscribe()
+      this.newOrder$.unsubscribe();
     }
   }
 
@@ -57,12 +57,12 @@ export class OrderRowComponent {
     dialogRef.afterClosed()
       .subscribe(result => {
       if(result !== undefined) {
-        const amount: number = Number(this.amount)
+        const amount: number = Number(this.amount);
         this.functionsOrderService.popUpInfo(`${this.symbol} ${result}`);
         this.newOrder$ = this.orderService.newOrder(this.symbol, 'SELL', amount, result)
           .subscribe(res => {
-            const result:IMsgServer = JSON.parse(<string>res)
-            this.functionsOrderService.popUpInfo(result.msg)
+            const result:IMsgServer = JSON.parse(<string>res);
+            this.functionsOrderService.popUpInfo(result.msg);
           });
       }
     });

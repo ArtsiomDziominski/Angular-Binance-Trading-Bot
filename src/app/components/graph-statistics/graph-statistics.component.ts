@@ -47,7 +47,8 @@ export class GraphStatisticsComponent implements OnInit, OnChanges {
     this.getIncomeTimeHistory();
     try {
       this.chart.update();
-    } catch {console.log('error update')}
+    } catch {
+    }
   }
 
   public renderingGraph() {
@@ -104,14 +105,18 @@ export class GraphStatisticsComponent implements OnInit, OnChanges {
   public sortForGraphIncomeHistoryRealizedPNL(incomeHistoryRealizedPNL: IIncomeHistoryFilter[]) {
     incomeHistoryRealizedPNL.forEach(v => {
       this.incomeRealizedPNL.push(v.income);
+      console.log(v)
       this.incomeTypeRealizedPNL = v.incomeType;
       this.incomeTimeRealizedPNL.push(v.date);
     })
   }
 
   public sortForGraphIncomeHistoryProfit() {
+    console.log(this.incomeCommission)
+    console.log(this.incomeRealizedPNL)
+
     for (let i = 0; i < this.incomeCommission.length; i++) {
-      this.profitPNL.push(this.incomeCommission[i] + this.incomeRealizedPNL[i]);
+      this.profitPNL.push(this.incomeCommission[i] + this.incomeRealizedPNL[i] || 0);
     }
   }
 }

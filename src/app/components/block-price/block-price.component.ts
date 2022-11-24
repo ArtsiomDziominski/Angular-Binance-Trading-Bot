@@ -21,7 +21,7 @@ export class BlockPriceComponent{
   }
 
   public editStringToNumber(h24Token: string): number {
-    return Number(h24Token)
+    return Number(h24Token);
   }
 
   public deleteBlockToken(nameToken: string): void {

@@ -81,11 +81,11 @@ export class OrderComponent implements OnInit {
         .subscribe((value: IOpenOrder[]) => {
           this.allCurrentToken = value.filter((v: IOpenOrder) => v.positionAmt > 0);
           if (this.isToggleRepeatOrder) {
-            this.activeToggleRepeatOrder()
+            this.activeToggleRepeatOrder();
           }
-          this.oldActiveCurrentToken = []
-          this.allCurrentToken!.forEach((v) => this.oldActiveCurrentToken.push(v.symbol))
-          this.getCurrentOpenOrder$.unsubscribe()
+          this.oldActiveCurrentToken = [];
+          this.allCurrentToken!.forEach((v) => this.oldActiveCurrentToken.push(v.symbol));
+          this.getCurrentOpenOrder$.unsubscribe();
         });
     }, 3000)
   }

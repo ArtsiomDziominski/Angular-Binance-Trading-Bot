@@ -39,9 +39,9 @@ export class ApiBoxComponent {
   }
 
   public saveApi(): void {
-    let key: { akey: string, skey: string } = {akey: this.apiKey, skey: this.secretKey}
+    let key: { akey: string, skey: string } = {akey: this.apiKey, skey: this.secretKey};
     this.localStorageService.setLocalStorage(API_KEY, JSON.stringify(key!));
-    this.functionsOrderService.popUpInfo('Save API')
+    this.functionsOrderService.popUpInfo('Save API');
     this.closeDialogBox();
   }
 }
