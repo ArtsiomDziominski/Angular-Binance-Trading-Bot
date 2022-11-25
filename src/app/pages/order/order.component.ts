@@ -12,6 +12,7 @@ import {IApiKey} from "../../interface/api-key";
 import {NEW_ORDER} from "../../const/message-pop-up-info";
 import {ISymbolNumberAfterComma} from "../../interface/symbol-price-number-after-comma";
 import {IOpenOrder} from "../../interface/open-order";
+import {IMsgServer} from "../../interface/msg-server";
 
 @Component({
   selector: 'app-order',
@@ -133,10 +134,10 @@ export class OrderComponent implements OnInit {
 
     let setIntervalNewOrder = setInterval(async () => {
       this.newOrder$ = this.orderService.newOrder(symbolToken, side, quantityToken, priceToken)
-        .subscribe((value: any) => {
-          value = JSON.parse(value)
-          if (value.code !== undefined) {
-            this.functionsOrderService.popUpInfo(value.msg);
+        .subscribe((value: string | any) => {
+          const result: IMsgServer = JSON.parse(value)
+          if (result.code !== undefined) {
+            this.functionsOrderService.popUpInfo(result.msg);
             clearInterval(setIntervalNewOrder);
           }
           this.newOrder$.unsubscribe()

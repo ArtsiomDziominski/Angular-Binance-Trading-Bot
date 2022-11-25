@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {LocalStorageService} from "../../services/local-storage/local-storage.service";
 import {API_KEY} from "../../const/const";
 import {MatDialogRef} from "@angular/material/dialog";
@@ -10,7 +10,7 @@ import {FunctionsOrderService} from "../../services/order/functions-order.servic
   templateUrl: './api-box.component.html',
   styleUrls: ['./api-box.component.scss']
 })
-export class ApiBoxComponent {
+export class ApiBoxComponent implements OnInit {
   public apiKey: string = '';
   public secretKey: string = '';
 
@@ -27,7 +27,7 @@ export class ApiBoxComponent {
   ) {
   }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.apiFormGroup.valueChanges.subscribe(valueApi => {
       this.apiKey = valueApi.apiKeyControl || '';
       this.secretKey = valueApi.secretKeyControl || '';

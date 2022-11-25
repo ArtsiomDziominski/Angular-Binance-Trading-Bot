@@ -3,7 +3,6 @@ import {MainBlockPriceService} from "../../services/main-block-token-price/main-
 import {TextChangeService} from "../../services/text-change.service";
 import {IPrice} from "../../interface/price-token";
 import {Subscription} from "rxjs";
-import {ICurrenTokens} from "../../interface/currentToken";
 
 @Component({
   selector: 'app-main',
@@ -33,14 +32,14 @@ export class MainComponent implements OnInit {
 
   public updatePriceTokens(): void {
     this.priceTokenMain$ = this.mainBlockPrice.getPriceTokenMain()
-      .subscribe((res: ICurrenTokens[] | any) => {
-        this.priceTokensSave = res.sort((x: ICurrenTokens, y: ICurrenTokens) => x.symbol.localeCompare(y.symbol));
+      .subscribe((res: IPrice[]) => {
+        this.priceTokensSave = res.sort((x: IPrice, y: IPrice) => x.symbol.localeCompare(y.symbol));
         this.priceTokenMain$.unsubscribe();
       });
   }
 
   public filterTokensPercent(): void {
     const allTokensPrice: IPrice[] = this.mainBlockPrice.getAllTokens();
-    this.pricePercentSort = allTokensPrice.sort((x: IPrice, y: any) => Number(y.priceChangePercent.localeCompare(Number(x.priceChangePercent))));
+    this.pricePercentSort = allTokensPrice.sort((x: IPrice, y: IPrice | any) => Number(y.priceChangePercent.localeCompare(Number(x.priceChangePercent))));
   }
 }

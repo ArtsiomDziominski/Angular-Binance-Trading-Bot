@@ -42,22 +42,23 @@ export class MainBlockPriceService {
     return this.mainSaveTokensBeh.getValue();
   }
 
-  public getPriceTokenMain(): Observable<string[]> {
-    return this.http.get(HTTP_GET_24hr).pipe(
-      map((response: any) => {
-        const allPriceTokens: string[] = [];
-        this.allPriceTokens = response;
-        response
-          .find((item: any) => {
-            for (let i = 0; i < this.allMainSaveTokens.length; i++) {
-              if (item.symbol === this.allMainSaveTokens[i]) {
-                allPriceTokens.push(item)
+  public getPriceTokenMain(): Observable<IPrice[]> {
+    return this.http.get(HTTP_GET_24hr)
+      .pipe(
+        map((response: IPrice[] | any) => {
+          const allPriceTokens: IPrice[] = [];
+          this.allPriceTokens = response;
+          response
+            .find((item: IPrice[] | any) => {
+              for (let i = 0; i < this.allMainSaveTokens.length; i++) {
+                if (item.symbol === this.allMainSaveTokens[i]) {
+                  allPriceTokens.push(item)
+                }
               }
-            }
-          });
+            });
 
-        return allPriceTokens;
-      }))
+          return allPriceTokens;
+        }))
   }
 
   public deleteBlockToken(nameToken: string): void {
