@@ -6,7 +6,6 @@ import {DialogBoxTakeProfitComponent} from "../dialog-box-take-profit/dialog-box
 import {FunctionsOrderService} from "../../services/order/functions-order.service";
 import {DIALOG_BOX_PROFIT_WIDTH_260_PX} from "../../const/const";
 import {IMsgServer} from "../../interface/msg-server";
-import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-order-row',
@@ -28,24 +27,17 @@ export class OrderRowComponent {
   public pnlToken!: string | number;
 
   public profit!: number;
-  public newOrder$!: Subscription;
 
   constructor(public textChangeService: TextChangeService, public orderService: OrderService,
               public dialog: MatDialog, private functionsOrderService:FunctionsOrderService) {
   }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.markPrice = this.textChangeService.editToFixed2(this.markPrice);
     this.entryPrice = this.textChangeService.editToFixed2(this.entryPrice);
     this.liquidationPrice = this.textChangeService.editToFixed2(this.liquidationPrice);
     this.pnlToken = this.textChangeService.editToFixed2(this.pnlToken);
     this.markPrice = this.textChangeService.editToFixed2(this.markPrice);
-  }
-
-  ngDoCheck(){
-    if(this.newOrder$) {
-      this.newOrder$.unsubscribe();
-    }
   }
 
   public openDialogTakeProfit(): void {
@@ -55,11 +47,13 @@ export class OrderRowComponent {
     });
 
     dialogRef.afterClosed()
+      .pipe(take(1))
       .subscribe(result => {
       if(result !== undefined) {
         const amount: number = Number(this.amount);
         this.functionsOrderService.popUpInfo(`${this.symbol} ${result}`);
-        this.newOrder$ = this.orderService.newOrder(this.symbol, 'SELL', amount, result)
+        this.orderService.newOrder(this.symbol, 'SELL', amount, result)
+          .pipe(take(1))
           .subscribe(res => {
             const result:IMsgServer = JSON.parse(<string>res);
             this.functionsOrderService.popUpInfo(result.msg);

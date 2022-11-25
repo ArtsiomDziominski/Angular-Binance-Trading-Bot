@@ -95,8 +95,7 @@ export class OrderService {
       "akey": apiKey!.akey
     }
     const URL: string = BURL + '/current-order/' + JSON.stringify(params);
-    // @ts-ignore
-    return this.http.get(URL);
+    return this.http.get<IOpenOrder[]>(URL);
   }
 
   public closeAllCurrentsOrders(allCurrenTokens: IOpenOrder[]): void {
