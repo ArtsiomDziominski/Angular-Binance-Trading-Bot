@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {LocalStorageService} from "../../services/local-storage/local-storage.service";
 import {API_KEY, REPEAT_ORDER} from "../../const/const";
 import {OrderService} from "../../services/order/order.service";
-import {map, Observable, startWith, Subscription} from "rxjs";
+import {map, Observable, startWith, take} from "rxjs";
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {FunctionsOrderService} from "../../services/order/functions-order.service";
 import {ThemePalette} from "@angular/material/core";
@@ -47,12 +47,6 @@ export class OrderComponent implements OnInit {
   public symbolAutocomplete: string[] = [];
   public symbolAutocompleteFiltered?: Observable<string[]>;
 
-  public getCurrentOpenOrder$!: Subscription;
-  public newOrderFormGroup$!: Subscription;
-  public currentOpenOrder$!: Subscription;
-  public newOrder$!: Subscription;
-  public symbolControl$!: Subscription;
-
   constructor(
     private localStorageService: LocalStorageService,
     public orderService: OrderService,
@@ -76,7 +70,8 @@ export class OrderComponent implements OnInit {
 
   public repeatGetCurrentOpenOrder(): void {
     setInterval(() => {
-      this.getCurrentOpenOrder$ = this.orderService.getCurrentOpenOrder()
+      this.orderService.getCurrentOpenOrder()
+        .pipe(take(1))
         .subscribe((value: IOpenOrder[]) => {
           this.allCurrentToken = value.filter((v: IOpenOrder) => v.positionAmt > 0);
           if (this.isToggleRepeatOrder) {
@@ -84,7 +79,6 @@ export class OrderComponent implements OnInit {
           }
           this.oldActiveCurrentToken = [];
           this.allCurrentToken!.forEach((v) => this.oldActiveCurrentToken.push(v.symbol));
-          this.getCurrentOpenOrder$.unsubscribe();
         });
     }, 3000)
   }
@@ -106,12 +100,12 @@ export class OrderComponent implements OnInit {
   }
 
   public async getCurrentOpenOrder(): Promise<void> {
-    this.currentOpenOrder$ = await this.orderService.getCurrentOpenOrder()
+    await this.orderService.getCurrentOpenOrder()
+      .pipe(take(1))
       .subscribe((value: IOpenOrder[]) => {
         this.allCurrentToken = value.filter((v: IOpenOrder) => v.positionAmt > 0) || undefined;
         value.forEach((v: IOpenOrder) => this.symbolAutocomplete.push(v.symbol))
         this.isLoader = true;
-        this.currentOpenOrder$.unsubscribe()
       });
     this.repeatGetCurrentOpenOrder();
   }
@@ -131,14 +125,14 @@ export class OrderComponent implements OnInit {
     let quantityTokenStart: number = quantityToken;
 
     let setIntervalNewOrder = setInterval(async () => {
-      this.newOrder$ = this.orderService.newOrder(symbolToken, side, quantityToken, priceToken)
+      this.orderService.newOrder(symbolToken, side, quantityToken, priceToken)
+        .pipe(take(1))
         .subscribe((value: string | any) => {
           const result: IMsgServer = JSON.parse(value)
           if (result.code !== undefined) {
             this.functionsOrderService.popUpInfo(result.msg);
             clearInterval(setIntervalNewOrder);
           }
-          this.newOrder$.unsubscribe()
         });
       quantityTokenSum += quantityToken
       priceToken = await this.functionsOrderService.calculationPrice(symbolToken, priceToken, distanceToken, this.priceCommaNumbers);
@@ -169,14 +163,18 @@ export class OrderComponent implements OnInit {
   }
 
   public getValueNewOrderFormGroup(): void {
-    this.newOrderFormGroup$ = this.newOrderFormGroup.valueChanges.subscribe(paramsNewOrder => {
+    this.newOrderFormGroup.valueChanges
+      .pipe(take(1))
+      .subscribe(paramsNewOrder => {
       this.priceToken = Number(paramsNewOrder.priceControl || 0);
       this.quantityToken = Number(paramsNewOrder.quantityTokenControl || 0);
       this.quantityOrders = Number(paramsNewOrder.quantityOrdersControl || 0);
       this.distanceToken = Number(paramsNewOrder.distanceTokenControl || 0);
       this.priceCommaNumbers = Number(paramsNewOrder.priceCommaNumbersControl || 0);
     })
-    this.symbolControl$ = this.symbolControl.valueChanges.subscribe((symbolControlValue: string | null) => {
+    this.symbolControl.valueChanges
+      .pipe(take(1))
+      .subscribe((symbolControlValue: string | null) => {
       this.symbolToken = symbolControlValue || ''
       this.isInputNumbersComma = true;
       this.functionsOrderService.getListSymbolNumberComma().forEach((value: ISymbolNumberAfterComma) => {

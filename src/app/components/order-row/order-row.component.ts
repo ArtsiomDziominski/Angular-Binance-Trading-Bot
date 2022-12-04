@@ -6,6 +6,7 @@ import {DialogBoxTakeProfitComponent} from "../dialog-box-take-profit/dialog-box
 import {FunctionsOrderService} from "../../services/order/functions-order.service";
 import {DIALOG_BOX_PROFIT_WIDTH_260_PX} from "../../const/const";
 import {IMsgServer} from "../../interface/msg-server";
+import {take} from "rxjs";
 
 @Component({
   selector: 'app-order-row',
