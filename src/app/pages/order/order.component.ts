@@ -54,7 +54,7 @@ export class OrderComponent implements OnInit {
   ) {
   }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.setAPIkey();
     this.getCurrentOpenOrder();
     this.autocompleteFiltered();
@@ -127,10 +127,10 @@ export class OrderComponent implements OnInit {
     let setIntervalNewOrder = setInterval(async () => {
       this.orderService.newOrder(symbolToken, side, quantityToken, priceToken)
         .pipe(take(1))
-        .subscribe((value: string | any) => {
-          const result: IMsgServer = JSON.parse(value)
-          if (result.code !== undefined) {
-            this.functionsOrderService.popUpInfo(result.msg);
+        .subscribe((value: any) => {
+          value = JSON.parse(value)
+          if (value.code !== undefined) {
+            this.functionsOrderService.popUpInfo(value.msg);
             clearInterval(setIntervalNewOrder);
           }
         });

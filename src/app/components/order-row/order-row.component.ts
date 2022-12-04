@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {TextChangeService} from "../../services/text-change.service";
 import {OrderService} from "../../services/order/order.service";
 import {MatDialog} from "@angular/material/dialog";
@@ -13,7 +13,7 @@ import {take} from "rxjs";
   templateUrl: './order-row.component.html',
   styleUrls: ['./order-row.component.scss']
 })
-export class OrderRowComponent {
+export class OrderRowComponent implements OnInit{
   @Input()
   public symbol!: string;
   @Input()
