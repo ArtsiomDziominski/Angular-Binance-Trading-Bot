@@ -1,4 +1,4 @@
-import {Component, Inject} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {IDialogDataTakeProfit} from "../../interface/dialog-data-take-profit";
 import {FormControl, Validators} from "@angular/forms";
@@ -8,13 +8,14 @@ import {FormControl, Validators} from "@angular/forms";
   templateUrl: './dialog-box-take-profit.component.html',
   styleUrls: ['./dialog-box-take-profit.component.css']
 })
-export class DialogBoxTakeProfitComponent {
+export class DialogBoxTakeProfitComponent implements OnInit{
   public takeProfit = new FormControl('', [Validators.required, Validators.minLength(1)])
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: IDialogDataTakeProfit) {
   }
 
-  ngOnInit() {
-    this.takeProfit.valueChanges.subscribe((value: string | null) => this.data.profit = Number(value) || 0);
+  public ngOnInit(): void {
+    this.takeProfit.valueChanges
+      .subscribe((value: string | null) => this.data.profit = Number(value) || 0);
   }
 }
