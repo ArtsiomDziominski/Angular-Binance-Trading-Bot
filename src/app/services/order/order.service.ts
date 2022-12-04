@@ -4,7 +4,7 @@ import {API_KEY, MARKET, SELL} from "../../const/const";
 import {BURL} from "../../const/http-request";
 import {HttpClient} from "@angular/common/http";
 import {LocalStorageService} from "../local-storage/local-storage.service";
-import {Observable} from "rxjs";
+import {Observable, take} from "rxjs";
 import {FunctionsOrderService} from "./functions-order.service";
 import {IMsgServer} from "../../interface/msg-server";
 import {IOpenOrder} from "../../interface/open-order";
@@ -59,6 +59,7 @@ export class OrderService {
     const URL: string = BURL + '/market-order/' + JSON.stringify(params)
     console.log(URL)
     this.http.get(URL, {responseType: 'text' as 'json'})
+      .pipe(take(1))
       .subscribe(value => {
         console.log(value)
         this.cancelOpenOrders(symbol);
@@ -79,6 +80,7 @@ export class OrderService {
     }
     const URL: string = BURL + '/cancel-open-orders/' + JSON.stringify(params);
     this.http.get(URL, {responseType: 'text' as 'json'})
+      .pipe(take(1))
       .subscribe((value) => {
         const msgServer: IMsgServer = JSON.parse(<string>value);
         this.functionsOrderService.popUpInfo(msgServer.msg);

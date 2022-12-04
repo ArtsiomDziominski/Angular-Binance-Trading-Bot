@@ -4,6 +4,7 @@ import {API_KEY} from "../../const/const";
 import {MatDialogRef} from "@angular/material/dialog";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {FunctionsOrderService} from "../../services/order/functions-order.service";
+import {take} from "rxjs";
 
 @Component({
   selector: 'app-api-box',
@@ -23,12 +24,14 @@ export class ApiBoxComponent implements OnInit {
   constructor(
     private localStorageService: LocalStorageService,
     public dialogRef: MatDialogRef<ApiBoxComponent>,
-    public functionsOrderService:FunctionsOrderService
+    public functionsOrderService: FunctionsOrderService
   ) {
   }
 
   public ngOnInit(): void {
-    this.apiFormGroup.valueChanges.subscribe(valueApi => {
+    this.apiFormGroup.valueChanges
+      .pipe(take(1))
+      .subscribe(valueApi => {
       this.apiKey = valueApi.apiKeyControl || '';
       this.secretKey = valueApi.secretKeyControl || '';
     })

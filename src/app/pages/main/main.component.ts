@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {MainBlockPriceService} from "../../services/main-block-token-price/main-block-price.service";
 import {TextChangeService} from "../../services/text-change.service";
 import {IPrice} from "../../interface/price-token";
-import {Subscription} from "rxjs";
+import {take} from "rxjs";
 
 @Component({
   selector: 'app-main',
@@ -12,7 +12,6 @@ import {Subscription} from "rxjs";
 export class MainComponent implements OnInit {
   public priceTokensSave: IPrice[] = [];
   public pricePercentSort: IPrice[] = [];
-  private priceTokenMain$!: Subscription;
 
   constructor(
     private mainBlockPrice: MainBlockPriceService,
@@ -21,7 +20,8 @@ export class MainComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.priceTokenMain$ = this.mainBlockPrice.mainSaveTokensBeh
+    this.mainBlockPrice.mainSaveTokensBeh
+      .pipe(take(1))
       .subscribe(() => {
         this.updatePriceTokens();
       });
@@ -31,10 +31,10 @@ export class MainComponent implements OnInit {
   }
 
   public updatePriceTokens(): void {
-    this.priceTokenMain$ = this.mainBlockPrice.getPriceTokenMain()
+    this.mainBlockPrice.getPriceTokenMain()
+      .pipe(take(1))
       .subscribe((res: IPrice[]) => {
         this.priceTokensSave = res.sort((x: IPrice, y: IPrice) => x.symbol.localeCompare(y.symbol));
-        this.priceTokenMain$.unsubscribe();
       });
   }
 

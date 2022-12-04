@@ -2,6 +2,7 @@ import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {IDialogDataTakeProfit} from "../../interface/dialog-data-take-profit";
 import {FormControl, Validators} from "@angular/forms";
+import {take} from "rxjs";
 
 @Component({
   selector: 'app-dialog-box-take-profit',
@@ -15,6 +16,8 @@ export class DialogBoxTakeProfitComponent {
   }
 
   ngOnInit() {
-    this.takeProfit.valueChanges.subscribe((value: string | null) => this.data.profit = Number(value) || 0);
+    this.takeProfit.valueChanges
+      .pipe(take(1))
+      .subscribe((value: string | null) => this.data.profit = Number(value) || 0);
   }
 }

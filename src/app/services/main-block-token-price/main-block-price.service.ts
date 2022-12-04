@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {BehaviorSubject, map, Observable} from "rxjs";
+import {BehaviorSubject, map, Observable, take} from "rxjs";
 import {HTTP_GET_24hr} from "../../const/http-request";
 import {LocalStorageService} from "../local-storage/local-storage.service";
 import {MAIN_SAVE_TOKEN_SAVE} from "../../const/const";
@@ -43,13 +43,14 @@ export class MainBlockPriceService {
   }
 
   public getPriceTokenMain(): Observable<IPrice[]> {
-    return this.http.get(HTTP_GET_24hr)
+    return this.http.get<IPrice[]>(HTTP_GET_24hr)
       .pipe(
-        map((response: IPrice[] | any) => {
+        take(1),
+        map((response: IPrice[]) => {
           const allPriceTokens: IPrice[] = [];
           this.allPriceTokens = response;
           response
-            .find((item: IPrice[] | any) => {
+            .find((item: IPrice) => {
               for (let i = 0; i < this.allMainSaveTokens.length; i++) {
                 if (item.symbol === this.allMainSaveTokens[i]) {
                   allPriceTokens.push(item)
