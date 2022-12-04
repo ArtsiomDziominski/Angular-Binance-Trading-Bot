@@ -4,7 +4,7 @@ import {IStatAcc} from "../../interface/stat-acc";
 import {TextChangeService} from "../../services/text-change.service";
 import {BALANCE, INCOME_HISTORY, LIMIT_INCOME_HISTORY} from "../../const/http-request";
 import {IIncomeHistoryFull} from "../../interface/statistics/income-history-full";
-import {Subscription} from "rxjs";
+import {take} from "rxjs";
 
 @Component({
   selector: 'app-statistics',
@@ -15,9 +15,6 @@ export class StatisticsComponent implements OnInit {
   public statisticsAccount: IStatAcc[] | undefined;
   public isLoader: boolean = false;
   public incomeHistory!: IIncomeHistoryFull[];
-
-  public balance$!:Subscription;
-  public incomeHistory$!:Subscription;
 
   constructor(
     public editText: TextChangeService,
@@ -32,19 +29,19 @@ export class StatisticsComponent implements OnInit {
   }
 
   public getStatAcc(): void {
-    this.balance$ = this.statisticsInfoService.requestToServer(BALANCE)
+    this.statisticsInfoService.requestToServer(BALANCE)
+      .pipe(take(1))
       .subscribe((response) => {
         this.statisticsAccount = <IStatAcc[]>response;
-        this.balance$.unsubscribe();
       })
   }
 
   public getIncomeHistory(): void {
-    this.incomeHistory$ = this.statisticsInfoService.requestToServer(INCOME_HISTORY, LIMIT_INCOME_HISTORY)
+    this.statisticsInfoService.requestToServer(INCOME_HISTORY, LIMIT_INCOME_HISTORY)
+      .pipe(take(1))
       .subscribe((response) => {
         this.incomeHistory = <IIncomeHistoryFull[]>response;
         this.isLoader = true;
-        this.incomeHistory$.unsubscribe();
       })
   }
 

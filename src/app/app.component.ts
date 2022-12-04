@@ -9,7 +9,7 @@ import {DialogBoxAllWalletComponent} from "./components/dialog-box-all-wallet/di
 import {FunctionsOrderService} from "./services/order/functions-order.service";
 import {WalletBscService} from "./services/wallet/wallet-bsc.service";
 import {IAccountBalance} from "./interface/account-balance";
-import {Subscription} from "rxjs";
+import {take} from "rxjs";
 
 @Component({
   selector: 'app-root',
@@ -21,7 +21,6 @@ export class AppComponent implements OnInit {
   public isConnectWallet: boolean = false;
   public addressWallet: string = '';
   public currentBalance: string = '';
-  private balance$!: Subscription;
 
   constructor(
     private mainBlockPrice: MainBlockPriceService,
@@ -39,7 +38,8 @@ export class AppComponent implements OnInit {
   }
 
   public getBalance(): void {
-    this.balance$ = this.walletBscService.getBalance(this.addressWallet)
+    this.walletBscService.getBalance(this.addressWallet)
+      .pipe(take(1))
       .subscribe((value:IAccountBalance) => {
         this.currentBalance = (Number(value.result) / DIVISION_NUMBER).toFixed(4)
       });
@@ -82,7 +82,9 @@ export class AppComponent implements OnInit {
         width: WIDTH_DIALOG_BOX_WALLET,
       });
 
-      dialogRef.afterClosed().subscribe(addressWallet => {
+      dialogRef.afterClosed()
+        .pipe(take(1))
+        .subscribe(addressWallet => {
         this.addressWallet = addressWallet;
         this.isConnectWallet = true;
         this.getBalance();
