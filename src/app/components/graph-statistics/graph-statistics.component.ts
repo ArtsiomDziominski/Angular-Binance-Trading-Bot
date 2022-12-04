@@ -10,6 +10,7 @@ import {
   GRAPH_REALIZED_PN_BACKGROUND_COLOR, GRAPH_REALIZED_PN_BORDER_COLOR,
   GRAPH_PROFIT, GRAPH_LABEL_COMMISSION, GRAPH_REALIZED_PNL
 } from "../../const/graph";
+import {ISortIncome} from "../../interface/statistics/sort-income";
 
 @Component({
   selector: 'app-graph-statistics',
@@ -18,18 +19,15 @@ import {
   styleUrls: ['./graph-statistics.component.css']
 })
 export class GraphStatisticsComponent implements OnInit, OnChanges {
-  @Input() public allIncomeHistories!: IIncomeHistoryFull[];
+  @Input() public allHistoryIncome!: IIncomeHistoryFull[];
   @Input() public windowWidth!: number;
 
-  public incomeCommission: number[] = [];
-  public incomeTypeCommission: string = '';
-  public incomeTimeCommission: string[] = [];
-
-  public incomeRealizedPNL: number[] = [];
-  public incomeTypeRealizedPNL: string = '';
-  public incomeTimeRealizedPNL: string[] = [];
-
-  public profitPNL: number[] = [];
+  private historyIncome: ISortIncome = {
+    time: [],
+    realizedPNL: {type: '', value: []},
+    commission: {type: '', value: []},
+    profitPNL: [],
+  }
 
   public chart!: Chart
 
@@ -39,11 +37,11 @@ export class GraphStatisticsComponent implements OnInit, OnChanges {
     Chart.register(...registerables);
   }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.renderingGraph();
   }
 
-  ngOnChanges() {
+  public ngOnChanges(): void {
     this.getIncomeTimeHistory();
     try {
       this.chart.update();
@@ -53,25 +51,25 @@ export class GraphStatisticsComponent implements OnInit, OnChanges {
 
   public renderingGraph() {
     const data = {
-      labels: this.incomeTimeCommission,
+      labels: this.historyIncome.time,
       datasets: [
         {
           label: GRAPH_PROFIT,
-          data: this.profitPNL,
+          data: this.historyIncome.profitPNL,
           fill: false,
           borderColor: GRAPH_PROFIT_BORDER_COLOR,
           backgroundColor: GRAPH_PROFIT_BACKGROUND_COLOR,
         },
         {
           label: GRAPH_REALIZED_PNL,
-          data: this.incomeRealizedPNL,
+          data: this.historyIncome.realizedPNL.value,
           fill: false,
           borderColor: GRAPH_REALIZED_PN_BORDER_COLOR,
           backgroundColor: GRAPH_REALIZED_PN_BACKGROUND_COLOR,
         },
         {
           label: GRAPH_LABEL_COMMISSION,
-          data: this.incomeCommission,
+          data: this.historyIncome.commission.value,
           fill: false,
           borderColor: GRAPH_LABEL_COMMISSION_BORDER_COLOR,
           backgroundColor: GRAPH_LABEL_COMMISSION_BACKGROUND_COLOR,
@@ -86,37 +84,32 @@ export class GraphStatisticsComponent implements OnInit, OnChanges {
   }
 
   public getIncomeTimeHistory(): void {
-    this.statisticsGraphService.filterIncomeHistory(this.allIncomeHistories);
-    const commissionIncomeHistory: IIncomeHistory[] = this.statisticsGraphService.getCommissionIncomeHistory();
+    this.statisticsGraphService.filterIncomeHistory(this.allHistoryIncome);
+    const commissionIncomeHistory: IIncomeHistory[] = this.statisticsGraphService.commissionIncomeHistory;
     this.sortForGraphIncomeHistoryСommission(this.statisticsGraphService.filterIncomeType(commissionIncomeHistory));
-    const realizedPNLIncomeHistory: IIncomeHistory[] = this.statisticsGraphService.getRealizedPNLIncomeHistory();
+    const realizedPNLIncomeHistory: IIncomeHistory[] = this.statisticsGraphService.realizedPNLIncomeHistory;
     this.sortForGraphIncomeHistoryRealizedPNL(this.statisticsGraphService.filterIncomeType(realizedPNLIncomeHistory));
     this.sortForGraphIncomeHistoryProfit();
   }
 
   public sortForGraphIncomeHistoryСommission(incomeHistoryCommission: IIncomeHistoryFilter[]) {
     incomeHistoryCommission.forEach((v: IIncomeHistoryFilter) => {
-      this.incomeCommission.push(v.income);
-      this.incomeTypeCommission = v.incomeType;
-      this.incomeTimeCommission.push(v.date);
+      this.historyIncome.commission.value.push(v.income);
+      this.historyIncome.commission.type = v.incomeType;
+      this.historyIncome.time.push(v.date);
     })
   }
 
   public sortForGraphIncomeHistoryRealizedPNL(incomeHistoryRealizedPNL: IIncomeHistoryFilter[]) {
-    incomeHistoryRealizedPNL.forEach(v => {
-      this.incomeRealizedPNL.push(v.income);
-      console.log(v)
-      this.incomeTypeRealizedPNL = v.incomeType;
-      this.incomeTimeRealizedPNL.push(v.date);
+    incomeHistoryRealizedPNL.forEach(historyIncomeRealizedPNL => {
+      this.historyIncome.realizedPNL.value.push(historyIncomeRealizedPNL.income);
+      this.historyIncome.realizedPNL.type = historyIncomeRealizedPNL.incomeType;
     })
   }
 
   public sortForGraphIncomeHistoryProfit() {
-    console.log(this.incomeCommission)
-    console.log(this.incomeRealizedPNL)
-
-    for (let i = 0; i < this.incomeCommission.length; i++) {
-      this.profitPNL.push(this.incomeCommission[i] + this.incomeRealizedPNL[i] || 0);
-    }
+    this.historyIncome.commission.value.map((historyIncomeCommission:number, index:number)=> {
+      this.historyIncome.profitPNL.push(historyIncomeCommission + this.historyIncome.realizedPNL.value[index] || 0);
+    })
   }
 }
