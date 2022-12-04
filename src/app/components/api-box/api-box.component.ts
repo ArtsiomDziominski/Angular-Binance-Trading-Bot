@@ -1,16 +1,17 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {LocalStorageService} from "../../services/local-storage/local-storage.service";
 import {API_KEY} from "../../const/const";
 import {MatDialogRef} from "@angular/material/dialog";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {FunctionsOrderService} from "../../services/order/functions-order.service";
+import {take} from "rxjs";
 
 @Component({
   selector: 'app-api-box',
   templateUrl: './api-box.component.html',
   styleUrls: ['./api-box.component.scss']
 })
-export class ApiBoxComponent {
+export class ApiBoxComponent implements OnInit {
   public apiKey: string = '';
   public secretKey: string = '';
 
@@ -23,12 +24,14 @@ export class ApiBoxComponent {
   constructor(
     private localStorageService: LocalStorageService,
     public dialogRef: MatDialogRef<ApiBoxComponent>,
-    public functionsOrderService:FunctionsOrderService
+    public functionsOrderService: FunctionsOrderService
   ) {
   }
 
-  ngOnInit() {
-    this.apiFormGroup.valueChanges.subscribe(valueApi => {
+  public ngOnInit(): void {
+    this.apiFormGroup.valueChanges
+      .pipe(take(1))
+      .subscribe(valueApi => {
       this.apiKey = valueApi.apiKeyControl || '';
       this.secretKey = valueApi.secretKeyControl || '';
     })

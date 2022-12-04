@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
 import {LocalStorageService} from "../../services/local-storage/local-storage.service";
 import {API_KEY, REPEAT_ORDER} from "../../const/const";
 import {OrderService} from "../../services/order/order.service";
@@ -12,6 +11,7 @@ import {IApiKey} from "../../interface/api-key";
 import {NEW_ORDER} from "../../const/message-pop-up-info";
 import {ISymbolNumberAfterComma} from "../../interface/symbol-price-number-after-comma";
 import {IOpenOrder} from "../../interface/open-order";
+import {IMsgServer} from "../../interface/msg-server";
 
 @Component({
   selector: 'app-order',
@@ -48,7 +48,6 @@ export class OrderComponent implements OnInit {
   public symbolAutocompleteFiltered?: Observable<string[]>;
 
   constructor(
-    private http: HttpClient,
     private localStorageService: LocalStorageService,
     public orderService: OrderService,
     public functionsOrderService: FunctionsOrderService,
@@ -151,7 +150,7 @@ export class OrderComponent implements OnInit {
     this.symbolAutocompleteFiltered = this.symbolControl.valueChanges.pipe(
       startWith(''),
       map(value => {
-        const filterValue = value || ''.toLowerCase();
+        const filterValue = (value || '').toLowerCase();
         return this.symbolAutocomplete.filter(option => option.toLowerCase().includes(filterValue));
       }),
     );

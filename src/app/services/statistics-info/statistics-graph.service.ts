@@ -10,11 +10,9 @@ export class StatisticsGraphService {
   public commissionIncomeHistory: IIncomeHistory[] = [];
   public realizedPNLIncomeHistory: IIncomeHistory[] = [];
 
-
-  constructor() {
-  }
-
   public filterIncomeHistory(incomeHistory: IIncomeHistoryFull[] = []): void {
+    this.commissionIncomeHistory = []
+    this.realizedPNLIncomeHistory = []
     incomeHistory.forEach((res: IIncomeHistoryFull) => {
       switch (res.incomeType) {
         case "COMMISSION":

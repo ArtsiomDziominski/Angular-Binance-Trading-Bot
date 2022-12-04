@@ -48,6 +48,7 @@ export class OrderRowComponent implements OnInit{
     });
 
     dialogRef.afterClosed()
+      .pipe(take(1))
       .subscribe(result => {
       if(result !== undefined) {
         const amount: number = Number(this.amount);
