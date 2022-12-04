@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {LocalStorageService} from "../../services/local-storage/local-storage.service";
 import {API_KEY, REPEAT_ORDER} from "../../const/const";
@@ -18,7 +18,7 @@ import {IOpenOrder} from "../../interface/open-order";
   templateUrl: './order.component.html',
   styleUrls: ['./order.component.scss']
 })
-export class OrderComponent implements OnInit {
+export class OrderComponent implements OnInit, OnDestroy {
   public allCurrentToken: IOpenOrder[] | undefined = [];
   public apiKey: IApiKey | undefined;
   public isInputPriceLimit: boolean = false;
@@ -46,6 +46,7 @@ export class OrderComponent implements OnInit {
   public symbolControl = new FormControl(this.symbolToken, [Validators.required, Validators.minLength(7)]);
   public symbolAutocomplete: string[] = [];
   public symbolAutocompleteFiltered?: Observable<string[]>;
+  private setIntervalRepeatCurrentOpenOrder!: number ;
 
   constructor(
     private http: HttpClient,
@@ -65,12 +66,16 @@ export class OrderComponent implements OnInit {
     this.isToggleRepeatOrder = JSON.parse(<string>this.localStorageService.getLocalStorage(REPEAT_ORDER));
   }
 
+  public ngOnDestroy(): void {
+    clearInterval(this.setIntervalRepeatCurrentOpenOrder);
+  }
+
   public setAPIkey(): void {
     this.apiKey = JSON.parse(<string>this.localStorageService.getLocalStorage(API_KEY)) || '[]';
   }
 
   public repeatGetCurrentOpenOrder(): void {
-    setInterval(() => {
+    this.setIntervalRepeatCurrentOpenOrder = window.setInterval(() => {
       this.orderService.getCurrentOpenOrder()
         .pipe(take(1))
         .subscribe((value: IOpenOrder[]) => {
@@ -100,8 +105,8 @@ export class OrderComponent implements OnInit {
     }
   }
 
-  public async getCurrentOpenOrder(): Promise<void> {
-    await this.orderService.getCurrentOpenOrder()
+  public getCurrentOpenOrder(): void {
+    this.orderService.getCurrentOpenOrder()
       .pipe(take(1))
       .subscribe((value: IOpenOrder[]) => {
         this.allCurrentToken = value.filter((v: IOpenOrder) => v.positionAmt > 0) || undefined;
