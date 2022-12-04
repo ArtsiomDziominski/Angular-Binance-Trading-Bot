@@ -5,10 +5,10 @@ import {BURL} from "../../const/http-request";
 import {Sha256Service} from "../sha256.service";
 import {LocalStorageService} from "../local-storage/local-storage.service";
 
-
 @Injectable({
   providedIn: 'root'
 })
+
 export class StatisticsInfoServerService {
   constructor(private http: HttpClient, public sha256Service: Sha256Service, private localStorageService: LocalStorageService) {
   }

@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
 import {LocalStorageService} from "../../services/local-storage/local-storage.service";
 import {API_KEY, REPEAT_ORDER} from "../../const/const";
 import {OrderService} from "../../services/order/order.service";
@@ -55,7 +54,6 @@ export class OrderComponent implements OnInit {
   public symbolControl$!: Subscription;
 
   constructor(
-    private http: HttpClient,
     private localStorageService: LocalStorageService,
     public orderService: OrderService,
     public functionsOrderService: FunctionsOrderService,
@@ -158,7 +156,7 @@ export class OrderComponent implements OnInit {
     this.symbolAutocompleteFiltered = this.symbolControl.valueChanges.pipe(
       startWith(''),
       map(value => {
-        const filterValue = value || ''.toLowerCase();
+        const filterValue = (value || '').toLowerCase();
         return this.symbolAutocomplete.filter(option => option.toLowerCase().includes(filterValue));
       }),
     );
