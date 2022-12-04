@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {StatisticsInfoServerService} from "../../services/statistics-info/statistics-info-server.service";
 import {IStatAcc} from "../../interface/stat-acc";
 import {TextChangeService} from "../../services/text-change.service";
@@ -11,10 +11,11 @@ import {take} from "rxjs";
   templateUrl: './statistics.component.html',
   styleUrls: ['./statistics.component.scss']
 })
-export class StatisticsComponent implements OnInit {
+export class StatisticsComponent implements OnInit, OnDestroy {
   public statisticsAccount: IStatAcc[] | undefined;
   public isLoader: boolean = false;
   public incomeHistory!: IIncomeHistoryFull[];
+  private setIntervalStatAcc!: number;
 
   constructor(
     public editText: TextChangeService,
@@ -24,8 +25,12 @@ export class StatisticsComponent implements OnInit {
 
   public ngOnInit(): void {
     this.getStatAcc();
-    setInterval(() => this.getStatAcc(), 10000);
+    this.setIntervalStatAcc = window.setInterval(() => this.getStatAcc(), 10000);
     this.getIncomeHistory();
+  }
+
+  public ngOnDestroy() {
+    clearInterval(this.setIntervalStatAcc);
   }
 
   public getStatAcc(): void {
