@@ -108,8 +108,8 @@ export class GraphStatisticsComponent implements OnInit, OnChanges {
   }
 
   public sortForGraphIncomeHistoryProfit() {
-    this.historyIncome.commission.value.map((historyIncomeCommission:number, index:number)=> {
-      this.historyIncome.profitPNL.push(historyIncomeCommission + this.historyIncome.realizedPNL.value[index] || 0);
+    this.historyIncome.profitPNL = this.historyIncome.commission.value.map((historyIncomeCommission:number, index:number)=> {
+      return (historyIncomeCommission + this.historyIncome.realizedPNL.value[index] || 0);
     })
   }
 }
