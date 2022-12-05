@@ -6,6 +6,14 @@ section {
   align-items: center;
   margin: 10px 10px 5px 10px;
 
+  &:before{
+    content: '';
+    width: 15px;
+    height: 50px;
+    background-color: var(--color-price-up);
+    border-radius: 50px 0 0 50px;
+  }
+
   p {
     width: 14%;
     margin: 0 5px;
@@ -16,29 +24,13 @@ section {
 
   }
 
-  div {
-    width: 15px;
-    height: 50px;
-    background-color: var(--color-price-up);
-    border-radius: 50px 0 0 50px;
-  }
-
   .symbol {
     font-size: 16px;
     margin-left: 5px;
   }
 
-  .current-Price {
-  }
-
   .entry-Price {
     color: white;
-  }
-
-  .amount {
-  }
-
-  .pnl {
   }
 
   button {
