@@ -170,7 +170,6 @@ export class OrderComponent implements OnInit, OnDestroy {
 
   public getValueNewOrderFormGroup(): void {
     this.newOrderFormGroup.valueChanges
-      .pipe(take(1))
       .subscribe(paramsNewOrder => {
       this.priceToken = Number(paramsNewOrder.priceControl || 0);
       this.quantityToken = Number(paramsNewOrder.quantityTokenControl || 0);
@@ -179,7 +178,6 @@ export class OrderComponent implements OnInit, OnDestroy {
       this.priceCommaNumbers = Number(paramsNewOrder.priceCommaNumbersControl || 0);
     })
     this.symbolControl.valueChanges
-      .pipe(take(1))
       .subscribe((symbolControlValue: string | null) => {
       this.symbolToken = symbolControlValue || ''
       this.isInputNumbersComma = true;

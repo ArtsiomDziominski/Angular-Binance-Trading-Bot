@@ -41,12 +41,4 @@ export class StatisticsGraphService {
     })
     return incomeHistoryFilter;
   }
-
-  public getCommissionIncomeHistory(): IIncomeHistory[] {
-    return this.commissionIncomeHistory;
-  }
-
-  public getRealizedPNLIncomeHistory(): IIncomeHistory[] {
-    return this.realizedPNLIncomeHistory;
-  }
 }
