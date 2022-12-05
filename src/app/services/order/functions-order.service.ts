@@ -99,7 +99,7 @@ export class FunctionsOrderService {
   public filterPriceTokenNumberAfterComma(): ISymbolNumberAfterComma[] {
     let symbol: string;
     let numberAfterComma: number;
-    this.mainBlockPriceService.getAllTokens().forEach((v: any) => {
+    this.mainBlockPriceService.allPriceTokens.forEach((v: any) => {
       symbol = v.symbol;
       numberAfterComma = v.lastPrice.split('.').pop().length
       this.listSymbolNumberComma.push({"symbol": symbol, "numberAfterComma": numberAfterComma});

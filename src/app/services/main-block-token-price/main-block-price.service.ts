@@ -67,8 +67,4 @@ export class MainBlockPriceService {
     this.allMainSaveTokens = this.allMainSaveTokens.filter(v => v !== nameToken);
     this.localStorageService.setLocalStorage(MAIN_SAVE_TOKEN_SAVE, JSON.stringify(this.allMainSaveTokens));
   }
-
-  public getAllTokens(): IPrice[] {
-    return this.allPriceTokens;
-  }
 }
