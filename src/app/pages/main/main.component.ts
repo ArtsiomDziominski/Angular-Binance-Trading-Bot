@@ -39,7 +39,7 @@ export class MainComponent implements OnInit {
   }
 
   public filterTokensPercent(): void {
-    const allTokensPrice: IPrice[] = this.mainBlockPrice.getAllTokens();
-    this.pricePercentSort = allTokensPrice.sort((x: IPrice, y: IPrice | any) => Number(y.priceChangePercent.localeCompare(Number(x.priceChangePercent))));
+    const allTokensPrice: IPrice[] = this.mainBlockPrice.allPriceTokens;
+    this.pricePercentSort = allTokensPrice.sort((x: IPrice, y: IPrice) => Number(y.priceChangePercent) - Number(x.priceChangePercent));
   }
 }
