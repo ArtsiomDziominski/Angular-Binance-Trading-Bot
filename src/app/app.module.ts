@@ -18,6 +18,7 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {ListTopTokenComponent} from './components/list-top-token/list-top-token.component';
 import {DialogBoxAllWalletComponent} from './components/dialog-box-all-wallet/dialog-box-all-wallet.component';
+import { HeaderComponent } from './components/header/header.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import {DialogBoxAllWalletComponent} from './components/dialog-box-all-wallet/di
     DialogBoxTakeProfitComponent,
     ListTopTokenComponent,
     DialogBoxAllWalletComponent,
+    HeaderComponent,
   ],
   imports: [
     BrowserModule,

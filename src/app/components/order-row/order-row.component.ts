@@ -6,7 +6,7 @@ import {DialogBoxTakeProfitComponent} from "../dialog-box-take-profit/dialog-box
 import {FunctionsOrderService} from "../../services/order/functions-order.service";
 import {DIALOG_BOX_PROFIT_WIDTH_260_PX} from "../../const/const";
 import {IMsgServer} from "../../interface/msg-server";
-import {take} from "rxjs";
+import {filter, take} from "rxjs";
 
 @Component({
   selector: 'app-order-row',
@@ -48,18 +48,18 @@ export class OrderRowComponent implements OnInit{
     });
 
     dialogRef.afterClosed()
-      .pipe(take(1))
-      .subscribe(result => {
-      if(result !== undefined) {
+      .pipe(
+        filter(result => !!result),
+        take(1))
+      .subscribe((takeProfit:number) => {
         const amount: number = Number(this.amount);
-        this.functionsOrderService.popUpInfo(`${this.symbol} ${result}`);
-        this.orderService.newOrder(this.symbol, 'SELL', amount, result)
+        this.functionsOrderService.popUpInfo(`${this.symbol} ${takeProfit}`);
+        this.orderService.newOrder(this.symbol, 'SELL', amount, takeProfit)
           .pipe(take(1))
           .subscribe(res => {
             const result:IMsgServer = JSON.parse(<string>res);
             this.functionsOrderService.popUpInfo(result.msg);
           });
-      }
     });
   }
 }
