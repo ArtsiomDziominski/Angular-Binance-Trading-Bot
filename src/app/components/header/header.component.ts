@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ApiBoxComponent} from "../api-box/api-box.component";
 import {DIVISION_NUMBER, WIDTH_DIALOG_BOX_API, WIDTH_DIALOG_BOX_WALLET} from "../../const/const";
 import {MatDialog} from "@angular/material/dialog";
@@ -12,7 +12,7 @@ import {DialogBoxAllWalletComponent} from "../dialog-box-all-wallet/dialog-box-a
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit{
   public currentBalance: string = '';
   public addressWallet: string = '';
   public isConnectWallet: boolean = false;
@@ -26,13 +26,6 @@ export class HeaderComponent {
   public async ngOnInit(): Promise<void> {
     await this.checkConnectionStatus();
     this.getBalance();
-  }
-
-  public async checkConnectMetamask(): Promise<boolean> {
-    let result: boolean = true;
-    await this.walletBscService.isConnected()
-      .then(res => result = res)
-    return result;
   }
 
   public async checkConnectionStatus(): Promise<void> {

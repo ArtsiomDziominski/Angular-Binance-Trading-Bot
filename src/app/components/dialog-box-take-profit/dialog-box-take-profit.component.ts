@@ -2,7 +2,6 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {IDialogDataTakeProfit} from "../../interface/dialog-data-take-profit";
 import {FormControl, Validators} from "@angular/forms";
-import {take} from "rxjs";
 
 @Component({
   selector: 'app-dialog-box-take-profit',
