@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {MainBlockPriceService} from "../main-block-token-price/main-block-price.service";
 import {LocalStorageService} from "../local-storage/local-storage.service";
-import {IParamsOrder} from "../../interface/params-order";
+import {IParamsOrder} from "../../interface/order/params-order";
 import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 import {ISymbolNumberAfterComma} from "../../interface/symbol-price-number-after-comma";
 import {HTTP_GET_24hr} from "../../const/http-request";

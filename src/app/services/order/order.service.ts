@@ -7,7 +7,9 @@ import {LocalStorageService} from "../local-storage/local-storage.service";
 import {Observable, take} from "rxjs";
 import {FunctionsOrderService} from "./functions-order.service";
 import {IMsgServer} from "../../interface/msg-server";
-import {IOpenOrder} from "../../interface/open-order";
+import {IOpenOrder} from "../../interface/order/open-order";
+import {IParamSignatureNewOrder} from "../../interface/order/new-order";
+import {IApiKey} from "../../interface/api-key";
 
 @Injectable({
   providedIn: 'root'
@@ -17,45 +19,40 @@ export class OrderService {
               public functionsOrderService: FunctionsOrderService) {
   }
 
-  public setAPIkey(): { akey: string, skey: string } | undefined {
+  public setAPIkey(): IApiKey | undefined {
     return JSON.parse(<string>this.localStorageService.getLocalStorage(API_KEY)) || '[]';
   }
 
-  public hashFunctions(dataQueryString: string, apiKey: { akey: string; skey: string } | undefined): string {
+  public hashFunctions(dataQueryString: string, apiKey: IApiKey | undefined): string {
     return sha256.hmac.create(apiKey!.skey).update(dataQueryString).hex();
   }
 
-  public newOrder(symbol: string, side: string, quantity: number, price: number = 0): Observable<Object> {
-    let dataQueryString: string;
-    symbol = symbol.trim();
-    if (price === 0) {
-      dataQueryString = `symbol=${symbol}&side=${side}&quantity=${quantity}&type=MARKET&timestamp=` + Date.now();
-    } else {
-      dataQueryString = `symbol=${symbol}&side=${side}&quantity=${quantity}&type=LIMIT&price=${price}&timeInForce=GTC&timestamp=` + Date.now();
-    }
-    const apiKey: { akey: string, skey: string } | undefined = this.setAPIkey()
-    const signature: string = this.hashFunctions(dataQueryString, apiKey);
-
-    const params: { signature: string, dataQueryString: string, akey: string } = {
+  private paramsNewOrder(signature:string, dataQueryString:string, apiKey:string): IParamSignatureNewOrder {
+    return {
       "signature": signature,
       "dataQueryString": dataQueryString,
-      "akey": apiKey!.akey
+      "akey": apiKey
     }
+  }
+
+  public newOrder(symbol: string, side: string, quantity: number, price: number = 0): Observable<Object> {
+    symbol = symbol.trim();
+    let dataQueryString: string = price === 0 ?
+      `symbol=${symbol}&side=${side}&quantity=${quantity}&type=MARKET&timestamp=` + Date.now() :
+      `symbol=${symbol}&side=${side}&quantity=${quantity}&type=LIMIT&price=${price}&timeInForce=GTC&timestamp=` + Date.now();
+    const apiKey: IApiKey | undefined = this.setAPIkey()
+    const signature: string = this.hashFunctions(dataQueryString, apiKey);
+    const params: IParamSignatureNewOrder = this.paramsNewOrder(signature, dataQueryString, apiKey!.akey);
     const URL: string = BURL + '/new-order/' + JSON.stringify(params)
     console.log(URL)
-    return this.http.get(URL, {responseType: 'text' as 'json'}) // {"signature": signature,"dataQueryString":dataQueryString, "akey":apiKey!.akey}
+    return this.http.get(URL, {responseType: 'text' as 'json'})
   }
 
   public marketOrder(symbol: string, side: string, quantity: string | number, type: string): void {
-    const apiKey: { akey: string, skey: string } | undefined = this.setAPIkey()
+    const apiKey: IApiKey | undefined = this.setAPIkey()
     const dataQueryString = `symbol=${symbol}&side=${side}&quantity=${quantity}&type=${type}&timestamp=` + Date.now();
     const signature: string = this.hashFunctions(dataQueryString, apiKey);
-
-    const params: { signature: string, dataQueryString: string, akey: string } = {
-      "signature": signature,
-      "dataQueryString": dataQueryString,
-      "akey": apiKey!.akey
-    }
+    const params: IParamSignatureNewOrder = this.paramsNewOrder(signature, dataQueryString, apiKey!.akey);
     const URL: string = BURL + '/market-order/' + JSON.stringify(params)
     console.log(URL)
     this.http.get(URL, {responseType: 'text' as 'json'})
@@ -69,15 +66,10 @@ export class OrderService {
 
   public cancelOpenOrders(symbol: string): void {
     console.log('cancelOpenOrders' + symbol);
-    const apiKey: { akey: string, skey: string } | undefined = this.setAPIkey()
+    const apiKey: IApiKey | undefined = this.setAPIkey()
     const dataQueryString = `symbol=${symbol}&timestamp=` + Date.now();
     const signature: string = this.hashFunctions(dataQueryString, apiKey);
-
-    const params: { signature: string, dataQueryString: string, akey: string } = {
-      "signature": signature,
-      "dataQueryString": dataQueryString,
-      "akey": apiKey!.akey
-    }
+    const params: IParamSignatureNewOrder = this.paramsNewOrder(signature, dataQueryString, apiKey!.akey);
     const URL: string = BURL + '/cancel-open-orders/' + JSON.stringify(params);
     this.http.get(URL, {responseType: 'text' as 'json'})
       .pipe(take(1))
@@ -88,14 +80,10 @@ export class OrderService {
   }
 
   public getCurrentOpenOrder(): Observable<IOpenOrder[]> {
-    const apiKey: { akey: string, skey: string } | undefined = this.setAPIkey()
+    const apiKey: IApiKey | undefined = this.setAPIkey()
     const dataQueryString = `timestamp=` + Date.now();
     const signature: string = this.hashFunctions(dataQueryString, apiKey);
-    const params: { signature: string, dataQueryString: string, akey: string } = {
-      "signature": signature,
-      "dataQueryString": dataQueryString,
-      "akey": apiKey!.akey
-    }
+    const params: IParamSignatureNewOrder = this.paramsNewOrder(signature, dataQueryString, apiKey!.akey);
     const URL: string = BURL + '/current-order/' + JSON.stringify(params);
     return this.http.get<IOpenOrder[]>(URL);
   }

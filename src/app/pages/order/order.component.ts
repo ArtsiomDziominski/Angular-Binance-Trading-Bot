@@ -6,11 +6,11 @@ import {interval, map, Observable, startWith, Subscription, take} from "rxjs";
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {FunctionsOrderService} from "../../services/order/functions-order.service";
 import {ThemePalette} from "@angular/material/core";
-import {IParamsOrder} from "../../interface/params-order";
+import {IParamsOrder} from "../../interface/order/params-order";
 import {IApiKey} from "../../interface/api-key";
 import {NEW_ORDER, NO_CONNECTION} from "../../const/message-pop-up-info";
 import {ISymbolNumberAfterComma} from "../../interface/symbol-price-number-after-comma";
-import {IOpenOrder} from "../../interface/open-order";
+import {IOpenOrder} from "../../interface/order/open-order";
 
 @Component({
   selector: 'app-order',
