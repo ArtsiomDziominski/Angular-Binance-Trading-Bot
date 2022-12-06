@@ -3,7 +3,6 @@ import {MainBlockPriceService} from "./services/main-block-token-price/main-bloc
 import {Router} from "@angular/router";
 import { INFO_TEXT } from "./const/const";
 import {LocalStorageService} from "./services/local-storage/local-storage.service";
-import {FunctionsOrderService} from "./services/order/functions-order.service";
 
 @Component({
   selector: 'app-root',
@@ -17,7 +16,6 @@ export class AppComponent implements OnInit {
     private mainBlockPrice: MainBlockPriceService,
     private router: Router,
     private localStorageService: LocalStorageService,
-    public functionsOrderService: FunctionsOrderService,
   ) {
   }
 
