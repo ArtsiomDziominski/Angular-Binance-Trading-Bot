@@ -5,13 +5,17 @@ import {IParamsOrder} from "../../interface/order/params-order";
 import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 import {ISymbolNumberAfterComma} from "../../interface/symbol-price-number-after-comma";
 import {HTTP_GET_24hr} from "../../const/http-request";
+import {IPrice} from "../../interface/price-token";
 
 @Injectable({
   providedIn: 'root'
 })
 export class FunctionsOrderService {
-  private isToggleRepeatOrder: boolean = false;
-  private listSymbolNumberComma: ISymbolNumberAfterComma[] = [];
+  public isToggleRepeatOrder: boolean = false;
+  listSymbolNumberComma: ISymbolNumberAfterComma[] = [];
+  public symbolAutocomplete: string[] = [];
+  public oldActiveCurrentNameToken: string[] = [];
+
 
   constructor(private mainBlockPriceService: MainBlockPriceService, public localStorageService: LocalStorageService,
               private _snackBar: MatSnackBar) {
@@ -46,20 +50,12 @@ export class FunctionsOrderService {
     this.localStorageService.setLocalStorage(symbol, JSON.stringify(paramOrder))
   }
 
-  public setToggleRepeatOrder(isToggleRepeatOrder: boolean): void {
-    this.isToggleRepeatOrder = isToggleRepeatOrder;
-  }
-
-  public get toggleRepeatOrder(): boolean {
-    return this.isToggleRepeatOrder;
-  }
-
   public popUpInfo(msg: string): void {
     const horizontalPosition: MatSnackBarHorizontalPosition = 'right';
     const verticalPosition: MatSnackBarVerticalPosition = 'bottom';
     this._snackBar.open(msg, 'X', {
-      horizontalPosition: horizontalPosition,
-      verticalPosition: verticalPosition,
+      horizontalPosition,
+      verticalPosition,
       duration: 5000,
     });
   }
@@ -74,7 +70,7 @@ export class FunctionsOrderService {
     return symbolNotActive;
   }
 
-  public async calculationPrice(symbolToken: string, priceToken: number, distanceToken: number, priceCommaNumbers: number): Promise<number> {
+  public async calculationPrice(symbolToken: string, priceToken: number, distanceToken: number, priceCommaNumbers: number = 0): Promise<number> {
     if (priceCommaNumbers === 0) {
       this.listSymbolNumberComma.forEach((v: ISymbolNumberAfterComma) => {
         if (v.symbol === symbolToken) {
@@ -99,15 +95,13 @@ export class FunctionsOrderService {
   public filterPriceTokenNumberAfterComma(): ISymbolNumberAfterComma[] {
     let symbol: string;
     let numberAfterComma: number;
-    this.mainBlockPriceService.allPriceTokens.forEach((v: any) => {
-      symbol = v.symbol;
-      numberAfterComma = v.lastPrice.split('.').pop().length
+    this.listSymbolNumberComma = [];
+
+    this.mainBlockPriceService.allPriceTokens.forEach((allOptionsToken:IPrice) => {
+      symbol = allOptionsToken.symbol;
+      numberAfterComma = allOptionsToken.lastPrice.split('.').pop().length;
       this.listSymbolNumberComma.push({"symbol": symbol, "numberAfterComma": numberAfterComma});
     })
-    return this.listSymbolNumberComma;
-  }
-
-  public getListSymbolNumberComma(): ISymbolNumberAfterComma[] {
     return this.listSymbolNumberComma;
   }
 }

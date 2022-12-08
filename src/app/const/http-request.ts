@@ -4,3 +4,4 @@ export const HTTP_GET_24hr: string = 'https://fapi.binance.com/fapi/v1/ticker/24
 export const BALANCE: string = '/balance/';
 export const INCOME_HISTORY: string = '/income-history/';
 export const LIMIT_INCOME_HISTORY:string = `limit=${1000}&`;
+export const INTERVAL_NEW_ORDER:number = 1500;

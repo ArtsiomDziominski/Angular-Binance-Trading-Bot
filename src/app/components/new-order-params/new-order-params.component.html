@@ -1,0 +1,64 @@
+<form class="example-form" [formGroup]="newOrderFormGroup"
+      (ngSubmit)="newOrder('BUY')">
+
+  <section class="example-section" (click)="toggleRepeatOrder()">
+    <mat-slide-toggle class="example-margin"
+                      [color]="colorSlideToggle"
+                      [checked]="isToggleRepeatOrder"
+                      [disabled]="true"
+    ></mat-slide-toggle>
+    <p>Repeat orders</p>
+  </section>
+
+  <mat-button-toggle-group>
+    <mat-button-toggle checked (click)="isInputPriceLimit=false">MARKET</mat-button-toggle>
+    <mat-button-toggle (click)="isInputPriceLimit=true">LIMIT</mat-button-toggle>
+  </mat-button-toggle-group>
+
+  <mat-form-field class="example-full-width" appearance="outline">
+    <mat-label>Symbol</mat-label>
+    <input matInput maxlength="10"
+           type="text" name="symbol"
+           placeholder="BNBUSDT"
+           [formControl]="symbolControl"
+           [matAutocomplete]="auto"
+           required>
+    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+      <mat-option *ngFor="let option of symbolAutocompleteFiltered | async" [value]="option">
+        {{option}}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width" appearance="outline" *ngIf="isInputPriceLimit">
+    <mat-label>Price</mat-label>
+    <input matInput type="number" name="price" placeholder="270" formControlName="priceControl">
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width" appearance="outline">
+    <mat-label>Distance Tokens</mat-label>
+    <input matInput type="number" name="distance" placeholder="7.5" formControlName="distanceTokenControl" required>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width" appearance="outline">
+    <mat-label>Amount Tokens</mat-label>
+    <input matInput type="number" name="amount" placeholder="0.5" formControlName="quantityTokenControl" required>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width" appearance="outline">
+    <mat-label>Amount Orders</mat-label>
+    <input matInput type="number" name="amount_orders" placeholder="15" formControlName="quantityOrdersControl"
+           required>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width" appearance="outline" *ngIf="isInputNumbersComma">
+    <mat-label>Price.Numbers after the comma</mat-label>
+    <input matInput type="number" placeholder="2" formControlName="priceCommaNumbersControl">
+  </mat-form-field>
+
+  <div class="form__button">
+    <button mat-raised-button type="submit" color="accent"
+            [disabled]="newOrderFormGroup.invalid || symbolControl.invalid">BUY
+    </button>
+  </div>
+</form>
