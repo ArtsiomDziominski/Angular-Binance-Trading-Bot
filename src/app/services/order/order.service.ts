@@ -35,7 +35,7 @@ export class OrderService {
     }
   }
 
-  public newOrder(symbol: string, side: string, quantity: number, price: number = 0): Observable<Object> {
+  public newOrder(symbol: string, side: string, quantity: number, price: number = 0): Observable<string> {
     symbol = symbol.trim();
     let dataQueryString: string = price === 0 ?
       `symbol=${symbol}&side=${side}&quantity=${quantity}&type=MARKET&timestamp=` + Date.now() :
@@ -45,7 +45,7 @@ export class OrderService {
     const params: IParamSignatureNewOrder = this.paramsNewOrder(signature, dataQueryString, apiKey!.akey);
     const URL: string = BURL + '/new-order/' + JSON.stringify(params)
     console.log(URL)
-    return this.http.get(URL, {responseType: 'text' as 'json'})
+    return this.http.get<string>(URL, {responseType: 'text' as 'json'})
   }
 
   public marketOrder(symbol: string, side: string, quantity: string | number, type: string): void {

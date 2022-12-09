@@ -6,29 +6,28 @@ import {OrderRowComponent} from "../../components/order-row/order-row.component"
 import {OrderComponent} from "./order.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatInputModule} from "@angular/material/input";
-import {MatAutocompleteModule} from "@angular/material/autocomplete";
-import {MatTabsModule} from "@angular/material/tabs";
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
-import {MatButtonModule} from "@angular/material/button";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
-
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import {NewOrderParamsComponent} from "../../components/new-order-params/new-order-params.component";
+import {MatButtonModule} from "@angular/material/button";
 
 @NgModule({
   declarations: [
     OrderComponent,
     OrderRowComponent,
+    NewOrderParamsComponent,
   ],
   imports: [
     CommonModule,
     OrderRoutingModule,
     FormsModule,
     MatInputModule,
-    MatAutocompleteModule,
     ReactiveFormsModule,
-    MatTabsModule,
     MatButtonToggleModule,
-    MatButtonModule,
     MatSlideToggleModule,
+    MatAutocompleteModule,
+    MatButtonModule,
   ]
 })
 export class OrderModule {

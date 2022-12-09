@@ -7,10 +7,10 @@ input::-webkit-inner-spin-button {
 :host {
   max-width: 1440px;
   width: 100%;
+  min-height: 100%;
 }
 
 .wrapper {
-  height: 100%;
   display: grid;
   align-items: stretch;
   grid-template-areas:
@@ -35,15 +35,6 @@ input::-webkit-inner-spin-button {
       color: white;
       display: flex;
       justify-content: center;
-    }
-
-    &__name {
-    }
-
-    &__amount {
-    }
-
-    &__pnl {
     }
 
     &__button-close {
@@ -71,43 +62,8 @@ input::-webkit-inner-spin-button {
     grid-area: main;
   }
 
-  .example-form {
+  app-new-order-params {
     grid-area: aside;
-    background-color: var(--background-color);
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    padding: 20px 0;
-
-    .example-section {
-      display: flex;
-      align-items: center;
-      padding: 10px;
-
-      p {
-        color: white;
-        cursor: pointer;
-        padding-left: 10px;
-        font-size: 14px;
-      }
-    }
-
-    mat-button-toggle-group {
-      width: 80%;
-      margin-bottom: 20px;
-
-      mat-button-toggle {
-        width: 100%;
-      }
-    }
-
-    mat-form-field {
-      width: 80%;
-
-      input {
-        color: var(--color-white);
-      }
-    }
   }
 }
 
@@ -140,9 +96,6 @@ input::-webkit-inner-spin-button {
       p {
         display: none;
       }
-    }
-
-    .main {
     }
   }
 }

@@ -51,11 +51,11 @@ export class MainBlockPriceService {
           this.allPriceTokens = response;
           response
             .find((item: IPrice) => {
-              for (let i = 0; i < this.allMainSaveTokens.length; i++) {
-                if (item.symbol === this.allMainSaveTokens[i]) {
+              this.allMainSaveTokens.forEach(mainSaveToken => {
+                if (item.symbol === mainSaveToken) {
                   allPriceTokens.push(item)
                 }
-              }
+              })
             });
 
           return allPriceTokens;

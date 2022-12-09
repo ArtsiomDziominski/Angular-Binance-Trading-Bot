@@ -5,4 +5,5 @@ export interface IParamsOrder {
   price: number;
   quantityOrders: number;
   distanceToken: number;
+  priceCommaNumbers?: number
 }

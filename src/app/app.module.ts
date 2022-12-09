@@ -11,14 +11,14 @@ import {ApiBoxComponent} from './components/api-box/api-box.component';
 import {HttpClientModule} from "@angular/common/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {DialogBoxTakeProfitComponent} from './components/dialog-box-take-profit/dialog-box-take-profit.component';
-import {MatDialogModule} from "@angular/material/dialog";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {ListTopTokenComponent} from './components/list-top-token/list-top-token.component';
 import {DialogBoxAllWalletComponent} from './components/dialog-box-all-wallet/dialog-box-all-wallet.component';
-import { HeaderComponent } from './components/header/header.component';
+import {HeaderComponent} from './components/header/header.component';
+import {DialogBoxTakeProfitComponent} from "./components/dialog-box-take-profit/dialog-box-take-profit.component";
+import {MatDialogModule} from "@angular/material/dialog";
 
 @NgModule({
   declarations: [
@@ -27,10 +27,10 @@ import { HeaderComponent } from './components/header/header.component';
     BlockPriceComponent,
     NotFoundComponent,
     ApiBoxComponent,
-    DialogBoxTakeProfitComponent,
     ListTopTokenComponent,
     DialogBoxAllWalletComponent,
     HeaderComponent,
+    DialogBoxTakeProfitComponent
   ],
   imports: [
     BrowserModule,
@@ -40,12 +40,12 @@ import { HeaderComponent } from './components/header/header.component';
     HttpClientModule,
     FormsModule,
     BrowserAnimationsModule,
-    MatDialogModule,
     MatInputModule,
     MatButtonModule,
     ReactiveFormsModule,
     MatSnackBarModule,
     RouterLink,
+    MatDialogModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
