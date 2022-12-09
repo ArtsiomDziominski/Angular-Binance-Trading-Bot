@@ -94,13 +94,13 @@ export class FunctionsOrderService {
 
   public filterPriceTokenNumberAfterComma(): ISymbolNumberAfterComma[] {
     let symbol: string;
-    let numberAfterComma: number;
+    let numberAfterComma: string;
     this.listSymbolNumberComma = [];
 
     this.mainBlockPriceService.allPriceTokens.forEach((allOptionsToken:IPrice) => {
       symbol = allOptionsToken.symbol;
-      numberAfterComma = allOptionsToken.lastPrice.split('.').pop().length;
-      this.listSymbolNumberComma.push({"symbol": symbol, "numberAfterComma": numberAfterComma});
+      numberAfterComma = allOptionsToken.lastPrice.split('.').pop() || '';
+      this.listSymbolNumberComma.push({"symbol": symbol, "numberAfterComma": numberAfterComma.length});
     })
     return this.listSymbolNumberComma;
   }
