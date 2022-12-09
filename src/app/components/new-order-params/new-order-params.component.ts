@@ -7,7 +7,7 @@ import {FunctionsOrderService} from "../../services/order/functions-order.servic
 import {REPEAT_ORDER} from "../../const/const";
 import {ThemePalette} from "@angular/material/core";
 import {MainBlockPriceService} from "../../services/main-block-token-price/main-block-price.service";
-import {IParamsOrder} from "../../interface/order/params-order";
+import {INewOrderParams} from "../../interface/order/new-order";
 
 @Component({
   selector: 'app-new-order-params',
@@ -15,14 +15,9 @@ import {IParamsOrder} from "../../interface/order/params-order";
   styleUrls: ['./new-order-params.component.scss']
 })
 export class NewOrderParamsComponent implements OnInit {
-  @Output() paramsNewOrderEvent: EventEmitter<IParamsOrder> = new EventEmitter();
+  @Output() newOrderParamsEvent: EventEmitter<INewOrderParams> = new EventEmitter();
 
-  public symbolToken: string = '';
-  public quantityToken: number = 0;
-  public priceToken: number = 0;
-  public quantityOrders: number = 0;
-  public distanceToken: number = 0;
-  public priceCommaNumbers: number = 0;
+  public newOrderParams: INewOrderParams = this.functionsOrderService.newOrderParams;
 
   public isInputPriceLimit: boolean = false;
   public isInputNumbersComma: boolean = false;
@@ -32,7 +27,7 @@ export class NewOrderParamsComponent implements OnInit {
 
   public symbolAutocompleteFiltered?: Observable<string[]>;
 
-  public symbolControl = new FormControl(this.symbolToken, [Validators.required, Validators.minLength(7)]);
+  public symbolControl = new FormControl(this.newOrderParams.symbol, [Validators.required, Validators.minLength(7)]);
 
   public newOrderFormGroup = new FormGroup(
     {
@@ -61,19 +56,19 @@ export class NewOrderParamsComponent implements OnInit {
   public getValueNewOrderFormGroup(): void {
     this.newOrderFormGroup.valueChanges
       .subscribe(paramsNewOrder => {
-        this.priceToken = Number(paramsNewOrder.priceControl || 0);
-        this.quantityToken = Number(paramsNewOrder.quantityTokenControl || 0);
-        this.quantityOrders = Number(paramsNewOrder.quantityOrdersControl || 0);
-        this.distanceToken = Number(paramsNewOrder.distanceTokenControl || 0);
-        this.priceCommaNumbers = Number(paramsNewOrder.priceCommaNumbersControl || 0);
+        this.newOrderParams.price = Number(paramsNewOrder.priceControl || 0);
+        this.newOrderParams.quantityToken = Number(paramsNewOrder.quantityTokenControl || 0);
+        this.newOrderParams.quantityOrders = Number(paramsNewOrder.quantityOrdersControl || 0);
+        this.newOrderParams.distanceToken = Number(paramsNewOrder.distanceTokenControl || 0);
+        this.newOrderParams.priceCommaNumbers = Number(paramsNewOrder.priceCommaNumbersControl || 0);
       })
     this.symbolControl.valueChanges
       .subscribe((symbolControlValue: string | null) => {
-        this.symbolToken = symbolControlValue?.toUpperCase() || ''
+        this.newOrderParams.symbol = symbolControlValue?.toUpperCase() || ''
         this.isInputNumbersComma = true;
 
         this.functionsOrderService.filterPriceTokenNumberAfterComma().forEach((value: ISymbolNumberAfterComma) => {
-          if (value.symbol == this.symbolToken) {
+          if (value.symbol == this.newOrderParams.symbol) {
             this.isInputNumbersComma = false;
           }
         });
@@ -97,22 +92,22 @@ export class NewOrderParamsComponent implements OnInit {
   }
 
   public newOrder(side: string) {
-    if (this.priceCommaNumbers === 0) {
+    if (this.newOrderParams.priceCommaNumbers === 0) {
       this.functionsOrderService.listSymbolNumberComma.forEach(symbolNumberComma => {
-        if (this.symbolToken == symbolNumberComma.symbol) {
-          this.priceCommaNumbers = symbolNumberComma.numberAfterComma;
+        if (this.newOrderParams.symbol == symbolNumberComma.symbol) {
+          this.newOrderParams.priceCommaNumbers = symbolNumberComma.numberAfterComma;
         }
       });
     }
-    const paramsNewOrder: IParamsOrder = {
-      symbol: this.symbolToken,
+    const newOrderParams: INewOrderParams = {
+      symbol: this.newOrderParams.symbol,
       side,
-      quantity: this.quantityToken,
-      price: this.priceToken,
-      quantityOrders: this.quantityOrders,
-      distanceToken: this.distanceToken,
-      priceCommaNumbers: this.priceCommaNumbers
+      quantityToken: this.newOrderParams.quantityToken,
+      price: this.newOrderParams.price,
+      quantityOrders: this.newOrderParams.quantityOrders,
+      distanceToken: this.newOrderParams.distanceToken,
+      priceCommaNumbers: this.newOrderParams.priceCommaNumbers
     }
-    this.paramsNewOrderEvent.emit(paramsNewOrder);
+    this.newOrderParamsEvent.emit(newOrderParams);
   }
 }

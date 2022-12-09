@@ -5,15 +5,15 @@ import {MatDialog} from "@angular/material/dialog";
 import {DialogBoxTakeProfitComponent} from "../dialog-box-take-profit/dialog-box-take-profit.component";
 import {FunctionsOrderService} from "../../services/order/functions-order.service";
 import {DIALOG_BOX_PROFIT_WIDTH_260_PX} from "../../const/const";
-import {IMsgServer} from "../../interface/msg-server";
 import {filter, take} from "rxjs";
+import {INewOrderParams} from "../../interface/order/new-order";
 
 @Component({
   selector: 'app-order-row',
   templateUrl: './order-row.component.html',
   styleUrls: ['./order-row.component.scss']
 })
-export class OrderRowComponent implements OnInit{
+export class OrderRowComponent implements OnInit {
   @Input()
   public symbol!: string;
   @Input()
@@ -30,7 +30,7 @@ export class OrderRowComponent implements OnInit{
   public profit!: number;
 
   constructor(public textChangeService: TextChangeService, public orderService: OrderService,
-              public dialog: MatDialog, private functionsOrderService:FunctionsOrderService) {
+              public dialog: MatDialog, private functionsOrderService: FunctionsOrderService) {
   }
 
   public ngOnInit(): void {
@@ -51,15 +51,22 @@ export class OrderRowComponent implements OnInit{
       .pipe(
         filter(result => !!result),
         take(1))
-      .subscribe((takeProfit:number) => {
-        const amount: number = Number(this.amount);
-        this.functionsOrderService.popUpInfo(`${this.symbol} ${takeProfit}`);
-        this.orderService.newOrder(this.symbol, 'SELL', amount, takeProfit)
+      .subscribe((takeProfit: number) => {
+        const newOrderParams: INewOrderParams = {
+          symbol: this.symbol,
+          side: 'SELL',
+          quantityToken: Number(this.amount),
+          price: takeProfit,
+          distanceToken: 0,
+          quantityOrders: 0,
+        };
+        this.functionsOrderService.popUpInfo(`New order send ${this.symbol} ${takeProfit}`);
+        this.orderService.newOrder(newOrderParams)
           .pipe(take(1))
           .subscribe(res => {
-            const result:IMsgServer = JSON.parse(<string>res);
-            this.functionsOrderService.popUpInfo(result.msg);
+            const result = JSON.parse(<string>res);
+            this.functionsOrderService.popUpInfo(`${result.side} ${result.symbol} amount: ${result.origQty} price: ${result.price}`);
           });
-    });
+      });
   }
 }
