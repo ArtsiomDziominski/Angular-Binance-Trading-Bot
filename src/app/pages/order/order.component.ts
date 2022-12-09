@@ -7,9 +7,9 @@ import {FunctionsOrderService} from "../../services/order/functions-order.servic
 import {IApiKey} from "../../interface/api-key";
 import {NEW_ORDER, NO_CONNECTION} from "../../const/message-pop-up-info";
 import {IOpenOrder} from "../../interface/order/open-order";
-import {IParamsOrder} from "../../interface/order/params-order";
 import {INTERVAL_NEW_ORDER} from "../../const/http-request";
 import {IMsgServer} from "../../interface/msg-server";
+import {INewOrderParams} from "../../interface/order/new-order";
 
 @Component({
   selector: 'app-order',
@@ -22,7 +22,7 @@ export class OrderComponent implements OnInit, OnDestroy {
   public isLoader: boolean = false;
   private intervalRepeatCurrentOpenOrder!: Subscription;
   private intervalNewOrderSequentially?: Subscription;
-  private priceCommaNumbers?:number;
+  private priceCommaNumbers?: number;
 
 
   constructor(
@@ -47,42 +47,36 @@ export class OrderComponent implements OnInit, OnDestroy {
     this.apiKey = JSON.parse(<string>this.localStorageService.getLocalStorage(API_KEY)) || '[]';
   }
 
-  public async newOrder(paramsNewOrder: IParamsOrder): Promise<void> {
-    const symbolToken:string = paramsNewOrder.symbol;
-    const side:string = paramsNewOrder.side;
-    const quantityToken:number = paramsNewOrder.quantity;
-    const priceToken:number = paramsNewOrder.price;
-    const quantityOrders:number = paramsNewOrder.quantityOrders;
-    const distanceToken:number = paramsNewOrder.distanceToken;
-    this.priceCommaNumbers = paramsNewOrder.priceCommaNumbers;
+  public async newOrder(newOrderParams: INewOrderParams): Promise<void> {
+    this.priceCommaNumbers = newOrderParams.priceCommaNumbers;
 
-    if (paramsNewOrder.price === null || undefined) {
-      paramsNewOrder.price = 0;
+    if (newOrderParams.price === null || undefined) {
+      newOrderParams.price = 0;
     }
-    this.functionsOrderService.saveParamOrder(symbolToken, side, quantityToken, priceToken, quantityOrders, distanceToken);
+    this.functionsOrderService.saveParamOrder(newOrderParams);
     this.functionsOrderService.popUpInfo(NEW_ORDER);
-    await this.newOrdersSequentially(symbolToken, side, quantityToken, priceToken, quantityOrders, distanceToken);
+    await this.newOrdersSequentially(newOrderParams);
   }
 
-  public async newOrdersSequentially(symbolToken: string, side: string, quantityToken: number, priceToken: number, quantityOrders: number, distanceToken: number) {
+  public async newOrdersSequentially(newOrderParams: INewOrderParams) {
     let intervalAmount: number = 0;
     let quantityTokenSum: number = 0;
-    let quantityTokenStart: number = quantityToken;
+    const quantityTokenStart: number = newOrderParams.quantityToken;
 
     this.intervalNewOrderSequentially = interval(INTERVAL_NEW_ORDER)
       .subscribe({
         next: async () => {
-          await this.orderService.newOrder(symbolToken, side, quantityToken, priceToken)
+          await this.orderService.newOrder(newOrderParams)
             .pipe(take(1))
             .subscribe(
-              () => this.functionsOrderService.popUpInfo(`Buy ${symbolToken} amounts=${quantityToken}, price=${priceToken}`),
+              () => this.functionsOrderService.popUpInfo(`Buy ${newOrderParams.symbol} amounts=${newOrderParams.quantityToken}, price=${newOrderParams.price}`),
               (value: string) => this.catchErrorNewOrder(value));
 
-          quantityTokenSum += quantityToken
-          priceToken = await this.functionsOrderService.calculationPrice(symbolToken, priceToken, distanceToken, this.priceCommaNumbers);
-          quantityToken = this.functionsOrderService.calculationQuantityToken(quantityToken, quantityTokenStart);
+          quantityTokenSum += newOrderParams.quantityToken
+          newOrderParams.price = await this.functionsOrderService.calculationPrice(newOrderParams);
+          newOrderParams.quantityToken = this.functionsOrderService.calculationQuantityToken(newOrderParams, quantityTokenStart);
 
-          intervalAmount = this.endNewOrdersSequentially(intervalAmount, quantityOrders, symbolToken, side)
+          intervalAmount = this.endNewOrdersSequentially(intervalAmount,newOrderParams)
         }
       })
   }
@@ -128,17 +122,17 @@ export class OrderComponent implements OnInit, OnDestroy {
 
       setTimeout(() => {
         symbolsPendingOrder.forEach((symbolToken: string) => {
-          const paramOrder: IParamsOrder = JSON.parse(this.localStorageService.getLocalStorage(symbolToken) || '[]');
+          const paramOrder: INewOrderParams = JSON.parse(this.localStorageService.getLocalStorage(symbolToken) || '[]');
           this.newOrder(paramOrder);
         })
       }, 3000)
     }
   }
 
-  public endNewOrdersSequentially(intervalAmount: number, quantityOrders: number, symbolToken: string, side: string) {
+  public endNewOrdersSequentially(intervalAmount: number, newOrderParams:INewOrderParams) {
     intervalAmount++;
-    if (intervalAmount >= quantityOrders) {
-      this.functionsOrderService.popUpInfo(`${side} ${symbolToken}`);
+    if (intervalAmount >= newOrderParams.quantityOrders) {
+      this.functionsOrderService.popUpInfo(`${newOrderParams.side} ${newOrderParams.symbol}`);
       this.intervalNewOrderSequentially?.unsubscribe();
     }
     return intervalAmount;

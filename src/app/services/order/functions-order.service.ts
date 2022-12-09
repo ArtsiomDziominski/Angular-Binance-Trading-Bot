@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
 import {MainBlockPriceService} from "../main-block-token-price/main-block-price.service";
 import {LocalStorageService} from "../local-storage/local-storage.service";
-import {IParamsOrder} from "../../interface/order/params-order";
 import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 import {ISymbolNumberAfterComma} from "../../interface/symbol-price-number-after-comma";
 import {HTTP_GET_24hr} from "../../const/http-request";
 import {IPrice} from "../../interface/price-token";
+import {INewOrderParams} from "../../interface/order/new-order";
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +15,16 @@ export class FunctionsOrderService {
   listSymbolNumberComma: ISymbolNumberAfterComma[] = [];
   public symbolAutocomplete: string[] = [];
   public oldActiveCurrentNameToken: string[] = [];
+
+  public newOrderParams: INewOrderParams = {
+    side: 'BUY',
+    symbol: '',
+    quantityToken: 0,
+    quantityOrders: 0,
+    distanceToken: 0,
+    priceCommaNumbers: 0,
+    price: 0
+  }
 
 
   constructor(private mainBlockPriceService: MainBlockPriceService, public localStorageService: LocalStorageService,
@@ -38,16 +48,8 @@ export class FunctionsOrderService {
     return priceToken;
   }
 
-  public saveParamOrder(symbol: string, side: string, quantity: number, price: number, quantityOrders: number, distanceToken: number): void {
-    const paramOrder: IParamsOrder = {
-      symbol: symbol,
-      side: side,
-      quantity: quantity,
-      price: price,
-      quantityOrders: quantityOrders,
-      distanceToken: distanceToken
-    }
-    this.localStorageService.setLocalStorage(symbol, JSON.stringify(paramOrder))
+  public saveParamOrder(newOrderParams: INewOrderParams): void {
+    this.localStorageService.setLocalStorage(newOrderParams.symbol, JSON.stringify(newOrderParams))
   }
 
   public popUpInfo(msg: string): void {
@@ -70,26 +72,26 @@ export class FunctionsOrderService {
     return symbolNotActive;
   }
 
-  public async calculationPrice(symbolToken: string, priceToken: number, distanceToken: number, priceCommaNumbers: number = 0): Promise<number> {
-    if (priceCommaNumbers === 0) {
+  public async calculationPrice(newOrderParams: INewOrderParams): Promise<number> {
+    if (newOrderParams.priceCommaNumbers === 0) {
       this.listSymbolNumberComma.forEach((v: ISymbolNumberAfterComma) => {
-        if (v.symbol === symbolToken) {
-          priceCommaNumbers = v.numberAfterComma;
+        if (v.symbol === newOrderParams.symbol) {
+          newOrderParams.priceCommaNumbers = v.numberAfterComma;
         }
       })
     }
-    priceToken = await this.getCurrentPriceToken(symbolToken, priceToken);
-    priceToken = Number.parseFloat(String(priceToken))
-    priceToken = Number(priceToken.toFixed(priceCommaNumbers))
-    priceToken = priceToken - distanceToken;
-    return priceToken
+    newOrderParams.price = await this.getCurrentPriceToken(newOrderParams.symbol, newOrderParams.price);
+    newOrderParams.price = Number.parseFloat(String(newOrderParams.price))
+    newOrderParams.price = Number(newOrderParams.price.toFixed(newOrderParams.priceCommaNumbers))
+    newOrderParams.price = newOrderParams.price - newOrderParams.distanceToken;
+    return newOrderParams.price;
   }
 
-  public calculationQuantityToken(quantityToken: number, quantityTokenStart: number): number {
-    quantityToken += quantityTokenStart;
-    quantityToken = Number.parseFloat(String(quantityToken))
-    quantityToken = Number(quantityToken.toFixed(3))
-    return quantityToken
+  public calculationQuantityToken(newOrderParams: INewOrderParams, quantityTokenStart: number): number {
+    newOrderParams.quantityToken += quantityTokenStart;
+    newOrderParams.quantityToken = Number.parseFloat(String(newOrderParams.quantityToken))
+    newOrderParams.quantityToken = Number(newOrderParams.quantityToken.toFixed(3))
+    return newOrderParams.quantityToken
   }
 
   public filterPriceTokenNumberAfterComma(): ISymbolNumberAfterComma[] {
@@ -97,7 +99,7 @@ export class FunctionsOrderService {
     let numberAfterComma: string;
     this.listSymbolNumberComma = [];
 
-    this.mainBlockPriceService.allPriceTokens.forEach((allOptionsToken:IPrice) => {
+    this.mainBlockPriceService.allPriceTokens.forEach((allOptionsToken: IPrice) => {
       symbol = allOptionsToken.symbol;
       numberAfterComma = allOptionsToken.lastPrice.split('.').pop() || '';
       this.listSymbolNumberComma.push({"symbol": symbol, "numberAfterComma": numberAfterComma.length});

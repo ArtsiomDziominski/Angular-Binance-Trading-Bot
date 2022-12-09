@@ -8,7 +8,7 @@ import {Observable, take} from "rxjs";
 import {FunctionsOrderService} from "./functions-order.service";
 import {IMsgServer} from "../../interface/msg-server";
 import {IOpenOrder} from "../../interface/order/open-order";
-import {IParamSignatureNewOrder} from "../../interface/order/new-order";
+import {INewOrderParams, IParamSignatureNewOrder} from "../../interface/order/new-order";
 import {IApiKey} from "../../interface/api-key";
 
 @Injectable({
@@ -35,11 +35,11 @@ export class OrderService {
     }
   }
 
-  public newOrder(symbol: string, side: string, quantity: number, price: number = 0): Observable<string> {
-    symbol = symbol.trim();
-    let dataQueryString: string = price === 0 ?
-      `symbol=${symbol}&side=${side}&quantity=${quantity}&type=MARKET&timestamp=` + Date.now() :
-      `symbol=${symbol}&side=${side}&quantity=${quantity}&type=LIMIT&price=${price}&timeInForce=GTC&timestamp=` + Date.now();
+  public newOrder(newOrderParams: INewOrderParams): Observable<string> {
+    const symbol = newOrderParams.symbol.trim();
+    let dataQueryString: string = newOrderParams.price === 0 ?
+      `symbol=${symbol}&side=${newOrderParams.side}&quantity=${newOrderParams.quantityToken}&type=MARKET&timestamp=` + Date.now() :
+      `symbol=${symbol}&side=${newOrderParams.side}&quantity=${newOrderParams.quantityToken}&type=LIMIT&price=${newOrderParams.price}&timeInForce=GTC&timestamp=` + Date.now();
     const apiKey: IApiKey | undefined = this.setAPIkey()
     const signature: string = this.hashFunctions(dataQueryString, apiKey);
     const params: IParamSignatureNewOrder = this.paramsNewOrder(signature, dataQueryString, apiKey!.akey);
