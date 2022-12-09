@@ -4,7 +4,8 @@ import {API_KEY} from "../../const/const";
 import {MatDialogRef} from "@angular/material/dialog";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {FunctionsOrderService} from "../../services/order/functions-order.service";
-import {take} from "rxjs";
+import {SAVE_API} from "../../const/message-pop-up-info";
+import {IApiKey} from "../../interface/api-key";
 
 @Component({
   selector: 'app-api-box',
@@ -30,7 +31,6 @@ export class ApiBoxComponent implements OnInit {
 
   public ngOnInit(): void {
     this.apiFormGroup.valueChanges
-      .pipe(take(1))
       .subscribe(valueApi => {
       this.apiKey = valueApi.apiKeyControl || '';
       this.secretKey = valueApi.secretKeyControl || '';
@@ -42,9 +42,9 @@ export class ApiBoxComponent implements OnInit {
   }
 
   public saveApi(): void {
-    let key: { akey: string, skey: string } = {akey: this.apiKey, skey: this.secretKey};
+    let key: IApiKey = {akey: this.apiKey, skey: this.secretKey};
     this.localStorageService.setLocalStorage(API_KEY, JSON.stringify(key!));
-    this.functionsOrderService.popUpInfo('Save API');
+    this.functionsOrderService.popUpInfo(SAVE_API);
     this.closeDialogBox();
   }
 }
