@@ -37,15 +37,17 @@ export class OrderService {
 
   public newOrder(newOrderParams: INewOrderParams): Observable<string> {
     const symbol = newOrderParams.symbol.trim();
+    const priceCommaNumbers:number = <number>newOrderParams.priceCommaNumbers;
+    const quantityToken:string = newOrderParams.quantityToken.toFixed(priceCommaNumbers);
     let dataQueryString: string = newOrderParams.price === 0 ?
-      `symbol=${symbol}&side=${newOrderParams.side}&quantity=${newOrderParams.quantityToken}&type=MARKET&timestamp=` + Date.now() :
-      `symbol=${symbol}&side=${newOrderParams.side}&quantity=${newOrderParams.quantityToken}&type=LIMIT&price=${newOrderParams.price}&timeInForce=GTC&timestamp=` + Date.now();
-    const apiKey: IApiKey | undefined = this.setAPIkey()
+      `symbol=${symbol}&side=${newOrderParams.side}&quantity=${quantityToken}&type=MARKET&timestamp=` + Date.now() :
+      `symbol=${symbol}&side=${newOrderParams.side}&quantity=${quantityToken}&type=LIMIT&price=${newOrderParams.price}&timeInForce=GTC&timestamp=` + Date.now();
+    const apiKey: IApiKey | undefined = this.setAPIkey();
     const signature: string = this.hashFunctions(dataQueryString, apiKey);
     const params: IParamSignatureNewOrder = this.paramsNewOrder(signature, dataQueryString, apiKey!.akey);
-    const URL: string = BURL + '/new-order/' + JSON.stringify(params)
+    const URL: string = BURL + '/new-order/' + JSON.stringify(params);
     console.log(URL)
-    return this.http.get<string>(URL, {responseType: 'text' as 'json'})
+    return this.http.get<string>(URL, {responseType: 'text' as 'json'});
   }
 
   public marketOrder(symbol: string, side: string, quantity: string | number, type: string): void {
