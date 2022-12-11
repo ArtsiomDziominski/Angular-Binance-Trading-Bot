@@ -90,7 +90,7 @@ export class FunctionsOrderService {
   public calculationQuantityToken(newOrderParams: INewOrderParams, quantityTokenStart: number): number {
     newOrderParams.quantityToken += quantityTokenStart;
     newOrderParams.quantityToken = Number.parseFloat(String(newOrderParams.quantityToken))
-    newOrderParams.quantityToken = Number(newOrderParams.quantityToken.toFixed(3))
+    newOrderParams.quantityToken = Number(newOrderParams.quantityToken.toFixed(newOrderParams.priceCommaNumbers))
     return newOrderParams.quantityToken
   }
 

@@ -74,7 +74,8 @@ export class OrderComponent implements OnInit, OnDestroy {
             newOrderParamsSequentially.quantityTokenSum += newOrderParamsSequentially.quantityTokenStart;
             newOrderParamsSequentially.price = await this.functionsOrderService.calculationPrice(newOrderParams);
             newOrderParamsSequentially.currentQuantityToken = this.functionsOrderService.calculationQuantityToken(newOrderParams, newOrderParamsSequentially.quantityTokenStart);
-            await this.functionsOrderService.popUpInfo(`${infoOrderCreate.side} ${infoOrderCreate.symbol} amounts=${infoOrderCreate.origQty}, price=${infoOrderCreate.price}`)
+            await this.functionsOrderService.popUpInfo(`${infoOrderCreate.side} ${infoOrderCreate.symbol} amounts=${infoOrderCreate.origQty}, price=${infoOrderCreate.price}`);
+            newOrderParamsSequentially.intervalAmount > 5? this.intervalRepeatCurrentOpenOrder?.unsubscribe():'';
 
             newOrderParamsSequentially.intervalAmount = this.endNewOrdersSequentially(newOrderParamsSequentially.intervalAmount, newOrderParams);
           }
@@ -135,6 +136,7 @@ export class OrderComponent implements OnInit, OnDestroy {
     intervalAmount++;
     if (intervalAmount >= newOrderParams.quantityOrders) {
       this.intervalNewOrderSequentially?.unsubscribe();
+      this.repeatGetCurrentOpenOrder();
     }
     return intervalAmount;
   }
