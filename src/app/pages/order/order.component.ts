@@ -1,14 +1,14 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {LocalStorageService} from "../../services/local-storage/local-storage.service";
 import {OrderService} from "../../services/order/order.service";
-import {interval, Subscription, take} from "rxjs";
+import {interval, Subscription, switchMap, take} from "rxjs";
 import {FunctionsOrderService} from "../../services/order/functions-order.service";
 import {NEW_ORDER, NO_CONNECTION} from "../../const/message-pop-up-info";
 import {IOpenOrder} from "../../interface/order/open-order";
 import {INTERVAL_NEW_ORDER} from "../../const/http-request";
 import {IMsgServer} from "../../interface/msg-server";
-import {INewOrderParams} from "../../interface/order/new-order";
 import {MainCommonService} from "../../services/main-common.service";
+import {IInfoOrderCreate, INewOrderParams} from "../../interface/order/new-order";
 
 @Component({
   selector: 'app-order',
@@ -28,14 +28,13 @@ export class OrderComponent implements OnInit, OnDestroy {
     public orderService: OrderService,
     public functionsOrderService: FunctionsOrderService,
     private mainCommonService: MainCommonService
-
   ) {
   }
 
   public ngOnInit(): void {
     this.mainCommonService.setAPIkey();
     this.getCurrentOpenOrder();
-    this.repeatGetCurrentOpenOrder()
+    this.repeatGetCurrentOpenOrder();
     this.functionsOrderService.filterPriceTokenNumberAfterComma();
   }
 
@@ -55,25 +54,35 @@ export class OrderComponent implements OnInit, OnDestroy {
   }
 
   public async newOrdersSequentially(newOrderParams: INewOrderParams) {
-    let intervalAmount: number = 0;
-    let quantityTokenSum: number = 0;
-    const quantityTokenStart: number = newOrderParams.quantityToken;
+    const newOrderParamsSequentially = {
+      intervalAmount: 0,
+      quantityTokenSum: 0,
+      quantityTokenStart: newOrderParams.quantityToken,
+      price: newOrderParams.price,
+      currentQuantityToken: 0
+    }
+    this.intervalRepeatCurrentOpenOrder.unsubscribe();
 
     this.intervalNewOrderSequentially = interval(INTERVAL_NEW_ORDER)
+      .pipe(switchMap(() => this.orderService.newOrder(newOrderParams).pipe(take(1))))
       .subscribe({
-        next: async () => {
-          await this.orderService.newOrder(newOrderParams)
-            .pipe(take(1))
-            .subscribe(
-              () => this.functionsOrderService.popUpInfo(`Buy ${newOrderParams.symbol} amounts=${newOrderParams.quantityToken}, price=${newOrderParams.price}`),
-              (value: string) => this.catchErrorNewOrder(value));
+        next: async (result: string) => {
+          const infoOrderCreate: IInfoOrderCreate = JSON.parse(result);
+          if (this.functionsOrderService.checkError(result)) {
+            this.functionsOrderService.popUpInfo(<string>infoOrderCreate.msg);
+            this.intervalNewOrderSequentially?.unsubscribe();
+            await this.getCurrentOpenOrder();
+          } else {
+            newOrderParamsSequentially.quantityTokenSum += newOrderParamsSequentially.quantityTokenStart;
+            newOrderParamsSequentially.price = await this.functionsOrderService.calculationPrice(newOrderParams);
+            newOrderParamsSequentially.currentQuantityToken = this.functionsOrderService.calculationQuantityToken(newOrderParams, newOrderParamsSequentially.quantityTokenStart);
+            await this.functionsOrderService.popUpInfo(`${infoOrderCreate.side} ${infoOrderCreate.symbol} amounts=${infoOrderCreate.origQty}, price=${infoOrderCreate.price}`)
 
-          quantityTokenSum += newOrderParams.quantityToken
-          newOrderParams.price = await this.functionsOrderService.calculationPrice(newOrderParams);
-          newOrderParams.quantityToken = this.functionsOrderService.calculationQuantityToken(newOrderParams, quantityTokenStart);
+            newOrderParamsSequentially.intervalAmount = this.endNewOrdersSequentially(newOrderParamsSequentially.intervalAmount, newOrderParams);
+          }
 
-          intervalAmount = this.endNewOrdersSequentially(intervalAmount, newOrderParams)
-        }
+        },
+        error: (value: string) => this.catchErrorNewOrder(value)
       })
   }
 
@@ -128,8 +137,8 @@ export class OrderComponent implements OnInit, OnDestroy {
   public endNewOrdersSequentially(intervalAmount: number, newOrderParams: INewOrderParams) {
     intervalAmount++;
     if (intervalAmount >= newOrderParams.quantityOrders) {
-      this.functionsOrderService.popUpInfo(`${newOrderParams.side} ${newOrderParams.symbol}`);
       this.intervalNewOrderSequentially?.unsubscribe();
+      this.repeatGetCurrentOpenOrder();
     }
     return intervalAmount;
   }
@@ -142,7 +151,7 @@ export class OrderComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onOpen($event: any) {
+  public newOrderParamsEvent($event: INewOrderParams) {
     this.newOrder($event);
   }
 }

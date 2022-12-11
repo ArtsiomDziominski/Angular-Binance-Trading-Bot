@@ -106,4 +106,9 @@ export class FunctionsOrderService {
     })
     return this.listSymbolNumberComma;
   }
+
+  public checkError(msgServer: string) {
+    const msgServerJson:{code:number|string} = JSON.parse(msgServer);
+    return !!msgServerJson.code;
+  }
 }
