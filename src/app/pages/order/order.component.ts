@@ -61,7 +61,6 @@ export class OrderComponent implements OnInit, OnDestroy {
       price: newOrderParams.price,
       currentQuantityToken: 0
     }
-    this.intervalRepeatCurrentOpenOrder.unsubscribe();
 
     this.intervalNewOrderSequentially = interval(INTERVAL_NEW_ORDER)
       .pipe(switchMap(() => this.orderService.newOrder(newOrderParams).pipe(take(1))))
@@ -71,7 +70,6 @@ export class OrderComponent implements OnInit, OnDestroy {
           if (this.functionsOrderService.checkError(result)) {
             this.functionsOrderService.popUpInfo(<string>infoOrderCreate.msg);
             this.intervalNewOrderSequentially?.unsubscribe();
-            await this.getCurrentOpenOrder();
           } else {
             newOrderParamsSequentially.quantityTokenSum += newOrderParamsSequentially.quantityTokenStart;
             newOrderParamsSequentially.price = await this.functionsOrderService.calculationPrice(newOrderParams);
@@ -80,7 +78,6 @@ export class OrderComponent implements OnInit, OnDestroy {
 
             newOrderParamsSequentially.intervalAmount = this.endNewOrdersSequentially(newOrderParamsSequentially.intervalAmount, newOrderParams);
           }
-
         },
         error: (value: string) => this.catchErrorNewOrder(value)
       })
@@ -138,7 +135,6 @@ export class OrderComponent implements OnInit, OnDestroy {
     intervalAmount++;
     if (intervalAmount >= newOrderParams.quantityOrders) {
       this.intervalNewOrderSequentially?.unsubscribe();
-      this.repeatGetCurrentOpenOrder();
     }
     return intervalAmount;
   }
