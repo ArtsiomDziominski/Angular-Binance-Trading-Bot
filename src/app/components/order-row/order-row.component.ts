@@ -5,7 +5,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {DialogBoxTakeProfitComponent} from "../dialog-box-take-profit/dialog-box-take-profit.component";
 import {FunctionsOrderService} from "../../services/order/functions-order.service";
 import {DIALOG_BOX_PROFIT_WIDTH_260_PX} from "../../const/const";
-import {filter, take} from "rxjs";
+import {filter, switchMap, take, tap} from "rxjs";
 import {INewOrderParams} from "../../interface/order/new-order";
 
 @Component({
@@ -47,26 +47,25 @@ export class OrderRowComponent implements OnInit {
       data: {symbol: this.symbol, profit: this.profit},
     });
 
+    const newOrderParams: INewOrderParams = {
+      symbol: this.symbol,
+      side: 'SELL',
+      quantityToken: Number(this.amount),
+      price: 0,
+      distanceToken: 0,
+      quantityOrders: 0,
+    };
+
     dialogRef.afterClosed()
       .pipe(
+        take(1),
         filter(result => !!result),
-        take(1))
-      .subscribe((takeProfit: number) => {
-        const newOrderParams: INewOrderParams = {
-          symbol: this.symbol,
-          side: 'SELL',
-          quantityToken: Number(this.amount),
-          price: takeProfit,
-          distanceToken: 0,
-          quantityOrders: 0,
-        };
-        this.functionsOrderService.popUpInfo(`New order send ${this.symbol} ${takeProfit}`);
-        this.orderService.newOrder(newOrderParams)
-          .pipe(take(1))
-          .subscribe(res => {
-            const result = JSON.parse(<string>res);
-            this.functionsOrderService.popUpInfo(`${result.side} ${result.symbol} amount: ${result.origQty} price: ${result.price}`);
-          });
-      });
+        tap(profitPrice => newOrderParams.price = profitPrice),
+        switchMap(() => this.orderService.newOrder(newOrderParams))
+      )
+      .subscribe(res => {
+        const result = JSON.parse(<string>res);
+        this.functionsOrderService.popUpInfo(`${result.side} ${result.symbol} amount: ${result.origQty} price: ${result.price}`);
+      })
   }
 }
