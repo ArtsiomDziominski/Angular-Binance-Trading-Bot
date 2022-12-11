@@ -1,15 +1,14 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {LocalStorageService} from "../../services/local-storage/local-storage.service";
-import {API_KEY} from "../../const/const";
 import {OrderService} from "../../services/order/order.service";
 import {interval, Subscription, take} from "rxjs";
 import {FunctionsOrderService} from "../../services/order/functions-order.service";
-import {IApiKey} from "../../interface/api-key";
 import {NEW_ORDER, NO_CONNECTION} from "../../const/message-pop-up-info";
 import {IOpenOrder} from "../../interface/order/open-order";
 import {INTERVAL_NEW_ORDER} from "../../const/http-request";
 import {IMsgServer} from "../../interface/msg-server";
 import {INewOrderParams} from "../../interface/order/new-order";
+import {MainCommonService} from "../../services/main-common.service";
 
 @Component({
   selector: 'app-order',
@@ -18,7 +17,6 @@ import {INewOrderParams} from "../../interface/order/new-order";
 })
 export class OrderComponent implements OnInit, OnDestroy {
   public allCurrentToken: IOpenOrder[] = [];
-  public apiKey: IApiKey | undefined;
   public isLoader: boolean = false;
   private intervalRepeatCurrentOpenOrder!: Subscription;
   private intervalNewOrderSequentially?: Subscription;
@@ -29,11 +27,13 @@ export class OrderComponent implements OnInit, OnDestroy {
     private localStorageService: LocalStorageService,
     public orderService: OrderService,
     public functionsOrderService: FunctionsOrderService,
+    private mainCommonService: MainCommonService
+
   ) {
   }
 
   public ngOnInit(): void {
-    this.setAPIkey();
+    this.mainCommonService.setAPIkey();
     this.getCurrentOpenOrder();
     this.repeatGetCurrentOpenOrder()
     this.functionsOrderService.filterPriceTokenNumberAfterComma();
@@ -41,10 +41,6 @@ export class OrderComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.intervalRepeatCurrentOpenOrder.unsubscribe();
-  }
-
-  public setAPIkey(): void {
-    this.apiKey = JSON.parse(<string>this.localStorageService.getLocalStorage(API_KEY)) || '[]';
   }
 
   public async newOrder(newOrderParams: INewOrderParams): Promise<void> {
@@ -76,7 +72,7 @@ export class OrderComponent implements OnInit, OnDestroy {
           newOrderParams.price = await this.functionsOrderService.calculationPrice(newOrderParams);
           newOrderParams.quantityToken = this.functionsOrderService.calculationQuantityToken(newOrderParams, quantityTokenStart);
 
-          intervalAmount = this.endNewOrdersSequentially(intervalAmount,newOrderParams)
+          intervalAmount = this.endNewOrdersSequentially(intervalAmount, newOrderParams)
         }
       })
   }
@@ -104,6 +100,7 @@ export class OrderComponent implements OnInit, OnDestroy {
           this.allCurrentToken = value.filter((v: IOpenOrder) => v.positionAmt > 0) || undefined;
           value.forEach((v: IOpenOrder) => this.functionsOrderService.symbolAutocomplete.push(v.symbol))
           this.isLoader = true;
+
         },
         () => {
           this.isLoader = false;
@@ -113,7 +110,6 @@ export class OrderComponent implements OnInit, OnDestroy {
   }
 
   public activeToggleRepeatOrder(allCurrentToken: IOpenOrder[]) {
-    console.log('true')
     let activeCurrentNameToken: string[] = [];
     allCurrentToken.forEach((currentToken: IOpenOrder) => activeCurrentNameToken.push(currentToken.symbol));
     if (this.functionsOrderService.oldActiveCurrentNameToken.length > activeCurrentNameToken.length) {
@@ -129,7 +125,7 @@ export class OrderComponent implements OnInit, OnDestroy {
     }
   }
 
-  public endNewOrdersSequentially(intervalAmount: number, newOrderParams:INewOrderParams) {
+  public endNewOrdersSequentially(intervalAmount: number, newOrderParams: INewOrderParams) {
     intervalAmount++;
     if (intervalAmount >= newOrderParams.quantityOrders) {
       this.functionsOrderService.popUpInfo(`${newOrderParams.side} ${newOrderParams.symbol}`);

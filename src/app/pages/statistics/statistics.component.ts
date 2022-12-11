@@ -5,6 +5,7 @@ import {TextChangeService} from "../../services/text-change.service";
 import {BALANCE, INCOME_HISTORY, LIMIT_INCOME_HISTORY} from "../../const/http-request";
 import {IIncomeHistoryFull} from "../../interface/statistics/income-history-full";
 import {take} from "rxjs";
+import {MainCommonService} from "../../services/main-common.service";
 
 @Component({
   selector: 'app-statistics',
@@ -20,10 +21,12 @@ export class StatisticsComponent implements OnInit, OnDestroy {
   constructor(
     public editText: TextChangeService,
     public statisticsInfoService: StatisticsInfoServerService,
+    private mainCommonService: MainCommonService
   ) {
   }
 
   public ngOnInit(): void {
+    this.mainCommonService.setAPIkey();
     this.getStatAcc();
     this.setIntervalStatAcc = window.setInterval(() => this.getStatAcc(), 10000);
     this.getIncomeHistory();
