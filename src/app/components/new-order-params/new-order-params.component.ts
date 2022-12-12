@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ISymbolNumberAfterComma} from "../../interface/symbol-price-number-after-comma";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {map, Observable, startWith} from "rxjs";
@@ -15,6 +15,7 @@ import {INewOrderParams} from "../../interface/order/new-order";
   styleUrls: ['./new-order-params.component.scss']
 })
 export class NewOrderParamsComponent implements OnInit {
+  @Input() ordersPlaced!: boolean;
   @Output() newOrderParamsEvent: EventEmitter<INewOrderParams> = new EventEmitter();
 
   public newOrderParams: INewOrderParams = this.functionsOrderService.newOrderParams;
@@ -92,13 +93,6 @@ export class NewOrderParamsComponent implements OnInit {
   }
 
   public newOrder(side: string) {
-    if (this.newOrderParams.priceCommaNumbers === 0) {
-      this.functionsOrderService.listSymbolNumberComma.forEach(symbolNumberComma => {
-        if (this.newOrderParams.symbol == symbolNumberComma.symbol) {
-          this.newOrderParams.priceCommaNumbers = symbolNumberComma.numberAfterComma;
-        }
-      });
-    }
     const newOrderParams: INewOrderParams = {
       symbol: this.newOrderParams.symbol,
       side,

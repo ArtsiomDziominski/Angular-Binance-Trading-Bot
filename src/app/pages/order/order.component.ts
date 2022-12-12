@@ -21,6 +21,7 @@ export class OrderComponent implements OnInit, OnDestroy {
   public isLoader: boolean = false;
   private intervalRepeatCurrentOpenOrder!: Subscription;
   private intervalNewOrderSequentially?: Subscription;
+  public ordersPlaced: boolean = false;
 
 
   constructor(
@@ -50,6 +51,7 @@ export class OrderComponent implements OnInit, OnDestroy {
   }
 
   public async newOrdersSequentially(newOrderParams: INewOrderParams) {
+    this.ordersPlaced = true;
     const newOrderParamsSequentially = {
       intervalAmount: 0,
       quantityTokenSum: 0,
@@ -67,6 +69,7 @@ export class OrderComponent implements OnInit, OnDestroy {
           if (this.functionsOrderService.checkError(result)) {
             this.functionsOrderService.popUpInfo(<string>infoOrderCreate.msg);
             this.intervalNewOrderSequentially?.unsubscribe();
+            this.ordersPlaced = false;
           } else {
             newOrderParamsSequentially.quantityTokenSum += newOrderParamsSequentially.quantityTokenStart;
             newOrderParams.price = await this.functionsOrderService.calculationPrice(newOrderParams);
@@ -133,6 +136,7 @@ export class OrderComponent implements OnInit, OnDestroy {
     if (intervalAmount >= newOrderParams.quantityOrders) {
       this.intervalNewOrderSequentially?.unsubscribe();
       this.repeatGetCurrentOpenOrder();
+      this.ordersPlaced = false;
     }
     return intervalAmount;
   }
