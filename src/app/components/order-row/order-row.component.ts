@@ -59,7 +59,8 @@ export class OrderRowComponent implements OnInit {
     dialogRef.afterClosed()
       .pipe(
         take(1),
-        filter(result => !!result),
+        filter(profitPrice => !!profitPrice),
+        filter(profitPrice => profitPrice > Number(this.markPrice)),
         tap(profitPrice => newOrderParams.price = profitPrice),
         switchMap(() => this.orderService.newOrder(newOrderParams))
       )
