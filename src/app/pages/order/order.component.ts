@@ -21,7 +21,6 @@ export class OrderComponent implements OnInit, OnDestroy {
   public isLoader: boolean = false;
   private intervalRepeatCurrentOpenOrder!: Subscription;
   private intervalNewOrderSequentially?: Subscription;
-  private priceCommaNumbers?: number;
 
 
   constructor(
@@ -44,11 +43,7 @@ export class OrderComponent implements OnInit, OnDestroy {
   }
 
   public async newOrder(newOrderParams: INewOrderParams): Promise<void> {
-    this.priceCommaNumbers = newOrderParams.priceCommaNumbers;
-
-    if (newOrderParams.price === null || undefined) {
-      newOrderParams.price = 0;
-    }
+    newOrderParams.price = newOrderParams.price === null || undefined? 0: newOrderParams.price;
     this.functionsOrderService.saveParamOrder(newOrderParams);
     this.functionsOrderService.popUpInfo(NEW_ORDER);
     await this.newOrdersSequentially(newOrderParams);
@@ -62,6 +57,7 @@ export class OrderComponent implements OnInit, OnDestroy {
       price: newOrderParams.price,
       currentQuantityToken: 0
     }
+    newOrderParams.priceCommaNumbers = this.functionsOrderService.addNumberAfterCommaToNewOrderParams(newOrderParams.symbol)
 
     this.intervalNewOrderSequentially = interval(INTERVAL_NEW_ORDER)
       .pipe(switchMap(() => this.orderService.newOrder(newOrderParams).pipe(take(1))))
@@ -73,11 +69,10 @@ export class OrderComponent implements OnInit, OnDestroy {
             this.intervalNewOrderSequentially?.unsubscribe();
           } else {
             newOrderParamsSequentially.quantityTokenSum += newOrderParamsSequentially.quantityTokenStart;
-            newOrderParamsSequentially.price = await this.functionsOrderService.calculationPrice(newOrderParams);
+            newOrderParams.price = await this.functionsOrderService.calculationPrice(newOrderParams);
             newOrderParamsSequentially.currentQuantityToken = this.functionsOrderService.calculationQuantityToken(newOrderParams, newOrderParamsSequentially.quantityTokenStart);
             await this.functionsOrderService.popUpInfo(`${infoOrderCreate.side} ${infoOrderCreate.symbol} amounts=${infoOrderCreate.origQty}, price=${infoOrderCreate.price}`);
             newOrderParamsSequentially.intervalAmount > STOP_CHECK_CURRENT_OPEN_ORDER? this.intervalRepeatCurrentOpenOrder?.unsubscribe():'';
-
             newOrderParamsSequentially.intervalAmount = this.endNewOrdersSequentially(newOrderParamsSequentially.intervalAmount, newOrderParams);
           }
         },
