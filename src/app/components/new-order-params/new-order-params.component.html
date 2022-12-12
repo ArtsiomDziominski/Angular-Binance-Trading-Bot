@@ -58,7 +58,8 @@
 
   <div class="form__button">
     <button mat-raised-button type="submit" color="accent"
-            [disabled]="newOrderFormGroup.invalid || symbolControl.invalid">BUY
+            [disabled]="newOrderFormGroup.invalid || symbolControl.invalid || ordersPlaced">
+      <p [class.form__button_spinner_buy]="ordersPlaced">BUY</p>
     </button>
   </div>
 </form>
