@@ -27,7 +27,7 @@ export class OrderService {
     return sha256.hmac.create(apiKey!.skey).update(dataQueryString).hex();
   }
 
-  private paramsNewOrder(signature:string, dataQueryString:string, apiKey:string): IParamSignatureNewOrder {
+  private paramsNewOrder(signature: string, dataQueryString: string, apiKey: string): IParamSignatureNewOrder {
     return {
       "signature": signature,
       "dataQueryString": dataQueryString,
@@ -37,11 +37,9 @@ export class OrderService {
 
   public newOrder(newOrderParams: INewOrderParams): Observable<string> {
     const symbol = newOrderParams.symbol.trim();
-    const priceCommaNumbers:number = <number>newOrderParams.priceCommaNumbers;
-    const quantityToken:string = newOrderParams.quantityToken.toFixed(priceCommaNumbers);
     let dataQueryString: string = newOrderParams.price === 0 ?
-      `symbol=${symbol}&side=${newOrderParams.side}&quantity=${quantityToken}&type=MARKET&timestamp=` + Date.now() :
-      `symbol=${symbol}&side=${newOrderParams.side}&quantity=${quantityToken}&type=LIMIT&price=${newOrderParams.price}&timeInForce=GTC&timestamp=` + Date.now();
+      `symbol=${symbol}&side=${newOrderParams.side}&quantity=${newOrderParams.quantityToken}&type=MARKET&timestamp=` + Date.now() :
+      `symbol=${symbol}&side=${newOrderParams.side}&quantity=${newOrderParams.quantityToken}&type=LIMIT&price=${newOrderParams.price}&timeInForce=GTC&timestamp=` + Date.now();
     const apiKey: IApiKey | undefined = this.setAPIkey();
     const signature: string = this.hashFunctions(dataQueryString, apiKey);
     const params: IParamSignatureNewOrder = this.paramsNewOrder(signature, dataQueryString, apiKey!.akey);
