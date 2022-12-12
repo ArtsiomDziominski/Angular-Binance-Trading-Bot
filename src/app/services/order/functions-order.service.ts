@@ -72,18 +72,21 @@ export class FunctionsOrderService {
     return symbolNotActive;
   }
 
+  public addNumberAfterCommaToNewOrderParams(symbol:string) {
+    let priceCommaNumbers: number = 0;
+    this.listSymbolNumberComma.forEach((v: ISymbolNumberAfterComma) => {
+      if (v.symbol === symbol) {
+        priceCommaNumbers = v.numberAfterComma;
+      }
+    })
+    return priceCommaNumbers;
+  }
+
   public async calculationPrice(newOrderParams: INewOrderParams): Promise<number> {
-    if (newOrderParams.priceCommaNumbers === 0) {
-      this.listSymbolNumberComma.forEach((v: ISymbolNumberAfterComma) => {
-        if (v.symbol === newOrderParams.symbol) {
-          newOrderParams.priceCommaNumbers = v.numberAfterComma;
-        }
-      })
-    }
     newOrderParams.price = await this.getCurrentPriceToken(newOrderParams.symbol, newOrderParams.price);
     newOrderParams.price = Number.parseFloat(String(newOrderParams.price))
-    newOrderParams.price = Number(newOrderParams.price.toFixed(newOrderParams.priceCommaNumbers))
     newOrderParams.price = newOrderParams.price - newOrderParams.distanceToken;
+    newOrderParams.price = Number(newOrderParams.price.toFixed(newOrderParams.priceCommaNumbers))
     return newOrderParams.price;
   }
 
