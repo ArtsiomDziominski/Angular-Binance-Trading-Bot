@@ -9,6 +9,7 @@ import {INTERVAL_NEW_ORDER} from "../../const/http-request";
 import {IMsgServer} from "../../interface/msg-server";
 import {MainCommonService} from "../../services/main-common.service";
 import {IInfoOrderCreate, INewOrderParams} from "../../interface/order/new-order";
+import {STOP_CHECK_CURRENT_OPEN_ORDER} from "../../const/const";
 
 @Component({
   selector: 'app-order',
@@ -74,7 +75,8 @@ export class OrderComponent implements OnInit, OnDestroy {
             newOrderParamsSequentially.quantityTokenSum += newOrderParamsSequentially.quantityTokenStart;
             newOrderParamsSequentially.price = await this.functionsOrderService.calculationPrice(newOrderParams);
             newOrderParamsSequentially.currentQuantityToken = this.functionsOrderService.calculationQuantityToken(newOrderParams, newOrderParamsSequentially.quantityTokenStart);
-            await this.functionsOrderService.popUpInfo(`${infoOrderCreate.side} ${infoOrderCreate.symbol} amounts=${infoOrderCreate.origQty}, price=${infoOrderCreate.price}`)
+            await this.functionsOrderService.popUpInfo(`${infoOrderCreate.side} ${infoOrderCreate.symbol} amounts=${infoOrderCreate.origQty}, price=${infoOrderCreate.price}`);
+            newOrderParamsSequentially.intervalAmount > STOP_CHECK_CURRENT_OPEN_ORDER? this.intervalRepeatCurrentOpenOrder?.unsubscribe():'';
 
             newOrderParamsSequentially.intervalAmount = this.endNewOrdersSequentially(newOrderParamsSequentially.intervalAmount, newOrderParams);
           }
@@ -135,6 +137,7 @@ export class OrderComponent implements OnInit, OnDestroy {
     intervalAmount++;
     if (intervalAmount >= newOrderParams.quantityOrders) {
       this.intervalNewOrderSequentially?.unsubscribe();
+      this.repeatGetCurrentOpenOrder();
     }
     return intervalAmount;
   }
