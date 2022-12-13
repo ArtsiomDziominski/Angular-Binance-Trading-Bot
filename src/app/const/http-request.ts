@@ -5,3 +5,6 @@ export const BALANCE: string = '/balance/';
 export const INCOME_HISTORY: string = '/income-history/';
 export const LIMIT_INCOME_HISTORY:string = `limit=${1000}&`;
 export const INTERVAL_NEW_ORDER:number = 1500;
+export const GET_ALL_ORDERS_SYMBOL:string = '/set-all-orders-symbol/';
+export const DELETE_ALL_ORDERS_SYMBOL:string = '/delete-list-orders-symbol/';
+export const DELETE_ONE_ORDER_SYMBOL:string = '/delete-one-order-symbol/';

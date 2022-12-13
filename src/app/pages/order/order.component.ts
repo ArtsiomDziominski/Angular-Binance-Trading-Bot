@@ -106,7 +106,6 @@ export class OrderComponent implements OnInit, OnDestroy {
           this.allCurrentToken = value.filter((v: IOpenOrder) => v.positionAmt > 0) || undefined;
           value.forEach((v: IOpenOrder) => this.functionsOrderService.symbolAutocomplete.push(v.symbol))
           this.isLoader = true;
-
         },
         () => {
           this.isLoader = false;
@@ -137,6 +136,7 @@ export class OrderComponent implements OnInit, OnDestroy {
       this.intervalNewOrderSequentially?.unsubscribe();
       this.repeatGetCurrentOpenOrder();
       this.ordersPlaced = false;
+      this.orderService.checkAndDeleteDuplicateOrders(newOrderParams.symbol);
     }
     return intervalAmount;
   }
@@ -147,6 +147,7 @@ export class OrderComponent implements OnInit, OnDestroy {
       this.functionsOrderService.popUpInfo(errorMsg.msg);
       this.intervalNewOrderSequentially?.unsubscribe();
     }
+    this.ordersPlaced = false;
   }
 
   public newOrderParamsEvent($event: INewOrderParams) {
