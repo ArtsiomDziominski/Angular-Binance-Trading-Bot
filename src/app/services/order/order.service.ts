@@ -146,18 +146,17 @@ export class OrderService {
         filter(res => !!res)
       )
       .subscribe(allListOrdersSymbol => {
-        const idListRepetitions = new Set;
+        const idListRepetitions = [];
         let allListOrdersSymbolJson: any = JSON.parse(<string>allListOrdersSymbol)
         for (let i = 0; i < allListOrdersSymbolJson.length; i++) {
           for (let j = i + 1; j < allListOrdersSymbolJson.length; j++) {
             if (allListOrdersSymbolJson[i].origQty === allListOrdersSymbolJson[j].origQty && allListOrdersSymbolJson[i].price === allListOrdersSymbolJson[j].price) {
-              idListRepetitions.add(allListOrdersSymbolJson[i].orderId)
+              idListRepetitions.push(allListOrdersSymbolJson[i].orderId)
             }
           }
         }
-        const orderIdListRepetitions: number[] = <number[]>Array.from(idListRepetitions);
-        if (orderIdListRepetitions.length !== 0) {
-          this.deleteDuplicateOrders(symbol, orderIdListRepetitions);
+        if (idListRepetitions.length !== 0) {
+          this.deleteDuplicateOrders(symbol, idListRepetitions);
         }
       })
   }
