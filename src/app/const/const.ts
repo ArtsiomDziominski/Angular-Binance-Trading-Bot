@@ -9,4 +9,4 @@ export const REPEAT_ORDER: string = 'RepeatOrder';
 export const DIVISION_NUMBER: number = 1000000000000000000;
 export const WIDTH_DIALOG_BOX_WALLET: string = '500px';
 export const WIDTH_DIALOG_BOX_API: string = '800px';
-export const STOP_CHECK_CURRENT_OPEN_ORDER: number = 5;
+export const STOP_CHECK_CURRENT_OPEN_ORDER: number = 3;
