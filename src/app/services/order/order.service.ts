@@ -1,14 +1,20 @@
 import {Injectable} from '@angular/core';
 import {sha256} from "js-sha256";
 import {API_KEY, MARKET, SELL} from "../../const/const";
-import {BURL, DELETE_ALL_ORDERS_SYMBOL, DELETE_ONE_ORDER_SYMBOL, GET_ALL_ORDERS_SYMBOL} from "../../const/http-request";
+import {
+  BURL,
+  DELETE_ALL_ORDERS_SYMBOL,
+  DELETE_ONE_ORDER_SYMBOL,
+  GET_ALL_ORDERS_SYMBOL,
+  MAX_ORDERS_DELETE
+} from "../../const/http-request";
 import {HttpClient} from "@angular/common/http";
 import {LocalStorageService} from "../local-storage/local-storage.service";
-import {filter, Observable, take} from "rxjs";
+import {filter, interval, Observable, Subscription, take} from "rxjs";
 import {FunctionsOrderService} from "./functions-order.service";
 import {IMsgServer} from "../../interface/msg-server";
 import {IOpenOrder} from "../../interface/order/open-order";
-import {INewOrderParams, IParamSignatureNewOrder} from "../../interface/order/new-order";
+import {IInfoOrderCreate, INewOrderParams, IParamSignatureNewOrder} from "../../interface/order/new-order";
 import {IApiKey} from "../../interface/api-key";
 
 @Injectable({
@@ -36,6 +42,13 @@ export class OrderService {
       "dataQueryString": dataQueryString,
       "akey": apiKey
     }
+  }
+
+  public paramsForRequest(dataQueryString: string): string {
+    const apiKey: IApiKey | undefined = this.setAPIkey()
+    const signature: string = this.hashFunctions(dataQueryString, apiKey);
+    const params: IParamSignatureNewOrder = this.paramsNewRequest(signature, dataQueryString, apiKey!.akey);
+    return BURL + GET_ALL_ORDERS_SYMBOL + JSON.stringify(params);
   }
 
   public newOrder(newOrderParams: INewOrderParams): Observable<string> {
@@ -98,18 +111,15 @@ export class OrderService {
     })
   }
 
-  public getDuplicateOrders(symbol: string): Observable<string> {
-    const apiKey: IApiKey | undefined = this.setAPIkey()
+  public getOrders(symbol: string): Observable<string> {
     const dataQueryString = `symbol=${symbol}&timestamp=` + Date.now();
-    const signature: string = this.hashFunctions(dataQueryString, apiKey);
-    const params: IParamSignatureNewOrder = this.paramsNewRequest(signature, dataQueryString, apiKey!.akey);
-    const URL: string = BURL + GET_ALL_ORDERS_SYMBOL + JSON.stringify(params)
+    const URL: string = this.paramsForRequest(dataQueryString);
     return this.http.get<string>(URL, {responseType: 'text' as 'json'})
   }
 
-  public deleteDuplicateOrders(symbol: string, orderIdListRepetitions: number[]) {
+  public deleteDuplicateOrders(symbol: string, orderIdListRepetitions: number[]): Observable<string> {
+    console.log(orderIdListRepetitions)
     const apiKey: IApiKey | undefined = this.setAPIkey()
-    let dataQueryString: string = '';
     let bodyUrl: string = '';
     let orderId: string = '';
 
@@ -120,43 +130,50 @@ export class OrderService {
     } else if (1 < orderIdListRepetitions.length && orderIdListRepetitions.length < 11) {
       orderId = `orderIdList=[${orderIdListRepetitions}]`;
       bodyUrl = DELETE_ALL_ORDERS_SYMBOL;
-    } else {
-      const ordersId: number[] = [];
-      for (let i = 0; i < orderIdListRepetitions.length; i++) {
-        ordersId.push(orderIdListRepetitions[i]);
-        if (orderIdListRepetitions.length > 10) {
-          this.deleteDuplicateOrders(symbol, orderIdListRepetitions)
-          orderIdListRepetitions.length = 0;
-        }
-      }
     }
-    dataQueryString = `symbol=${symbol}&` + orderId + '&timestamp=' + Date.now();
+    const dataQueryString: string = `symbol=${symbol}&` + orderId + '&timestamp=' + Date.now();
     const signature: string = this.hashFunctions(dataQueryString, apiKey);
     const params: IParamSignatureNewOrder = this.paramsNewRequest(signature, dataQueryString, apiKey!.akey);
     const URL: string = BURL + bodyUrl + JSON.stringify(params)
-    this.http.get<string>(URL, {responseType: 'text' as 'json'})
-      .pipe(take(1))
-      .subscribe()
+    return this.http.get<string>(URL, {responseType: 'text' as 'json'})
   }
 
-  public checkAndDeleteDuplicateOrders(symbol: string) {
-    this.getDuplicateOrders(symbol)
+  public checkAndDeleteDuplicateOrders(symbol: string): void {
+    this.getOrders(symbol)
       .pipe(
         take(1),
         filter(res => !!res)
       )
       .subscribe(allListOrdersSymbol => {
-        const idListRepetitions = [];
-        let allListOrdersSymbolJson: any = JSON.parse(<string>allListOrdersSymbol)
-        for (let i = 0; i < allListOrdersSymbolJson.length; i++) {
-          for (let j = i + 1; j < allListOrdersSymbolJson.length; j++) {
-            if (allListOrdersSymbolJson[i].origQty === allListOrdersSymbolJson[j].origQty && allListOrdersSymbolJson[i].price === allListOrdersSymbolJson[j].price) {
-              idListRepetitions.push(allListOrdersSymbolJson[i].orderId)
-            }
+        const duplicatedId: number[] = [];
+        let allListOrdersSymbolJson: IInfoOrderCreate[] = JSON.parse(<string>allListOrdersSymbol)
+        const orderKeys: string[] = [];
+
+        allListOrdersSymbolJson.forEach((order) => {
+          if (orderKeys.includes(`${order.origQty}-${order.price}`)) {
+            duplicatedId.push(order.orderId);
+          } else {
+            orderKeys.push(`${order.origQty}-${order.price}`);
           }
-        }
-        if (idListRepetitions.length !== 0) {
-          this.deleteDuplicateOrders(symbol, idListRepetitions);
+        });
+
+        if (duplicatedId.length <= MAX_ORDERS_DELETE) {
+          this.deleteDuplicateOrders(symbol, duplicatedId)
+            .pipe(take(1))
+            .subscribe()
+        } else {
+          const intervalDuplicate: Subscription = interval(3000)
+            .pipe()
+            .subscribe(() => {
+              if (!duplicatedId.length) {
+                intervalDuplicate.unsubscribe()
+              } else {
+                const ordersId: number[] = duplicatedId.splice(0, MAX_ORDERS_DELETE)
+                this.deleteDuplicateOrders(symbol, ordersId)
+                  .pipe(take(1))
+                  .subscribe()
+              }
+            })
         }
       })
   }
