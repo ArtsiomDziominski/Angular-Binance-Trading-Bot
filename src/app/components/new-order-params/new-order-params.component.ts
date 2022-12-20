@@ -15,8 +15,9 @@ import {INewOrderParams} from "../../interface/order/new-order";
   styleUrls: ['./new-order-params.component.scss']
 })
 export class NewOrderParamsComponent implements OnInit {
-  @Input() ordersPlaced!: boolean;
+  @Input() ordersCreated!: boolean;
   @Output() newOrderParamsEvent: EventEmitter<INewOrderParams> = new EventEmitter();
+  @Output() cancelCreationNewOrders: EventEmitter<void> = new EventEmitter();
 
   public newOrderParams: INewOrderParams = this.functionsOrderService.newOrderParams;
 
@@ -93,15 +94,20 @@ export class NewOrderParamsComponent implements OnInit {
   }
 
   public newOrder(side: string) {
-    const newOrderParams: INewOrderParams = {
-      symbol: this.newOrderParams.symbol,
-      side,
-      quantityToken: this.newOrderParams.quantityToken,
-      price: this.newOrderParams.price,
-      quantityOrders: this.newOrderParams.quantityOrders,
-      distanceToken: this.newOrderParams.distanceToken,
-      priceCommaNumbers: this.newOrderParams.priceCommaNumbers
+    if (this.ordersCreated) {
+      this.cancelCreationNewOrders.emit();
+      this.ordersCreated = false;
+    } else {
+      const newOrderParams: INewOrderParams = {
+        symbol: this.newOrderParams.symbol,
+        side,
+        quantityToken: this.newOrderParams.quantityToken,
+        price: this.isInputPriceLimit ? this.newOrderParams.price : 0,
+        quantityOrders: this.newOrderParams.quantityOrders,
+        distanceToken: this.newOrderParams.distanceToken,
+        priceCommaNumbers: this.newOrderParams.priceCommaNumbers
+      }
+      this.newOrderParamsEvent.emit(newOrderParams);
     }
-    this.newOrderParamsEvent.emit(newOrderParams);
   }
 }
