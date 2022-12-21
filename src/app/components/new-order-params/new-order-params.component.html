@@ -11,7 +11,7 @@
   </section>
 
   <mat-button-toggle-group>
-    <mat-button-toggle checked (click)="isInputPriceLimit=false">MARKET</mat-button-toggle>
+    <mat-button-toggle checked (click)="isInputPriceLimit = false">MARKET</mat-button-toggle>
     <mat-button-toggle (click)="isInputPriceLimit=true">LIMIT</mat-button-toggle>
   </mat-button-toggle-group>
 
@@ -57,9 +57,9 @@
   </mat-form-field>
 
   <div class="form__button">
-    <button mat-raised-button type="submit" color="accent"
-            [disabled]="newOrderFormGroup.invalid || symbolControl.invalid || ordersPlaced">
-      <p [class.form__button_spinner_buy]="ordersPlaced">BUY</p>
+    <button mat-raised-button type="submit" color="{{ordersCreated? 'warn':'accent'}}"
+            [disabled]="newOrderFormGroup.invalid || symbolControl.invalid">
+      <p>{{ordersCreated ? 'Cancel' : 'BUY'}}</p>
     </button>
   </div>
 </form>

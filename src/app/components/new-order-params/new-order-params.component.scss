@@ -39,18 +39,4 @@ input::-webkit-inner-spin-button {
       color: var(--color-white);
     }
   }
-
-  .form__button_spinner_buy {
-    display: inline-block;
-    animation: spinner_btn_buy 1s linear infinite;
-  }
-}
-
-@keyframes spinner_btn_buy {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
 }

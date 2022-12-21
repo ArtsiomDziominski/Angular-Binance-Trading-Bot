@@ -27,5 +27,5 @@
       <div></div>
     </div>
   </ng-template>
-  <app-new-order-params [ordersPlaced]="ordersPlaced" (newOrderParamsEvent)="newOrderParamsEvent($event)"></app-new-order-params>
+  <app-new-order-params [ordersCreated]="ordersPlaced" (newOrderParamsEvent)="newOrderParamsEvent($event)" (cancelCreationNewOrders)="cancelCreationNewOrders()"></app-new-order-params>
 </article>

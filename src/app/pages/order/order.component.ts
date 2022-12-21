@@ -143,13 +143,17 @@ export class OrderComponent implements OnInit, OnDestroy {
 
   public catchErrorNewOrder(value: string) {
     const errorMsg: IMsgServer = JSON.parse(value)
+    this.intervalNewOrderSequentially?.unsubscribe();
     if (errorMsg.code !== undefined) {
       this.functionsOrderService.popUpInfo(errorMsg.msg);
-      this.intervalNewOrderSequentially?.unsubscribe();
     }
   }
 
   public newOrderParamsEvent($event: INewOrderParams) {
     this.newOrder($event);
+  }
+
+  public cancelCreationNewOrders() {
+    this.intervalNewOrderSequentially?.unsubscribe()
   }
 }
