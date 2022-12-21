@@ -44,7 +44,10 @@ export class OrderComponent implements OnInit, OnDestroy {
   }
 
   public async newOrder(newOrderParams: INewOrderParams): Promise<void> {
-    newOrderParams.price = newOrderParams.price === null || undefined? 0: newOrderParams.price;
+    newOrderParams.price = newOrderParams.price === null || undefined ? 0 : newOrderParams.price;
+    newOrderParams.priceCommaNumbers = newOrderParams.priceCommaNumbers === 0 ?
+      this.functionsOrderService.addNumberAfterCommaToNewOrderParams(newOrderParams.symbol) :
+      newOrderParams.priceCommaNumbers;
     this.functionsOrderService.saveParamOrder(newOrderParams);
     this.functionsOrderService.popUpInfo(NEW_ORDER);
     await this.newOrdersSequentially(newOrderParams);
@@ -59,7 +62,6 @@ export class OrderComponent implements OnInit, OnDestroy {
       price: newOrderParams.price,
       currentQuantityToken: 0
     }
-    newOrderParams.priceCommaNumbers = this.functionsOrderService.addNumberAfterCommaToNewOrderParams(newOrderParams.symbol)
 
     this.intervalNewOrderSequentially = interval(INTERVAL_NEW_ORDER)
       .pipe(switchMap(() => this.orderService.newOrder(newOrderParams).pipe(take(1))))
@@ -75,7 +77,7 @@ export class OrderComponent implements OnInit, OnDestroy {
             newOrderParams.price = await this.functionsOrderService.calculationPrice(newOrderParams);
             newOrderParamsSequentially.currentQuantityToken = this.functionsOrderService.calculationQuantityToken(newOrderParams, newOrderParamsSequentially.quantityTokenStart);
             await this.functionsOrderService.popUpInfo(`${infoOrderCreate.side} ${infoOrderCreate.symbol} amounts=${infoOrderCreate.origQty}, price=${infoOrderCreate.price}`);
-            newOrderParamsSequentially.intervalAmount > STOP_CHECK_CURRENT_OPEN_ORDER? this.intervalRepeatCurrentOpenOrder?.unsubscribe():'';
+            newOrderParamsSequentially.intervalAmount > STOP_CHECK_CURRENT_OPEN_ORDER ? this.intervalRepeatCurrentOpenOrder?.unsubscribe() : null;
             newOrderParamsSequentially.intervalAmount = this.endNewOrdersSequentially(newOrderParamsSequentially.intervalAmount, newOrderParams);
           }
         },
