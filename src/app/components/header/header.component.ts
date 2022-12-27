@@ -19,29 +19,8 @@ export class HeaderComponent {
 
   constructor(
     private dialog: MatDialog,
-    public walletBscService: WalletBscService
+    public walletBscService: WalletBscService,
   ) {
-  }
-
-  public async ngOnInit(): Promise<void> {
-    await this.checkConnectionStatus();
-    this.getBalance();
-  }
-
-  public async checkConnectMetamask(): Promise<boolean> {
-    let result: boolean = true;
-    await this.walletBscService.isConnected()
-      .then(res => result = res)
-    return result;
-  }
-
-  public async checkConnectionStatus(): Promise<void> {
-    await this.walletBscService.connectMetamask()
-      .then(res => {
-        this.addressWallet = res[0];
-        this.isConnectWallet = true;
-        this.getBalance();
-      })
   }
 
   public getBalance(): void {
