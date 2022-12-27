@@ -10,6 +10,10 @@
     </button>
   </section>
   <section class="main" *ngIf="isLoader; else loader">
+    <div class="warning" *ngIf="isCheckApi">
+      <img class="warning__image" src="assets/warning.svg" alt="warning">
+      <p class="warning__text">Check API key</p>
+    </div>
     <div *ngFor="let currentToken of allCurrentToken;">
       <app-order-row
         [symbol]="currentToken.symbol"
@@ -27,5 +31,6 @@
       <div></div>
     </div>
   </ng-template>
-  <app-new-order-params [ordersCreated]="ordersPlaced" (newOrderParamsEvent)="newOrderParamsEvent($event)" (cancelCreationNewOrders)="cancelCreationNewOrders()"></app-new-order-params>
+  <app-new-order-params [ordersCreated]="ordersPlaced" (newOrderParamsEvent)="newOrderParamsEvent($event)"
+                        (cancelCreationNewOrders)="cancelCreationNewOrders()"></app-new-order-params>
 </article>

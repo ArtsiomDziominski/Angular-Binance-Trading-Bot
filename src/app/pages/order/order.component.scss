@@ -60,6 +60,22 @@ input::-webkit-inner-spin-button {
 
   .main {
     grid-area: main;
+
+    .warning {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+
+      &__image {
+        width: 50px;
+        height: 50px;
+      }
+      &__text {
+        margin-left: 20px;
+        color: var(--color-warning);
+      }
+    }
   }
 
   app-new-order-params {
