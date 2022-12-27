@@ -3,7 +3,7 @@ import {LocalStorageService} from "../../services/local-storage/local-storage.se
 import {OrderService} from "../../services/order/order.service";
 import {interval, Subscription, switchMap, take} from "rxjs";
 import {FunctionsOrderService} from "../../services/order/functions-order.service";
-import {NEW_ORDER, NO_CONNECTION} from "../../const/message-pop-up-info";
+import {CHECK_API_KEY, NEW_ORDER, NO_CONNECTION} from "../../const/message-pop-up-info";
 import {IOpenOrder} from "../../interface/order/open-order";
 import {INTERVAL_NEW_ORDER} from "../../const/http-request";
 import {IMsgServer} from "../../interface/msg-server";
@@ -19,6 +19,7 @@ import {STOP_CHECK_CURRENT_OPEN_ORDER} from "../../const/const";
 export class OrderComponent implements OnInit, OnDestroy {
   public allCurrentToken: IOpenOrder[] = [];
   public isLoader: boolean = false;
+  public isCheckApi: boolean = false;
   private intervalRepeatCurrentOpenOrder!: Subscription;
   private intervalNewOrderSequentially?: Subscription;
   public ordersPlaced: boolean = false;
@@ -34,9 +35,15 @@ export class OrderComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.mainCommonService.setAPIkey();
-    this.getCurrentOpenOrder();
-    this.repeatGetCurrentOpenOrder();
-    this.functionsOrderService.filterPriceTokenNumberAfterComma();
+    if (this.mainCommonService.apiKey) {
+      this.getCurrentOpenOrder();
+      this.repeatGetCurrentOpenOrder();
+      this.functionsOrderService.filterPriceTokenNumberAfterComma();
+    } else {
+      this.isLoader = true;
+      this.functionsOrderService.popUpInfo(CHECK_API_KEY);
+      this.isCheckApi = true;
+    }
   }
 
   public ngOnDestroy(): void {
