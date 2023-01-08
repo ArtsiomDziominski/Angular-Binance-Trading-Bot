@@ -47,7 +47,7 @@ export class OrderComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.intervalRepeatCurrentOpenOrder.unsubscribe();
+    if (this.intervalRepeatCurrentOpenOrder) this.intervalRepeatCurrentOpenOrder.unsubscribe();
   }
 
   public async newOrder(newOrderParams: INewOrderParams): Promise<void> {

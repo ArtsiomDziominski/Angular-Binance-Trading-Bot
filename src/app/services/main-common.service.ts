@@ -16,8 +16,9 @@ export class MainCommonService {
     private functionsOrderService: FunctionsOrderService) {
   }
 
-  public setAPIkey(): void {
+  public setAPIkey(): IApiKey | undefined {
     this.apiKey = JSON.parse(<string>this.localStorageService.getLocalStorage(API_KEY)) || undefined;
     if (!this.apiKey) this.functionsOrderService.popUpInfo(CHECK_API_KEY);
+    return this.apiKey
   }
 }
