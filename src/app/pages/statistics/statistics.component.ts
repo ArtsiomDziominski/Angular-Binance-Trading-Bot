@@ -26,10 +26,11 @@ export class StatisticsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.mainCommonService.setAPIkey();
-    this.getStatAcc();
-    this.setIntervalStatAcc = window.setInterval(() => this.getStatAcc(), 10000);
-    this.getIncomeHistory();
+    if (this.mainCommonService.setAPIkey()) {
+      this.getStatAcc();
+      this.setIntervalStatAcc = window.setInterval(() => this.getStatAcc(), 10000);
+      this.getIncomeHistory();
+    }
   }
 
   public ngOnDestroy() {

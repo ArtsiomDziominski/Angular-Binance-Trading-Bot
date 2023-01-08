@@ -1,7 +1,4 @@
 <div class="wrapper">
-  <div class="parallelogram"></div>
-  <div class="retro"></div>
-  <div class="leaf"></div>
   <app-header></app-header>
   <main class="main">
     <router-outlet></router-outlet>
@@ -9,8 +6,7 @@
 </div>
 <div class="info-save-storage" *ngIf="!isInfoSaveStorageBox">
   <img src="assets/cookie.svg" alt="cookie">
-  <p>This is an example of a message that is commonly used for important information to visitors or users.
-    Please click the button beside to close this message.</p>
+  <p>By using our site, you agree to our use of cookies 🍪</p>
   <button (click)="closeInfoBox()">Accept</button>
 </div>
 

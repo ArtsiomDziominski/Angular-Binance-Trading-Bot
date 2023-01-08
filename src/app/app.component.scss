@@ -17,39 +17,6 @@ a {
   z-index: 1;
   min-height: 100%;
 
-  .parallelogram {
-    width: 500px;
-    height: 300px;
-    transform: skew(20deg);
-    background-color: var(--background-color-figures);
-    position: absolute;
-    z-index: 0;
-    top: 90px;
-    left: 40px;
-  }
-
-  .retro {
-    width: 100px;
-    height: 80px;
-    background-color: var(--background-color-figures);
-    border-radius: 50%/10%;
-    position: absolute;
-    z-index: 0;
-    top: 90px;
-    right: 250px;
-  }
-
-  .leaf {
-    width: 200px;
-    height: 200px;
-    background-color: var(--background-color-figures);
-    border-radius: 100% 0;
-    position: absolute;
-    z-index: 0;
-    bottom: 100px;
-    right: 250px;
-  }
-
   .main {
     display: flex;
     justify-content: center;
